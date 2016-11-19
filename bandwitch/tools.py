@@ -1,10 +1,6 @@
 from Bio import Restriction
 from Bio.Seq import Seq
-from dnachisel.biotools import random_dna_sequence
-import itertools
 import numpy as np
-from collections import OrderedDict
-
 
 class NoSolutionError(Exception):
     pass
@@ -109,3 +105,12 @@ def greedy_minimal_set_cover(self, coverages, full_set=None, priority_fun=None):
         for element, coverage in coverages.items():
             coverages[element] = coverage.difference(covered)
     return result
+
+def digestions_list_to_string(digestions):
+    return ", ".join([" + ".join([e for e in d]) for d in digestions])
+
+
+def max_min_distance(vals1, vals2):
+    vals1, vals2 = np.array(vals1), np.array(vals2)
+    all_distances = abs(vals1.reshape((len(vals1),1)) - vals2)
+    return max([max(all_distances.min(axis=i)) for i in (0,1)])

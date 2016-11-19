@@ -1,4 +1,8 @@
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+    MATPLOTLIB_AVAILABLE = True
+except:
+    MATPLOTLIB_AVAILABLE = False
 
 def plot_separating_digests(gel_simulator, digestions,
                             sequences_digestions_dict,
@@ -12,7 +16,7 @@ def plot_separating_digests(gel_simulator, digestions,
     if len(digestions) == 1:
         axes = [axes]
     for ax, digestion in zip(axes, digestions):
-        patterns = [(name, dig_dict[digestion]["observed_bands"])
+        patterns = [(name, dig_dict[digestion]["bands"])
                     for name, dig_dict in sequences_digestions_dict.items()]
         ax.axhline(1, c="k", lw=0.5)
         gel_simulator.format_ax(ax)
@@ -20,6 +24,6 @@ def plot_separating_digests(gel_simulator, digestions,
             patterns, ax=ax, color='black', with_size_labels=False,
             band_thickness=band_thickness, plot_ladder=False,
             plot_ladder_ticks=True, plot_labels=(ax == axes[0]),
-            ylabel=" + ".join(digestion)
+            ylabel=" + ".join(digestion), ylabel_fontdict=dict(size=9)
         )
     return axes
