@@ -6,7 +6,7 @@ class NoSolutionError(Exception):
     pass
 
 
-def compute_digestion_bands(sequence, enzymes, linear=True):
+def predict_digestion_bands(sequence, enzymes, linear=True):
     """Return the band sizes [75, 2101, ...] resulting from
     enzymatic digestion of the sequence by all enzymes at once.
 
@@ -57,8 +57,9 @@ def merge_digestions(digestion1, digestion2, sequence_length, linear):
     }
 
 
-def compute_sequence_digestions(sequence, enzymes, linear=True,
-                                max_enzymes_per_digestion=1):
+def predict_sequence_digestions(sequence, enzymes, linear=True,
+                                max_enzymes_per_digestion=1,
+                                bands_to_migration=None):
     restriction_batch = Restriction.RestrictionBatch(enzymes)
     cuts_dict = restriction_batch.search(Seq(sequence))
 
@@ -72,39 +73,45 @@ def compute_sequence_digestions(sequence, enzymes, linear=True,
             sub_sub_enzymes = [enzs for enzs in sub_enzymes
                                if enzyme not in enzs]
             for enzs in sub_sub_enzymes:
-                digestions_dict[enzs + (enzyme,)] = merge_digestions(
-                    digestion1=get_cuts(enzyme),
-                    digestion2=digestions_dict[enzs],
-                    sequence_length=len(sequence),
-                    linear=linear
-                )
+                digestion = tuple(sorted(enzs + (enzyme,)))
+                if digestion not in digestions_dict:
+                    digestions_dict[digestion] = merge_digestions(
+                        digestion1=get_cuts(enzyme),
+                        digestion2=digestions_dict[enzs],
+                        sequence_length=len(sequence),
+                        linear=linear
+                    )
+                    if bands_to_migration is not None:
+                        bands = digestions_dict[digestion]["bands"]
+                        migration = bands_to_migration(bands)
+                        digestions_dict[digestion]["migration"] = migration
+    digestions_dict.pop(())
     return digestions_dict
 
 
-def greedy_minimal_set_cover(self, coverages, full_set=None, priority_fun=None):
+def greedy_minimal_set_cover(coverages, full_set=None, heuristic=None):
     """{coverer: [coverage]}"""
-    result = []
-    if priority_fun is None:
-        def priority_fun(e):
-            return 0
-    priorities = {k: priority_fun(k) for k in coverages.keys()}
-    def maximum_key(kv):
-        return (len(kv[1]), priorities[kv[0]])
+    current_selection = []
+    if heuristic is None:
+        def heuristic(element, coverage, current_selection):
+            return len(coverage[element])
+
     coverages = {k: set(v) for k, v in coverages.items()}
+    def key(e):
+        return heuristic(e, coverages, current_selection)
     if full_set is not None:
         full_coverage_set = set().union(*coverages.values())
         if full_coverage_set != full_set:
             raise NoSolutionError("Coverage not full.")
     while len(coverages) > 0:
-        most_common, covered = max(coverages.items(),
-                                   key=maximum_key)
+        selected = max(coverages, key=key)
+        covered = coverages.pop(selected)
         if len(covered) == 0:
             break
-        result.append(most_common)
-        covered = coverages.pop(most_common)
+        current_selection.append(selected)
         for element, coverage in coverages.items():
             coverages[element] = coverage.difference(covered)
-    return result
+    return current_selection
 
 def digestions_list_to_string(digestions):
     return ", ".join([" + ".join([e for e in d]) for d in digestions])
@@ -113,4 +120,4 @@ def digestions_list_to_string(digestions):
 def max_min_distance(vals1, vals2):
     vals1, vals2 = np.array(vals1), np.array(vals2)
     all_distances = abs(vals1.reshape((len(vals1),1)) - vals2)
-    return max([max(all_distances.min(axis=i)) for i in (0,1)])
+    return max([max(all_distances.min(axis=i)) for i in (0, 1)])
