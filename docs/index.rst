@@ -6,9 +6,9 @@ BandWitch Documentation
    :align: center
 
 
-Bandwitch is a Python library implementing algorithms to choose a digestion or
-a set of digestion to verify or identify DNA constructs. It solves the two
-following problems:
+Bandwitch is a Python library implementing algorithms to select digestions for
+the verification or identification of DNA constructs. It solves the following
+problems:
 
 - Given a set of construct, find a digestion that will produce *nice* band patterns
   for all the constructs at once (the conditions for *nice* patterns being
@@ -19,6 +19,7 @@ In these problems, a *digestion* can contain one or more enzymes depending on th
 If one digestion is not enough to solve the problem, BandWitch will find two or more
 digestions which collectively solve the problem, i.e. cover the conditions for all
 the constructs.
+
 
 Installation
 -------------
@@ -102,23 +103,14 @@ in two different patterns are different if their migration distance is more than
     digestions = problem.select_digestions()
 
 **Plotting the results:** the bands created by the digestion(s) can be easily
-plotted using BandWagon.
+plotted if you have BandWagon installed:
 
 .. code:: python
-
-    from bandwagon import BandsPattern, BandsPatternsSet, LADDER_100_to_4k
-    digestion = digestions[0] # consider the first digestion in the list.
-    patterns = [
-    BandsPattern(problem.sequences_digestions[name][digestion]['bands'],
-                 ladder=LADDER_100_to_4k, label=name,
-                 label_fontdict={"size":10, "rotation":50})
-    for name, construct in sorted(constructs.items())
-    ]
-    patterns_set =  BandsPatternsSet(patterns, ladder=LADDER_100_to_4k,
-                                 label= " + ".join(digestion),
-                                 ladder_ticks=7)
-    ax = patterns_set.plot()
-    ax.figure.savefig("digestion_patterns.png", bbox_inches="tight")
+    axes = problem.plot_digestions(
+        digestions,
+        patterns_props={'label_fontdict': {'rotation': 35}}
+    )
+    axes[0].figure.savefig("digestion_patterns.png", bbox_inches="tight")
 
 Here is an example result in the case of scenario 1:
 

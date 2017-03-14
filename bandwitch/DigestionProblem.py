@@ -113,6 +113,53 @@ class DigestionProblem:
         coverage = set().union(*[self.coverages[d] for d in digestions])
         return (coverage == self.full_set)
 
+    def plot_digestions(self, digestions, axes=None, bands_props=None,
+                        patterns_props=None, patternset_props=None):
+        """Plot the patterns for each sequence, for each digestion in the list.
+
+        Requires Bandwagon.
+
+        Parameters
+        ----------
+        
+        digestions, axes=None, bands_props=None,
+                            patterns_props=None, patternset_props=None
+        """
+        if not PLOTS_AVAILABLE:
+            raise ImportError("Plotting requires Bandwagon installed")
+
+        bands_props = updated_dict({"size": 10, "rotation": 50}, bands_props)
+        patternset_props = updated_dict({"ladder_ticks": 5}, patternset_props)
+        if isinstance(self.ladder.bands, (list, tuple)):
+            ladder = self.ladder
+        else:
+            ladder = bandwagon.custom_ladder(None, self.ladder.bands)
+        ndig, nseq = len(digestions), len(self.sequences)
+        if axes is None:
+            fig, axes = plt.subplots(ndig, 1, figsize=(0.5 * nseq, 3 * ndig))
+        if ndig == 1:
+            axes = [axes]
+        for ax, digestion in zip(axes, digestions):
+            bandwagon.BandsPatternsSet(
+                patterns=[
+                    ladder if ax == axes[0] else ladder.modified(label=None)
+                ] + [
+                    bandwagon.BandsPattern(
+                        bands=self.sequences_digestions[seq_name]
+                                                       [digestion]['bands'],
+                        label=seq_name if (ax == axes[0]) else None,
+                        ladder=ladder,
+                        global_bands_props=bands_props
+                    )
+                    for seq_name in self.sequences
+                ],
+                ladder=ladder,
+                label=digestions_list_to_string([digestion]),
+                global_patterns_props=patterns_props,
+                **patternset_props
+            ).plot(ax)
+        return axes
+
 
 class SeparatingDigestionsProblem(DigestionProblem):
     """Problem: find best digestion(s) to identify constructs.
@@ -133,19 +180,23 @@ class SeparatingDigestionsProblem(DigestionProblem):
             for digestion in self.digestions
         }
 
-    def compute_separation_coverage(self, digestion):
-        """Return all pairs of construct that are well separated
-           by this digestion."""
+    def patterns_difference_score(self, seq1, seq2, digestion):
         zone = (
             self.migration_min + 0.5 * self.detectable_migration_difference,
             self.migration_max - 0.5 * self.detectable_migration_difference
         )
+        distance = max_min_distance(
+            self.sequences_digestions[seq1][digestion]['migration'],
+            self.sequences_digestions[seq2][digestion]['migration'],
+            zone=zone)
+        return 1.0 * distance / self.detectable_migration_difference
+
+    def compute_separation_coverage(self, digestion):
+        """Return all pairs of construct that are well separated
+           by this digestion."""
         return [
-            (n1, n2) for n1, n2 in self.full_set
-            if self.detectable_migration_difference < max_min_distance(
-                self.sequences_digestions[n1][digestion]['migration'],
-                self.sequences_digestions[n2][digestion]['migration'],
-                zone=zone)
+            (seq1, seq2) for seq1, seq2 in self.full_set
+            if self.patterns_difference_score(seq1, seq2, digestion) >= 1.0
         ]
 
     def identify_construct(self, digestions_bands):
@@ -177,40 +228,44 @@ class SeparatingDigestionsProblem(DigestionProblem):
                     possible_sequences.pop(name)
         return sorted(possible_sequences.keys())
 
-    def plot_digests(self, digestions, axes=None, bands_props=None,
-                     patterns_props=None, patternset_props=None):
-        """Plot a series of digests."""
-        if not PLOTS_AVAILABLE:
-            raise ImportError("Plotting requires Bandwagon installed")
+    def plot_distances_map(self, digestions, ax=None):
 
-        bands_props = updated_dict({"size": 10, "rotation": 50}, bands_props)
-        patternset_props = updated_dict({"ladder_ticks": 5}, patternset_props)
-        if isinstance(self.ladder.bands, (list, tuple)):
-            ladder = self.ladder
-        else:
-            ladder = bandwagon.custom_ladder(None, self.ladder.bands)
-        ndig, nseq = len(digestions), len(self.sequences)
-        if axes is None:
-            fig, axes = plt.subplots(ndig, 1, figsize=(0.5 * nseq, 2 * ndig))
-        if ndig == 1:
-            axes = [axes]
-        for ax, digestion in zip(axes, digestions):
-            bandwagon.BandsPatternsSet(
-                patterns=[ladder] + [
-                    bandwagon.BandsPattern(
-                        bands=self.sequences_digestions[seq_name]
-                                                       [digestion]['bands'],
-                        ladder=ladder,
-                        global_bands_props=bands_props
+        if not PLOTS_AVAILABLE:
+            raise ImportError("Plots require Matplotlib/Bandwagon installed.")
+        grid = np.zeros(2*(len(self.sequences),))
+        for i, seq1 in enumerate(self.sequences):
+            for j, seq2 in enumerate(self.sequences):
+                if i == j:
+                    grid[i, i] = np.nan
+                else:
+                    scores = [
+                        self.patterns_difference_score(seq1, seq2, digestion)
+                        for digestion in digestions
+                    ]
+                    grid[i, j] = grid[j, i] = max(scores)
+        if ax is None:
+            _, ax = plt.subplots(1, figsize=2*(0.8*len(grid),))
+        ax.imshow(grid, interpolation='nearest', cmap='autumn', vmin=1.0)
+        for i in range(len(grid)):
+            for j in range(len(grid)):
+                if i != j:
+                    ax.text(
+                        i, j, "%0.1f" % grid[i, j],
+                        fontdict=dict(color='black', weight='bold', size=14),
+                        horizontalalignment='center',
+                        verticalalignment='center'
                     )
-                    for seq_name in self.sequences
-                ],
-                ladder=ladder,
-                label=digestions_list_to_string([digestion]),
-                global_patterns_props=patterns_props,
-                **patternset_props
-            ).plot(ax)
-        return axes
+
+        ax.set_yticks(range(len(grid)))
+        ax.set_yticklabels(self.sequences, size=14,
+                           fontdict={'weight': 'bold'})
+        ax.set_xticks(range(len(grid)))
+        ax.xaxis.set_ticks_position('top')
+        ax.set_xticklabels([" " + s for s in self.sequences], rotation=90,
+                           size=14, fontdict={'weight': 'bold'})
+        return ax
+
+
 
 
 class IdealDigestionsProblem(DigestionProblem):
