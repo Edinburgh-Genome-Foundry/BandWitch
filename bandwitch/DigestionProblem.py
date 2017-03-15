@@ -96,7 +96,21 @@ class DigestionProblem:
 
     @staticmethod
     def default_solver(problem):
-        return greedy_minimal_set_cover(problem.coverages, problem.full_set)
+        """Solver for minimum covering set problem, with penalized heuristic.
+
+        The digestion selected at each step is the one maximizing the size
+        of its coverage, minus a penalty of 1 per enzyme in the digestion,
+        or 0.5 for enzymes that are already in previous digestions.
+        """
+        def penalized_heuristic(digestion, coverage, selected_digestions):
+            selected_enzymes = [e for d in selected_digestions for e in d]
+            n_covered = len(coverage[digestion])
+            n_enzymes = len(digestion)
+            n_common = len([e for e in digestion if e in selected_enzymes])
+            return (n_covered - n_enzymes + 0.5 * n_common,
+                    ' '.join(digestion))
+        return greedy_minimal_set_cover(problem.coverages, problem.full_set,
+                                        heuristic=penalized_heuristic)
 
     def compute_sequences_digestions(self):
         self.sequences_digestions = {
@@ -121,7 +135,7 @@ class DigestionProblem:
 
         Parameters
         ----------
-        
+
         digestions, axes=None, bands_props=None,
                             patterns_props=None, patternset_props=None
         """

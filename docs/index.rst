@@ -62,7 +62,7 @@ that implements this condition:
 .. code:: python
 
     from bandwitch import IdealDigestionProblem
-    class MyIdealDigestionProblem(IdealDigestionsProblem):
+    class MyIdealDigestionProblem(IdealDigestionProblem):
         def migration_pattern_is_ideal(self, migration):
             """Are there 2-3 bands between 30% and 70% of the migration span?"""
             min_migration = 0.7 * self.migration_min + 0.3 * self.migration_max
@@ -78,9 +78,9 @@ solution:
 .. code:: python
 
     from bandwitch import LADDER_100_to_4k
-    problem = MyIdealDigestionsProblem(constructs, enzymes, linear=False,
-                                       ladder=LADDER_100_to_4k,
-                                       max_enzymes_per_digestion=2)
+    problem = MyIdealDigestionProblem(constructs, enzymes, linear=False,
+                                      ladder=LADDER_100_to_4k,
+                                      max_enzymes_per_digestion=2)
     selected_digestions = problem.select_digestions()
     print selected_digestions
 
@@ -100,14 +100,14 @@ in two different patterns are different if their migration distance is more than
                                               ladder=ladder,
                                               max_enzymes_per_digestion=2,
                                               relative_error=0.05)
-    digestions = problem.select_digestions()
+    selected_digestions = problem.select_digestions()
 
 **Plotting the results:** the bands created by the digestion(s) can be easily
 plotted if you have BandWagon installed:
 
 .. code:: python
     axes = problem.plot_digestions(
-        digestions,
+        selected_digestions,
         patterns_props={'label_fontdict': {'rotation': 35}}
     )
     axes[0].figure.savefig("digestion_patterns.png", bbox_inches="tight")

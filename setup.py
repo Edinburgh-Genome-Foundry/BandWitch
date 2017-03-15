@@ -8,8 +8,9 @@ exec(open('bandwitch/version.py').read()) # loads __version__
 setup(name='bandwitch',
       version=__version__,
       author='Zulko',
-    description='',
+    description='Enzyme selection for DNA verification and identification',
     long_description=open('README.rst').read(),
-    license='see LICENSE.txt',
-    keywords="",
-    packages= find_packages(exclude='docs'))
+    license='MIT',
+    keywords="Restriction enzyme synthetic biology DNA band patterns",
+    packages= find_packages(exclude='docs'),
+    install_requires=('tqdm', 'biopython', 'scipy'))
