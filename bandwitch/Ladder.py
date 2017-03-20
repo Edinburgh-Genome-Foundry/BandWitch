@@ -15,7 +15,7 @@ class Ladder:
       A dictionnary of the form {dna_size: migration distance}
     """
 
-    def __init__(self, bands):
+    def __init__(self, bands, infos=None):
         self.bands = bands
         self.dna_sizes, self.migration_distances = (
             np.array(e)
@@ -24,6 +24,7 @@ class Ladder:
         self._dna_size_to_migration_interpolator = CubicSpline(
             self.dna_sizes, self.migration_distances, bc_type='natural'
         )
+        self.infos = infos
 
     def dna_size_to_migration(self, dna_sizes):
         """Return the migration distances for the given dna sizes"""
@@ -49,4 +50,41 @@ LADDER_100_to_4k = Ladder(bands={
     2000: 90,
     3000: 73,
     4000: 65
-})
+}, infos='Some typical ladder.')
+
+LADDER_35_to_5k = Ladder(bands={
+    3000: 407,
+    2000: 528,
+    1500: 607,
+    1200: 666,
+    1000: 733,
+    900: 778,
+    800: 848,
+    700: 929,
+    600: 1081,
+    500: 1244,
+    400: 1488,
+    300: 1734,
+    200: 2034,
+    100: 2378,
+    35: 2581
+}, infos="AATI Fragment analyzer ladder from calibration file.")
+
+LADDER_75_to_15k = Ladder(bands={
+    15000: 28,
+    10000: 46,
+    8000: 55,
+    6000: 69,
+    5000: 75,
+    4000: 86,
+    3500: 91,
+    3000: 97,
+    2500: 104,
+    2000: 111,
+    1500: 124,
+    1000: 158,
+    750: 189,
+    500: 229,
+    200: 276,
+    75:	310
+}, infos="AATI Fragment analyzer ladder, values determined from image")
