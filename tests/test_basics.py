@@ -7,16 +7,22 @@ from collections import OrderedDict
 from bandwitch import (SeparatingDigestionsProblem, IdealDigestionsProblem,
                        LADDER_100_to_4k)
 from Bio import SeqIO, Restriction
+import pytest
 
-data_path = os.path.join('tests', 'test_data')
-sequences = OrderedDict([
-    (fname, str(SeqIO.read(os.path.join(data_path, fname), 'genbank').seq))
-    for fname in sorted(os.listdir(data_path))
-])
 
-def test_separating_digestions(tmpdir):
-    enzymes = sorted([str(enzyme) for enzyme in Restriction.CommOnly
-               if (enzyme.size == 6) and (len(enzyme.supplier_list()) >= 3)])
+@pytest.fixture
+def sequences():
+    data_path = os.path.join('tests', 'test_data')
+    return OrderedDict([
+        (fname, str(SeqIO.read(os.path.join(data_path, fname), 'genbank').seq))
+        for fname in sorted(os.listdir(data_path))
+    ])
+
+def test_separating_digestions(tmpdir, sequences):
+    enzymes = sorted([
+        str(enzyme) for enzyme in Restriction.CommOnly
+        if (enzyme.size == 6) and (len(enzyme.supplier_list()) >= 3)
+    ])
     problem = SeparatingDigestionsProblem(sequences, enzymes, linear=False,
                                           ladder=LADDER_100_to_4k,
                                           max_enzymes_per_digestion=2,
@@ -36,7 +42,7 @@ def test_separating_digestions(tmpdir):
     ax.figure.savefig(os.path.join(str(tmpdir), "distances.png"))
 
 
-def test_ideal_digestions():
+def test_ideal_digestions(sequences):
 
     class MyIdealDigestionsProblem(IdealDigestionsProblem):
         def migration_pattern_is_ideal(self, migration):
