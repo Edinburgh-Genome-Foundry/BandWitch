@@ -1,4 +1,4 @@
-from bandwitch import IdealDigestionsProblem, LADDER_100_to_4k
+from bandwitch import IdealDigestionsProblem, LADDERS
 import os
 from Bio import SeqIO
 from collections import OrderedDict
@@ -27,7 +27,7 @@ sequences = OrderedDict([
 # DEFINE AND SOLVE THE PROBLEM
 
 problem = MyIdealDigestionsProblem(sequences, enzymes, linear=False,
-                                  ladder=LADDER_100_to_4k,
+                                  ladder=LADDERS['100_to_4k'],
                                   max_enzymes_per_digestion=2)
 selected_digestions = problem.select_digestions()
 

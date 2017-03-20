@@ -37,54 +37,56 @@ class Ladder:
             for band in (self.dna_sizes.max(), self.dna_sizes.min())
         ]
 
-LADDER_100_to_4k = Ladder(bands={
-    100: 205,
-    200: 186,
-    300: 171,
-    400: 158,
-    500: 149,
-    650: 139,
-    850: 128,
-    1000: 121,
-    1650: 100,
-    2000: 90,
-    3000: 73,
-    4000: 65
-}, infos='Some typical ladder.')
+LADDERS = {
+    '100_to_4k': Ladder(bands={
+        100: 205,
+        200: 186,
+        300: 171,
+        400: 158,
+        500: 149,
+        650: 139,
+        850: 128,
+        1000: 121,
+        1650: 100,
+        2000: 90,
+        3000: 73,
+        4000: 65
+    }, infos='Some typical ladder.'),
 
-LADDER_35_to_5k = Ladder(bands={
-    3000: 407,
-    2000: 528,
-    1500: 607,
-    1200: 666,
-    1000: 733,
-    900: 778,
-    800: 848,
-    700: 929,
-    600: 1081,
-    500: 1244,
-    400: 1488,
-    300: 1734,
-    200: 2034,
-    100: 2378,
-    35: 2581
-}, infos="AATI Fragment analyzer ladder from calibration file.")
+    '35_to_5k': Ladder(bands={
+        3000: 407,
+        2000: 528,
+        1500: 607,
+        1200: 666,
+        1000: 733,
+        900: 778,
+        800: 848,
+        700: 929,
+        600: 1081,
+        500: 1244,
+        400: 1488,
+        300: 1734,
+        200: 2034,
+        100: 2378,
+        35: 2581
+    }, infos="AATI Fragment analyzer ladder from calibration file."),
 
-LADDER_75_to_15k = Ladder(bands={
-    15000: 28,
-    10000: 46,
-    8000: 55,
-    6000: 69,
-    5000: 75,
-    4000: 86,
-    3500: 91,
-    3000: 97,
-    2500: 104,
-    2000: 111,
-    1500: 124,
-    1000: 158,
-    750: 189,
-    500: 229,
-    200: 276,
-    75:	310
-}, infos="AATI Fragment analyzer ladder, values determined from image")
+    '75_to_15k': Ladder(bands={
+        15000: 28,
+        10000: 46,
+        8000: 55,
+        6000: 69,
+        5000: 75,
+        4000: 86,
+        3500: 91,
+        3000: 97,
+        2500: 104,
+        2000: 111,
+        1500: 124,
+        1000: 158,
+        750: 189,
+        500: 229,
+        200: 276,
+        75:	310
+    }, infos="AATI Fragment analyzer ladder, values determined from image")
+}

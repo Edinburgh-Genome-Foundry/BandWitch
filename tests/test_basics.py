@@ -5,7 +5,7 @@ Basic tests to check that the core functionalities are at least running.
 import os
 from collections import OrderedDict
 from bandwitch import (SeparatingDigestionsProblem, IdealDigestionsProblem,
-                       LADDER_100_to_4k)
+                       LADDERS)
 from Bio import SeqIO, Restriction
 import pytest
 
@@ -24,7 +24,7 @@ def test_separating_digestions(tmpdir, sequences):
         if (enzyme.size == 6) and (len(enzyme.supplier_list()) >= 3)
     ])
     problem = SeparatingDigestionsProblem(sequences, enzymes, linear=False,
-                                          ladder=LADDER_100_to_4k,
+                                          ladder=LADDERS['100_to_4k'],
                                           max_enzymes_per_digestion=2,
                                           relative_error=0.05)
     selected_digestions = problem.select_digestions()
@@ -61,7 +61,7 @@ def test_ideal_digestions(sequences):
     # DEFINE AND SOLVE THE PROBLEM
 
     problem = MyIdealDigestionsProblem(sequences, enzymes, linear=False,
-                                       ladder=LADDER_100_to_4k,
+                                       ladder=LADDERS['100_to_4k'],
                                        max_enzymes_per_digestion=2)
     selected_digestions = problem.select_digestions()
     assert selected_digestions == [('EcoRI', 'SmaI')]
