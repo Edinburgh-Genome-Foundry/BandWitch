@@ -247,7 +247,7 @@ def band_patterns_look_similar(bands1, bands2, ladder, relative_tolerance=0.1,
 
     m1, m2 = (ladder.dna_size_to_migration(np.array(b))
               for b in (bands1, bands2))
-    mini, maxi = mini, maxi = ladder.migration_distance_span
+    mini, maxi = ladder.migration_distances_span
     return max_min_distance(m1, m2) < relative_tolerance * (maxi - mini)
 
 

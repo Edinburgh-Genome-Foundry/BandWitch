@@ -194,7 +194,7 @@ class SeparatingDigestionsProblem(DigestionProblem):
             for digestion in self.digestions
         }
 
-    def patterns_difference_score(self, seq1, seq2, digestion):
+    def max_patterns_difference(self, seq1, seq2, digestion):
         zone = (
             self.migration_min + 0.5 * self.detectable_migration_difference,
             self.migration_max - 0.5 * self.detectable_migration_difference
@@ -203,14 +203,15 @@ class SeparatingDigestionsProblem(DigestionProblem):
             self.sequences_digestions[seq1][digestion]['migration'],
             self.sequences_digestions[seq2][digestion]['migration'],
             zone=zone)
-        return 1.0 * distance / self.detectable_migration_difference
+        return 1.0 * distance
 
     def compute_separation_coverage(self, digestion):
         """Return all pairs of construct that are well separated
            by this digestion."""
         return [
             (seq1, seq2) for seq1, seq2 in self.full_set
-            if self.patterns_difference_score(seq1, seq2, digestion) >= 1.0
+            if (self.max_patterns_difference(seq1, seq2, digestion) >=
+                self.detectable_migration_difference)
         ]
 
     def identify_construct(self, digestions_bands):
@@ -249,34 +250,43 @@ class SeparatingDigestionsProblem(DigestionProblem):
         grid = np.zeros(2*(len(self.sequences),))
         for i, seq1 in enumerate(self.sequences):
             for j, seq2 in enumerate(self.sequences):
-                if i == j:
-                    grid[i, i] = np.nan
+                if i >= j:
+                    grid[i, j] = np.nan
                 else:
                     scores = [
-                        self.patterns_difference_score(seq1, seq2, digestion)
+                        self.max_patterns_difference(seq1, seq2, digestion) /
+                        (self.migration_max - self.migration_min)
                         for digestion in digestions
                     ]
-                    grid[i, j] = grid[j, i] = max(scores)
+                    grid[i, j] = max(scores)
         if ax is None:
             _, ax = plt.subplots(1, figsize=2*(0.8*len(grid),))
-        ax.imshow(grid, interpolation='nearest', cmap='autumn', vmin=1.0)
+        ax.imshow(grid[:, ::-1], interpolation='nearest', cmap='OrRd_r',
+                  vmin=0, vmax=0.5)
         for i in range(len(grid)):
             for j in range(len(grid)):
-                if i != j:
+                if i > j:
                     ax.text(
-                        i, j, "%0.1f" % grid[i, j],
+                        len(self.sequences) - i - 1, j,
+                        "%d%%" % (100 * grid[j, i]),
                         fontdict=dict(color='black', weight='bold', size=14),
                         horizontalalignment='center',
                         verticalalignment='center'
                     )
 
         ax.set_yticks(range(len(grid)))
-        ax.set_yticklabels(self.sequences, size=14,
+        ax.set_yticklabels(list(self.sequences)[:-1], size=14,
                            fontdict={'weight': 'bold'})
         ax.set_xticks(range(len(grid)))
         ax.xaxis.set_ticks_position('top')
-        ax.set_xticklabels([" " + s for s in self.sequences], rotation=90,
-                           size=14, fontdict={'weight': 'bold'})
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        ax.set_xticklabels([" " + s for s in list(self.sequences)[1:][::-1]],
+                           rotation=90, size=14, fontdict={'weight': 'bold'})
+        ax.set_xlim(-0.5, len(self.sequences) - 1.5)
+        ax.set_ylim(len(self.sequences) - 1.5, -0.5)
         return ax
 
 

@@ -106,6 +106,7 @@ in two different patterns are different if their migration distance is more than
 plotted if you have BandWagon installed:
 
 .. code:: python
+
     axes = problem.plot_digestions(
         selected_digestions,
         patterns_props={'label_fontdict': {'rotation': 35}}

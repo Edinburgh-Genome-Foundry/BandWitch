@@ -54,6 +54,7 @@ LADDERS = {
     }, infos='Some typical ladder.'),
 
     '35_to_5k': Ladder(bands={
+        5000: 234,
         3000: 407,
         2000: 528,
         1500: 607,
