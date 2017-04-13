@@ -1,5 +1,5 @@
 import itertools
-from copy import copy
+from collections import OrderedDict
 
 import numpy as np
 
@@ -214,40 +214,181 @@ class SeparatingDigestionsProblem(DigestionProblem):
                 self.detectable_migration_difference)
         ]
 
-    def identify_construct(self, digestions_bands):
-        """Identify a construct from its band profile.
+
+
+
+    @staticmethod
+    def identify_constructs(observed_patterns, possible_constructs, ladder,
+                            linear=False):
+        """Give difference scores between observed patterns.
+
+        The scores are from 0 to 1, 0 mening perfect match
 
         Parameters
         ----------
 
-        digestion_bands
-           {(enz1, enz2): [b1, b2, b3], (enz3,): [b4, b5, b6]}
+        observed_patterns
+          Of the form ``{ clone_name : { digestion: [band_sizes] } }`` with all
+          the observed digestion patterns for all clones.
 
         possible_constructs
-          {name: "ATGC..."}
+          A dict of the form ``{ construct_name : construct_sequence_str}``
+          with all candidate constructs for the observed patterns.
+
+        ladder
+          A BandWitch ladder.
 
         linear
-          Whether the constructs tested are linear
+          True for linear construct, else False for circular constructs.
+
+        """
+        lmini, lmaxi = ladder.migration_distances_span
+
+        def normalized_pattern(bands):
+            pattern = ladder.dna_size_to_migration(bands)
+            return (1.0 * pattern - lmini) / (lmaxi - lmini)
+        results = OrderedDict()
+        precomputed_patterns = {
+            construct: {}
+            for construct in possible_constructs
+        }
+        for name, bands_dict in observed_patterns.items():
+            results[name] = OrderedDict()
+            # cst = construct
+            for cst_name, cst_sequence in possible_constructs.items():
+                score = -np.inf
+                for digestion, bands in bands_dict.items():
+                    pattern = normalized_pattern(bands)
+                    if len(bands) == 0:
+                        score = 1
+                        continue
+                    if digestion not in precomputed_patterns[cst_name]:
+                        bb = predict_digestion_bands(cst_sequence,
+                                                     digestion, linear=linear)
+                        b_pattern = normalized_pattern(bb)
+                        precomputed_patterns[cst_name][digestion] = b_pattern
+                    exp_pattern = precomputed_patterns[cst_name][digestion]
+                    score = max(score, max_min_distance(pattern, exp_pattern,
+                                                        zone=[0.1, 0.9]))
+                results[name][cst_name] = score
+        return results
+
+    @staticmethod
+    def score_to_color(score, maxi=0.1):
+        """Transform a similarity score to a green/red color
+
+        Parameters
+        ----------
+
+        score
+          Value between 0 (perfect similarity, green) and 1 (red)
+
+        maxi
+          Value of the score above which everything appears completely red.
+          Below this value the color goes progressively from red to green in 0.
+        """
+        return (max(0, min(1, score / maxi)),
+                min(1, max(0, 1 - score / maxi)), 0, .5)
+
+    @classmethod
+    def plot_constructs_identification(cls, identification_results,
+                                       observed_patterns,
+                                       possible_constructs,
+                                       ladder,
+                                       linear=False, axes=None):
+        """Plot the result of the ``.identify_construct`` method.
+
+        Parameters
+        ----------
+
+        identification_results
+          A dict ``{clone_name: {construct_name: score}}`` such as returned by
+          ``SeparatingDigestionsProblem.identification_results(...)``
+
+        observed_patterns
+          Of the form ``{ clone_name : { digestion: [band_sizes] } }`` with all
+          the observed digestion patterns for all clones. Same as the one
+          provided to ``.identify_construct``.
+
+        possible_constructs
+          A dict of the form ``{ construct_name : construct_sequence_str}``
+          with all candidate constructs for the observed patterns.
+          Same as the one provided to ``.identify_construct``.
+
+        ladder
+          A BandWitch ladder.
+
+        linear
+          True for linear construct, else False for circular constructs.
+
+        axes
+          Matplotlib axes on which to plot. If non provided, new axes are
+          created and returned.
         """
 
-        possible_sequences = copy(self.sequences)
-        for digestion, bands in digestions_bands.items():
-            migration = self.bands_to_migration_pattern(bands)
-            for name, sequence in list(possible_sequences.items()):
-                bands = predict_digestion_bands(sequence, digestion,
-                                                linear=self.linear)
-                migration2 = self.bands_to_migration_pattern(bands)
+        nlines = len([
+            digestion
+            for (name, d) in observed_patterns.items()
+            for digestion in d
+        ])
+        nconstructs = len(possible_constructs)
+        fig, axes = plt.subplots(nlines, 1, sharex=True,
+                                 figsize=(nconstructs, 2 * nlines))
+        axes_iter = (ax for ax in axes)
+        mini, maxi = min(ladder.dna_sizes), max(ladder.dna_sizes)
 
-                if not self.migration_patterns_look_similar(migration,
-                                                            migration2):
-                    possible_sequences.pop(name)
-        return sorted(possible_sequences.keys())
+        for (name, scores) in identification_results.items():
+            for digestion, observed_pattern in observed_patterns[name].items():
+                ax = next(axes_iter)
+                patterns_sets = bandwagon.BandsPatternsSet(
+                    patterns=[
+                        bandwagon.BandsPattern(
+                            observed_pattern, ladder=ladder,
+                            background_color='#c0d5f7',
+                            label=("Observed" if ax == axes[0] else None))
+                    ] + [
+                        bandwagon.BandsPattern(
+                            [
+                                bandwagon.Band(
+                                    b, ladder=ladder,
+                                    band_color='#000000' if mini < b < maxi
+                                               else '#00000044'
+                                )
+                                for b in predict_digestion_bands(
+                                    possible_constructs[construct_name],
+                                    digestion, linear=linear
+                                )
+                            ],
+                            ladder=ladder,
+                            label=construct_name if ax == axes[0] else None,
+                            background_color=cls.color_function(score))
+                        for construct_name, score in scores.items()
+
+                    ],
+                    label="\n".join([name, " + ".join(digestion)]),
+                    ladder=ladder
+                )
+                patterns_sets.plot(ax)
+        return axes
 
     def plot_distances_map(self, digestions, ax=None):
+        """Make a plot of how well the digestions separate each construct pair
+
+        Parameters
+        ----------
+
+        digestions
+          A list of digestions, eg ``[('EcoRV'), ('XbaI', 'MfeI')]``.
+
+        ax
+          A matplotlib ax on which to plot, if none is provided, one is created
+          and returned at the end.
+
+        """
 
         if not PLOTS_AVAILABLE:
             raise ImportError("Plots require Matplotlib/Bandwagon installed.")
-        grid = np.zeros(2*(len(self.sequences),))
+        grid = np.zeros(2 * (len(self.sequences),))
         for i, seq1 in enumerate(self.sequences):
             for j, seq2 in enumerate(self.sequences):
                 if i >= j:
@@ -260,7 +401,7 @@ class SeparatingDigestionsProblem(DigestionProblem):
                     ]
                     grid[i, j] = max(scores)
         if ax is None:
-            _, ax = plt.subplots(1, figsize=2*(0.8*len(grid),))
+            _, ax = plt.subplots(1, figsize=2 * (0.8 * len(grid),))
         ax.imshow(grid[:, ::-1], interpolation='nearest', cmap='OrRd_r',
                   vmin=0, vmax=0.5)
         for i in range(len(grid)):
@@ -290,13 +431,13 @@ class SeparatingDigestionsProblem(DigestionProblem):
         return ax
 
 
-
-
 class IdealDigestionsProblem(DigestionProblem):
     min_bands = 3
     max_bands = 8
 
     def migration_pattern_is_ideal(self, migration):
+        """Return True iff the pattern has the right band number and they are
+           well separated."""
         if not (self.min_bands <= len(migration) <= self.max_bands):
             return False
         min_diff = np.diff(sorted(migration)).min()
@@ -316,6 +457,7 @@ class IdealDigestionsProblem(DigestionProblem):
         }
 
     def select_digestion_for_each_sequence(self, digestions):
+        """Select the best digestion for each sequence."""
         for digestion in sorted(digestions, key=lambda d: len(d)):
             for sequence_name in self.digestions_coverage[digestion]:
                 if sequence_name not in self.sequences_digestions:
