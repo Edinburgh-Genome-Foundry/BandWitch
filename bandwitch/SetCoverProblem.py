@@ -84,60 +84,62 @@ def maximizing_bisection(f, x_min, x_max, tolerance=0.001, score=None):
 
     return x_min, f_xmin, score_xmin
 
-def greedy_minimal_set_cover(coverages, elements=None, heuristic=None):
-    """Return a (hopefully) 'minimal' full-covering set, with a greedy method.
+def minimal_cover(elements_set, subsets, max_subsets=None, heuristic='default',
+                  selected=(), depth=0):
+    if len(elements_set) == 0:
+        return []
+    if max_subsets == 0:
+        return None
 
-    The greedy method consists in selecting first the element with the biggest
-    coverage, then the element with the biggest coverage among yet-uncovered
-    targets, etc. until all targets are covered.
-
-    Parameters
-    ----------
-
-    coverages
-      A dictionary ``{set_name: [covered elements]}``
-
-    elements
-      The full set of elements to be covered. Providing this elements enables
-      to quickly check that there is a solution to the problem, i.e. that
-      the union of all coverages from all elements is the full set.
-
-    heuristic
-      Function ``(element) => score`` to select the element with the highest
-      score at each iteration. By default, the heuristic is the length of the
-      element's coverage of yet-uncovered targets.
-    """
-    current_selection = []
-    if heuristic is None:
-        def heuristic(element, coverage, current_selection):
-            return len(coverage[element])
-
-    coverages = {k: set(v) for k, v in coverages.items()}
-    if elements is not None:
-        full_coverage_set = set().union(*coverages.values())
-        if full_coverage_set != elements:
-            #print ("AAAAAAH", elements, len(full_coverage_set))
+    if depth == 0:
+        full_set = set().union(*[subset for name, subset in subsets])
+        if full_set != elements_set:
             return None
 
-    def key(e):
-        """Function with regard to which the next best element is selected."""
-        return heuristic(e, coverages, current_selection)
+    subsets = [(n, s) for (n, s) in subsets if len(s)]
 
-    while len(coverages) > 0:
-        selected = max(coverages, key=key)
-        covered = coverages.pop(selected)
-        if len(covered) == 0:
-            break
-        current_selection.append(selected)
-        for element, coverage in coverages.items():
-            coverages[element] = coverage.difference(covered)
-    return current_selection
+    def sorting_heuristic(named_subset):
+        name, subset = named_subset
+        if (heuristic == 'default'):
+            return len(subset)
+        else:
+            return heuristic(named_subset, selected)
+
+    ordered_subsets = sorted(subsets, key=sorting_heuristic)
+
+    while len(ordered_subsets):
+        if max_subsets is not None:
+            critical_subset_length = len(elements_set) / max_subsets
+            max_len = max(len(s) for name, s in ordered_subsets)
+            if max_len < critical_subset_length:
+                return None
+        name, subset = ordered_subsets.pop()
+        new_elements_set = elements_set.difference(subset)
+        new_subsets = [
+            (name, sub.difference(subset))
+            for (name, sub) in ordered_subsets
+        ]
+        new_max_subsets = None if (max_subsets is None) else max_subsets - 1
+        result = minimal_cover(new_elements_set, new_subsets,
+                               heuristic=heuristic,
+                               selected=list(selected) + [subset],
+                               max_subsets=new_max_subsets,
+                               depth=depth + 1)
+        if result is not None:
+            return result + [name]
+        ordered_subsets = [
+            subset
+            for (subset, (new_name, new_subset)) in zip(ordered_subsets,
+                                                        new_subsets)
+            if len(new_subset) != 0
+        ]
+    return None
+
 
 
 class SetCoverProblem:
 
     defaults = {
-        'covering_algorithm': greedy_minimal_set_cover,
         'heuristic': lambda el, coverages, selection: len(coverages[el])
     }
 
@@ -151,8 +153,9 @@ class SetCoverProblem:
         self.compute_scores()
 
     @staticmethod
-    def default_heuristic(element, coverages, current_selection):
-        return len(coverages[element])
+    def default_heuristic(named_subset, current_selection):
+        name, subset = named_subset
+        return len(subset)
 
     def parameter_element_score(self, parameter, element):
         pass
@@ -188,21 +191,33 @@ class SetCoverProblem:
         }
 
     def select_elements(self, threshold=None, max_elements=None,
-                        covering_algorithm ='default', heuristic='default',
-                        threshold_tolerance=0.001):
+                        covering_algorithm ='greedy', heuristic='default',
+                        threshold_tolerance=0.001, bisection=True):
         if heuristic == 'default':
-            heuristic = self.defaults['heuristic']
+            heuristic = self.default_heuristic
         if covering_algorithm == 'default':
             covering_algorithm = self.defaults['covering_algorithm']
         if threshold is None:
             threshold = self.bottleneck['score']
 
         if max_elements is not None:
+            if not bisection:
+                return threshold, minimal_cover(
+                    elements_set = self.elements,
+                    subsets = self.compute_coverages(threshold).items(),
+                    max_subsets=max_elements,
+                    heuristic=heuristic
+                )
+
+
             def select(thr):
                 _, selection = self.select_elements(
                     threshold=thr,
                     covering_algorithm=covering_algorithm,
-                    heuristic=heuristic
+                    heuristic=heuristic,
+                    max_elements=None if covering_algorithm == 'greedy'
+                                 else max_elements,
+                    bisection=False
                 )
                 return selection
 
@@ -216,8 +231,60 @@ class SetCoverProblem:
                tolerance=threshold_tolerance)
             return threshold, selection
         else:
-            return threshold, covering_algorithm(
-                coverages=self.compute_coverages(threshold),
-                elements=self.elements,
-                heuristic=heuristic
+            return threshold, minimal_cover(
+                elements_set=self.elements,
+                subsets=self.compute_coverages(threshold).items(),
+                max_subsets=None if covering_algorithm=='greedy'
+                            else max_elements,
+                heuristic=heuristic,
             )
+
+#
+# def greedy_minimal_set_cover(coverages, elements=None, heuristic=None):
+#     """Return a (hopefully) 'minimal' full-covering set, with a greedy method.
+#
+#     The greedy method consists in selecting first the element with the biggest
+#     coverage, then the element with the biggest coverage among yet-uncovered
+#     targets, etc. until all targets are covered.
+#
+#     Parameters
+#     ----------
+#
+#     coverages
+#       A dictionary ``{set_name: [covered elements]}``
+#
+#     elements
+#       The full set of elements to be covered. Providing this elements enables
+#       to quickly check that there is a solution to the problem, i.e. that
+#       the union of all coverages from all elements is the full set.
+#
+#     heuristic
+#       Function ``(element) => score`` to select the element with the highest
+#       score at each iteration. By default, the heuristic is the length of the
+#       element's coverage of yet-uncovered targets.
+#     """
+#     current_selection = []
+#     if heuristic is None:
+#         def heuristic(element, coverage, current_selection):
+#             return len(coverage[element])
+#
+#     coverages = {k: set(v) for k, v in coverages.items()}
+#     if elements is not None:
+#         full_coverage_set = set().union(*coverages.values())
+#         if full_coverage_set != elements:
+#             #print ("AAAAAAH", elements, len(full_coverage_set))
+#             return None
+#
+#     def key(e):
+#         """Function with regard to which the next best element is selected."""
+#         return heuristic(e, coverages, current_selection)
+#
+#     while len(coverages) > 0:
+#         selected = max(coverages, key=key)
+#         covered = coverages.pop(selected)
+#         if len(covered) == 0:
+#             break
+#         current_selection.append(selected)
+#         for element, coverage in coverages.items():
+#             coverages[element] = coverage.difference(covered)
+#     return current_selection

@@ -95,6 +95,11 @@ class DigestionProblem(SetCoverProblem):
         SetCoverProblem.__init__(self, elements=elements, parameters=parameters,
                                  progress_logger=progress_logger)
 
+    @staticmethod
+    def default_heuristic(named_subset, selected):
+        enzymes, subset = named_subset
+        return len(subset) - 0.5 * len(enzymes)
+
     def bands_to_migration_pattern(self, bands_sizes):
         """Return the distance migrations from several bands sizes"""
         return self.ladder.dna_size_to_migration(np.array(bands_sizes))
