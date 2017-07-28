@@ -26,6 +26,12 @@ You can install DnaCauldron through PIP
 
     sudo pip install bandwitch
 
+On Ubuntu at least, you may need to install libblas first:
+
+.. code::
+
+    sudo apt-get install libblas-dev liblapack-dev
+
 Alternatively, you can unzip the sources in a folder and type
 
 .. code:: shell

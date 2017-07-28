@@ -96,7 +96,7 @@ class CloneValidation:
     def color(self, discrepancy='max'):
         if discrepancy == "max":
             discrepancy = self.max_discrepancy
-        factor = min(1.0, discrepancy ** 2)
+        factor = min(1.0, discrepancy ** 10)
         return ((2+factor)/3.0, (3-factor)/3.0, 2/3.0)
 
     def to_bandwagon_bandpattern(self, digestion, label='auto',

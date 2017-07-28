@@ -1,6 +1,7 @@
 """Collection of useful methods and solvers for BandWitch."""
 
 from Bio import Restriction
+from .enzymes_infos import enzymes_infos
 from Bio.Seq import Seq
 from Bio import SeqIO
 import numpy as np
@@ -8,6 +9,27 @@ import numpy as np
 class NoSolutionError(Exception):
     """Specific error for the case where no enzyme set can cut it. Ah ah."""
     pass
+
+def list_common_enzymes(site_length=(6,), opt_temp=(37,), min_suppliers=1,
+                        uniquify_sites=True,
+                        avoid_methylations=('Dam', 'Dcm')):
+    result = [
+    str(e)
+        for e in Restriction.AllEnzymes
+        if str(e) in enzymes_infos
+        and (len(e.site) in site_length)
+        and ((opt_temp is None) or (e.opt_temp == 37))
+        and enzymes_infos[str(e)]['suppliers'] >= min_suppliers
+        and not any([enzymes_infos[str(e)][meth]
+                     for meth in avoid_methylations])
+    ]
+    if uniquify_sites:
+        sites_dict = {}
+        for e in result:
+            enzyme = Restriction.__dict__[e]
+            sites_dict[enzyme.site] = e
+        result = list(sites_dict.values())
+    return sorted(result)
 
 def load_genbank(filename, linear=True, name="unnamed"):
     """Load a genbank from a file."""

@@ -2,12 +2,10 @@ import itertools
 from collections import OrderedDict
 
 import numpy as np
-
 from .tools import (max_min_distance, updated_dict,
                     digestions_list_to_string)
 from .SetCoverProblem import SetCoverProblem
 from .bands_predictions import predict_sequence_digestions
-from .methylation import find_enzymes_with_no_methylation
 
 try:
     import bandwagon
@@ -22,10 +20,10 @@ class DigestionProblem(SetCoverProblem):
     """General class for solving digestions problems.
 
     By digestion problem we mean *enzymatic* digestion problems. For other
-    kinds of digestion problems, consult your proctologist.
+    kinds of digestion problems, see a proctologist.
 
-    Other digestion problems subclass this problem and implement a computation
-    of coverages which depends on the problem.
+    Other digestion problems subclass this problem for particular cases such
+    as construct validation and identification.
 
     Parameters
     ----------
@@ -53,14 +51,12 @@ class DigestionProblem(SetCoverProblem):
       proportion of the total migration span (difference between the migration
       of the ladder's smallest and largest bands).
 
-    methylation
-      Types of methylation to consider. Set to () for no such considerations
     """
 
-    def __init__(self, enzymes, ladder, sequences, linear=True,
+    def __init__(self, enzymes, ladder, sequences, linear=False,
                  max_enzymes_per_digestion=1,
                  relative_migration_precision=0.1,
-                 methylation=('dam', 'dcm'), progress_logger=None):
+                 progress_logger=None):
         self.sequences = sequences
         self.ladder = ladder
         self.linear = linear
@@ -72,13 +68,6 @@ class DigestionProblem(SetCoverProblem):
         self.migration_min, self.migration_max = mini, maxi
         self.migration_span = maxi - mini
 
-        if len(methylation) > 0:
-            enzymes = find_enzymes_with_no_methylation(
-                enzymes,
-                sequences=sequences.values(),
-                methylation=methylation,
-                linear=linear
-            )
         self.enzymes = enzymes
 
         self.sequences_digestions = {
@@ -194,14 +183,11 @@ class SeparatingDigestionsProblem(DigestionProblem):
       Variance of the bands measured during the migration, given as a
       proportion of the total migration span (difference between the migration
       of the ladder's smallest and largest bands).
-
-    methylation
-      Types of methylation to consider.
     """
 
     def __init__(self, enzymes, ladder, sequences=None, categories=None,
-                 linear=True, max_enzymes_per_digestion=1,
-                 min_discrepancy='auto', methylation=('dam', 'dcm'),
+                 linear=False, max_enzymes_per_digestion=1,
+                 min_discrepancy='auto',
                  relative_migration_precision=0.1):
 
         if categories is None:
@@ -219,9 +205,8 @@ class SeparatingDigestionsProblem(DigestionProblem):
 
         DigestionProblem.__init__(
             self, sequences=sequences, enzymes=enzymes, ladder=ladder,
-            linear=True, max_enzymes_per_digestion=max_enzymes_per_digestion,
-            relative_migration_precision=relative_migration_precision,
-            methylation=methylation)
+            linear=linear, max_enzymes_per_digestion=max_enzymes_per_digestion,
+            relative_migration_precision=relative_migration_precision)
 
     def compute_elements(self):
         category_pairs = itertools.combinations(self.categories.values(), 2)
@@ -235,15 +220,20 @@ class SeparatingDigestionsProblem(DigestionProblem):
     def parameter_element_score(self, digestion, sequences_pair):
         """See max_patterns_difference"""
         sequence1, sequence2 = sequences_pair
+        digestion1, digestion2 = [self.sequences_digestions[s][digestion]
+                                  for s in (sequence1, sequence2)]
+        if ((digestion1['same_as'] == digestion2['same_as'])
+            and digestion1['same_as'] in self.scores[sequences_pair]):
+            return self.scores[sequences_pair][digestion1['same_as']]
+        #     () and
+        # same_as = tuple(sorted(digestion1['same_as'], digestion2['same_as']))
+
         mini, maxi = self.migration_min, self.migration_max
-        span = self.migration_span
-        zone = (mini + self.relative_migration_precision * span / 2.0,
-                maxi - self.relative_migration_precision * span / 2.0)
-        distance = max_min_distance(
-            self.sequences_digestions[sequence1][digestion]['migration'],
-            self.sequences_digestions[sequence2][digestion]['migration'],
-            zone=zone)
-        return 1.0 * distance / span
+        margin = self.relative_migration_precision * self.migration_span / 2.0
+        distance = max_min_distance(digestion1['migration'],
+                                    digestion2['migration'],
+                                    zone=[mini + margin, maxi - margin])
+        return 1.0 * distance / self.migration_span
 
     @staticmethod
     def score_to_color(score, maxi=0.1):
@@ -321,22 +311,74 @@ class SeparatingDigestionsProblem(DigestionProblem):
         ax.set_ylim(len(self.sequences) - 1.5, -0.5)
         return ax
 
-
 class IdealDigestionsProblem(DigestionProblem):
+    """Problem: find ideal digestion(s) to validate constructs.
+
+
+
+    Other digestion problems subclass this problem and implement a computation
+    of coverages which depends on the problem.
+
+    Parameters
+    ----------
+
+    sequences
+      An (ordered) dictionary of the form {sequence_name: sequence} where the
+      sequence is an ATGC string
+
+    enzymes
+      List of the names of the enzymes to consider, e.g. ``['EcoRI', 'XbaI']``.
+
+    ladder
+      A Ladder object representing the ladder used for migrations.
+
+    linear
+      True for linear sequences, false for circular sequences
+
+    max_enzymes_per_digestion
+      Maximal number of enzymes that can go in a single digestion.
+      Experimentally the best is 1, but you can try 2, or 3 in desperate
+      situations. Not sure if more enzymes will work.
+
+    relative_migration_error
+      Variance of the bands measured during the migration, given as a
+      proportion of the total migration span (difference between the migration
+      of the ladder's smallest and largest bands).
+    """
+
+    def __init__(self, enzymes, ladder, sequences, min_bands=3, max_bands=7,
+                 border_tolerance=0.1, linear=False,
+                 max_enzymes_per_digestion=1,
+                 relative_migration_precision=0.1):
+
+        self.min_bands = min_bands
+        self.max_bands = max_bands
+        self.border_tolerance = border_tolerance
+
+        DigestionProblem.__init__(
+            self, sequences=sequences, enzymes=enzymes, ladder=ladder,
+            linear=linear, max_enzymes_per_digestion=max_enzymes_per_digestion,
+            relative_migration_precision=relative_migration_precision)
 
     def parameter_element_score(self, digestion, sequence):
         """Return True iff the pattern has the right band number and they are
            well separated."""
-        migration = self.sequences_digestions[sequence][digestion]['migration']
+        digestion = self.sequences_digestions[sequence][digestion]
+        if digestion['same_as'] in self.scores[sequence]:
+            return self.scores[sequence][digestion['same_as']]
+        migration = digestion['migration']
         return self.migration_score(migration)
 
-    def migration_score(self, migration):
-        if not 1 < len(migration) < 8:
+    def migration_score(self, band_migrations):
+        if not self.min_bands <= len(band_migrations) <= self.max_bands:
+
             return 0
-        score_n_bands = 0.5 / (1 + (len(migration) - 4)**2)
-        min_gap = np.diff(sorted(migration)).min()
-        score_separation = min_gap / self.migration_span
-        return score_n_bands + score_separation
+        t = self.border_tolerance
+        mini, maxi = (1+t) * self.migration_min, (1-t) * self.migration_max
+        if not (mini <= min(band_migrations) <= max(band_migrations) < maxi):
+            return 0
+        min_gap = np.diff(sorted(band_migrations)).min()
+        return 1.0 * min_gap / self.migration_span
 
     def compute_elements(self):
         return set(self.sequences.keys())
