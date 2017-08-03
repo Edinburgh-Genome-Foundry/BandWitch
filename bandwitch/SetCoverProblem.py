@@ -171,7 +171,7 @@ class SetCoverProblem:
         for i, element in enumerate(self.elements):
             self.progress_logger(element_index=i)
             for j, parameter in enumerate(self.parameters):
-                score = self.parameter_element_score(parameter, element)
+                score = self._parameter_element_score(parameter, element)
                 self.scores[element][parameter] = score
 
         for parameters_dict in self.scores.values():
@@ -256,7 +256,7 @@ class SetCoverProblem:
                 )
 
             def select(thr):
-                _, selection = self._select_elements(
+                _, selection = self._select_parameters(
                     threshold=thr,
                     covering_algorithm=covering_algorithm,
                     heuristic=heuristic,

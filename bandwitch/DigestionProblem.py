@@ -197,7 +197,7 @@ class DigestionProblem(SetCoverProblem):
           tolerance.
 
         """
-        return self._select_elements(
+        return self._select_parameters(
             threshold=minimal_score,
             covering_algorithm=search,
             max_set_size=max_digestions,
@@ -431,7 +431,7 @@ class IdealDigestionsProblem(DigestionProblem):
         migration = digestion['migration']
         return self.migration_score(migration)
 
-    def _migration_score(self, band_migrations):
+    def migration_score(self, band_migrations):
         """Score the well-numbering and well-separation of all bands.
 
         If some bands are too high or too low, or the number of bands is out
