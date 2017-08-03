@@ -1,5 +1,12 @@
 Enzymes methylation sensitivities
 ----------------------------------
+File ``enzyme_infos.csv`` contains enzyme data from the REBASE database,
+and file ``update_enzymes_list.py`` implements the web-scraping code used
+to create or update the list. You can (re)run it with
+
+```
+python update_enzymes_list.py
+```
 
 The rebase website says:
 

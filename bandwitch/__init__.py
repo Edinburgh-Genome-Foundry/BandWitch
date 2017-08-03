@@ -1,4 +1,4 @@
-""" bandwitch/__init__.py """
+"""Bandwitch, a Python library for computer-aided restriction digests."""
 
 # __all__ = []
 

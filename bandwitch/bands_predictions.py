@@ -1,14 +1,41 @@
+"""Module for digestion pattern prediction."""
+
 from Bio import Restriction
 from Bio.Seq import Seq
 from collections import OrderedDict
 
-def predict_digestion_bands(sequence, enzymes, linear=True):
-    """Return the band sizes [75, 2101, ...] resulting from
-    enzymatic digestion of the sequence by all enzymes at once.
+
+def _compute_bands_from_cuts(cuts, sequence_length, linear=True):
+    """Compute the size of the obtained bands from the position of cuts.
+
+    Returns a list of band sizes.
 
     Parameters
     ----------
+    cuts
+      Location of the different cuts on the plasmid.
 
+    sequence_length
+      Length of the DNA molecule
+
+    linear
+      True for a linear DNA molecule, False for a circular DNA molecule.
+
+    """
+    cuts = [0] + sorted(list(set(cuts))) + [sequence_length]
+    bands = [cut2 - cut1 for cut1, cut2 in zip(cuts, cuts[1:])]
+    if not linear and len(bands) > 1:
+        bands[0] += bands.pop()
+    return bands
+
+
+def predict_digestion_bands(sequence, enzymes, linear=True):
+    """Return the band sizes from digestion by all enzymes at once.
+
+    Returns a list of bands sizes sorted from smallest to largest
+
+    Parameters
+    ----------
     sequence
       Sequence to be digested. Either a string ("ATGC...") or
       a BioPython `Seq`
@@ -19,65 +46,24 @@ def predict_digestion_bands(sequence, enzymes, linear=True):
 
     linear
       True if the DNA fragment is linearized, False if it is circular
+
     """
     if not isinstance(sequence, Seq):
         sequence = Seq(sequence)
 
     batch = Restriction.RestrictionBatch(enzymes)
     cut_sites = batch.search(sequence, linear=linear)
+    bands = _compute_bands_from_cuts(cut_sites, len(sequence), linear=linear)
+    return sorted(bands)
 
-    # TODO: support methylation ?
-    # if len(methylation) > 0:
-    #     inds = get_methylated_indices(sequence, methylation=methylation,
-    #                                   linear=linear)
-
-    cut_sites = [0] + sorted(sum(cut_sites.values(), [])) + [len(sequence)]
-    bands_sizes = [end - start for (start, end)
-                   in zip(cut_sites, cut_sites[1:])]
-    if not linear and len(bands_sizes) > 1:
-        bands_sizes[0] += bands_sizes.pop()
-    return sorted(bands_sizes)
-
-def _compute_bands_from_cuts(cuts, sequence_length, linear=True):
-    """Compute the size of the obtained bands from the position of cuts.
-
-
-    Parameters
-    ----------
-
-    cuts
-      Location of the different cuts on the plasmid.
-
-    sequence_length
-      Length of the DNA molecule
-
-    linear
-      True for a linear DNA molecule, False for a circular DNA molecule.
-    """
-    cuts = [0] + sorted(list(set(cuts))) + [sequence_length]
-    bands = [cut2 - cut1 for cut1, cut2 in zip(cuts, cuts[1:])]
-    if not linear and len(bands) > 1:
-        bands[0] += bands.pop()
-    return bands
-
-
-def _merge_digestions(digestion1, digestion2, sequence_length, linear):
-    """Merges and sorts the cuts from two different digestions"""
-    all_cuts = sorted(list(set(digestion1["cuts"] + digestion2["cuts"])))
-    return {
-        "cuts": all_cuts,
-        "bands": _compute_bands_from_cuts(
-            cuts=all_cuts,
-            sequence_length=sequence_length,
-            linear=linear
-        )
-    }
 
 def predict_sequence_digestions(sequence, enzymes, linear=True,
                                 max_enzymes_per_digestion=1,
                                 bands_to_migration=None):
-    """Return a dict giving the bands sizes pattern for all possible digestions
-    (i.e. all subsets of the provided enzymes).
+    """Return a dict giving bands sizes pattern for all possible digestions.
+
+    The digestions, double-digestions, etc. are listed and for each the
+    sequence band sizes are computed.
 
     The result if of the form ``{digestion: {'cuts': [], 'bands': []}}``
     Where ``digestion`` is a tuple of enzyme names e.g. ``('EcoRI', 'XbaI')``,
@@ -85,7 +71,6 @@ def predict_sequence_digestions(sequence, enzymes, linear=True,
 
     Parameters
     ----------
-
     sequence
       The sequence to be digested
 
@@ -99,12 +84,25 @@ def predict_sequence_digestions(sequence, enzymes, linear=True,
       Function associating a migration distance to a band size. If provided,
       each digestion will have a ``'migration'`` field (list of migration
       distances) in addition to 'cuts' and 'bands'.
+
     """
     restriction_batch = Restriction.RestrictionBatch(enzymes)
     cuts_dict = restriction_batch.search(Seq(sequence))
 
     def get_cuts(enzyme_name):
         return {"cuts": cuts_dict[Restriction.__dict__[enzyme_name]]}
+
+    def _merge_digestions(digestion1, digestion2, sequence_length, linear):
+        """Merge and sort the cuts from two different digestions."""
+        all_cuts = sorted(list(set(digestion1["cuts"] + digestion2["cuts"])))
+        return {
+            "cuts": all_cuts,
+            "bands": _compute_bands_from_cuts(
+                cuts=all_cuts,
+                sequence_length=sequence_length,
+                linear=linear
+            )
+        }
     empty_digestion = ((), {"cuts": [], "bands": [len(sequence)]})
     digestions_dict = OrderedDict([empty_digestion])
     for n_enzymes in range(max_enzymes_per_digestion):
@@ -120,12 +118,11 @@ def predict_sequence_digestions(sequence, enzymes, linear=True,
                     no_enzs_band = len(digestions_dict[enzs]['cuts']) == 0
                     one_no_bands = no_enzs_band or no_enzyme_band
                     if ((enzyme,) in digestions_dict) and one_no_bands:
-
                         if no_enzyme_band:
                             digestions_dict[digestion] = digestions_dict[enzs]
                         elif no_enzs_band:
-                            digestions_dict[digestion] = digestions_dict[(enzyme,)]
-
+                            dig = (enzyme,)
+                            digestions_dict[digestion] = digestions_dict[dig]
                     else:
                         digestions_dict[digestion] = _merge_digestions(
                             digestion1=get_cuts(enzyme),
@@ -144,6 +141,6 @@ def predict_sequence_digestions(sequence, enzymes, linear=True,
     # using 'same_as' to avoid recomputing scores involving similar patterns
     digestions_dict = OrderedDict(
         sorted(digestions_dict.items(),
-        key=lambda item: (len(item[0]), len(item[1]['cuts'])))
+               key=lambda item: (len(item[0]), len(item[1]['cuts'])))
     )
     return digestions_dict

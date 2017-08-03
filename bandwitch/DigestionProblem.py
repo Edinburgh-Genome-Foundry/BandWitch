@@ -1,3 +1,5 @@
+"""Implements the SeparatingDigestions- and IdealDigestionProbem classes."""
+
 import itertools
 from collections import OrderedDict
 
@@ -9,7 +11,6 @@ from .bands_predictions import predict_sequence_digestions
 
 try:
     import bandwagon
-    import matplotlib
     import matplotlib.pyplot as plt
     PLOTS_AVAILABLE = True
 except ImportError:
@@ -27,7 +28,6 @@ class DigestionProblem(SetCoverProblem):
 
     Parameters
     ----------
-
     enzymes
       List of the names of the enzymes to consider, e.g. ``['EcoRI', 'XbaI']``.
 
@@ -57,6 +57,7 @@ class DigestionProblem(SetCoverProblem):
                  max_enzymes_per_digestion=1,
                  relative_migration_precision=0.1,
                  progress_logger=None):
+        """Initialize."""
         self.sequences = sequences
         self.ladder = ladder
         self.linear = linear
@@ -80,17 +81,23 @@ class DigestionProblem(SetCoverProblem):
 
         digestions = self.sequences_digestions[self.sequences_names[0]]
         self.digestions = parameters = list(digestions.keys())
-        elements = self.compute_elements()
+        elements = self._compute_elements()
         SetCoverProblem.__init__(self, elements=elements, parameters=parameters,
                                  progress_logger=progress_logger)
 
     @staticmethod
-    def default_heuristic(named_subset, selected):
+    def _default_heuristic(named_subset, selected):
+        """Select for coverage first, digestion complexity second.
+
+        When two digestions cover the same number of elements, the digestion
+        with the less enzymes is preffered.
+
+        """
         enzymes, subset = named_subset
         return len(subset) - 0.5 * len(enzymes)
 
     def bands_to_migration_pattern(self, bands_sizes):
-        """Return the distance migrations from several bands sizes"""
+        """Return the distance migrations from several bands sizes."""
         return self.ladder.dna_size_to_migration(np.array(bands_sizes))
 
     def plot_digestions(self, digestions, axes=None, bands_props=None,
@@ -101,9 +108,19 @@ class DigestionProblem(SetCoverProblem):
 
         Parameters
         ----------
+        digestions
+          A list of digestions, e.g. [('EcoRI',), ('BamHI', 'XbaI'), ...]
 
-        digestions, axes=None, bands_props=None,
-                            patterns_props=None, patternset_props=None
+        axes
+          Axes on which to plot the plot. There should be as many axes in the
+          list as there are digestions provided. Ideally the axes would be
+          vertically stacked. If not provided, new axes are created and
+          returned in the end
+
+        bands_props, patterns_props, patternset_props
+          Graphical properties (colors, labels, etc.) of band patterns, see
+          code and BandWagon for more details.
+
         """
         if not PLOTS_AVAILABLE:
             raise ImportError("Plotting requires Bandwagon installed")
@@ -139,6 +156,54 @@ class DigestionProblem(SetCoverProblem):
                 **patternset_props
             ).plot(ax)
         return axes
+
+    def select_digestions(self, minimal_score=None, max_digestions=None,
+                          search='greedy', min_score_precision=0.001):
+        """Select one or more digestions which collectively solve the problem.
+
+        This lets you either find the highest-score solution of less than N
+        digestions, or the best free-sized set of digestions solving the
+        problem with the highest minimal score.
+
+        Returns
+        -------
+        min_score, [digestion1, digestion2, ...]
+          Where min_score is the lowest score that an element (sequence or
+          sequence pair) gets from the coverage, and the list indicates the
+          digestions in the order in which they have been selected. This list
+          will be "None" for unsolvable problems.
+
+
+        Parameters
+        -----------
+        minimal_score
+          If provided and max_digestions is not provided, the method will
+          return a free-sized set of parameters covering all elements.
+          If max_digestions is provided, the subset will not exceed
+          max_digestions in size. This can result in unsolvable problems.
+
+        max_digestions
+          When provided instead of minimal_score, the method will find the
+          highest minimal_score which allows solutions in max_digestions or
+          less.
+
+        search
+          Either 'greedy' for fast approximate solving or 'full' for full
+          solving
+
+        min_score_precision
+          When max_digestions is provided and not minimal_score, the returned
+          solution will have the optimal minimal_score, plus or minus this
+          tolerance.
+
+        """
+        return self._select_elements(
+            threshold=minimal_score,
+            covering_algorithm=search,
+            max_set_size=max_digestions,
+            heuristic='default',
+            threshold_tolerance=min_score_precision,
+            bisection=True)
 
 
 class SeparatingDigestionsProblem(DigestionProblem):
@@ -189,7 +254,7 @@ class SeparatingDigestionsProblem(DigestionProblem):
                  linear=False, max_enzymes_per_digestion=1,
                  min_discrepancy='auto',
                  relative_migration_precision=0.1):
-
+        """Initialize."""
         if categories is None:
             categories = OrderedDict([
                 (seq_name, {seq_name: sequence})
@@ -208,7 +273,7 @@ class SeparatingDigestionsProblem(DigestionProblem):
             linear=linear, max_enzymes_per_digestion=max_enzymes_per_digestion,
             relative_migration_precision=relative_migration_precision)
 
-    def compute_elements(self):
+    def _compute_elements(self):
         category_pairs = itertools.combinations(self.categories.values(), 2)
         return set(
             (seq1, seq2)
@@ -217,13 +282,13 @@ class SeparatingDigestionsProblem(DigestionProblem):
             for seq2 in category2
         )
 
-    def parameter_element_score(self, digestion, sequences_pair):
-        """See max_patterns_difference"""
+    def _parameter_element_score(self, digestion, sequences_pair):
+        """See max_patterns_difference."""
         sequence1, sequence2 = sequences_pair
         digestion1, digestion2 = [self.sequences_digestions[s][digestion]
                                   for s in (sequence1, sequence2)]
         if ((digestion1['same_as'] == digestion2['same_as'])
-            and digestion1['same_as'] in self.scores[sequences_pair]):
+                and digestion1['same_as'] in self.scores[sequences_pair]):
             return self.scores[sequences_pair][digestion1['same_as']]
         #     () and
         # same_as = tuple(sorted(digestion1['same_as'], digestion2['same_as']))
@@ -236,28 +301,27 @@ class SeparatingDigestionsProblem(DigestionProblem):
         return 1.0 * distance / self.migration_span
 
     @staticmethod
-    def score_to_color(score, maxi=0.1):
-        """Transform a similarity score to a green/red color
+    def _score_to_color(score, maxi=0.1):
+        """Transform a similarity score to a green/red color.
 
         Parameters
         ----------
-
         score
           Value between 0 (perfect similarity, green) and 1 (red)
 
         maxi
           Value of the score above which everything appears completely red.
           Below this value the color goes progressively from red to green in 0.
+
         """
         return (max(0, min(1, score / maxi)),
                 min(1, max(0, 1 - score / maxi)), 0, .5)
 
     def plot_distances_map(self, digestions, ax=None):
-        """Make a plot of how well the digestions separate each construct pair
+        """Plot how well the digestions separate each construct pair.
 
         Parameters
         ----------
-
         digestions
           A list of digestions, eg ``[('EcoRV'), ('XbaI', 'MfeI')]``.
 
@@ -311,17 +375,15 @@ class SeparatingDigestionsProblem(DigestionProblem):
         ax.set_ylim(len(self.sequences) - 1.5, -0.5)
         return ax
 
+
 class IdealDigestionsProblem(DigestionProblem):
-    """Problem: find ideal digestion(s) to validate constructs.
-
-
+    """Find ideal digestion(s) to validate constructs.
 
     Other digestion problems subclass this problem and implement a computation
     of coverages which depends on the problem.
 
     Parameters
     ----------
-
     sequences
       An (ordered) dictionary of the form {sequence_name: sequence} where the
       sequence is an ATGC string
@@ -344,13 +406,14 @@ class IdealDigestionsProblem(DigestionProblem):
       Variance of the bands measured during the migration, given as a
       proportion of the total migration span (difference between the migration
       of the ladder's smallest and largest bands).
+
     """
 
     def __init__(self, enzymes, ladder, sequences, min_bands=3, max_bands=7,
                  border_tolerance=0.1, linear=False,
                  max_enzymes_per_digestion=1,
                  relative_migration_precision=0.1):
-
+        """Initialize."""
         self.min_bands = min_bands
         self.max_bands = max_bands
         self.border_tolerance = border_tolerance
@@ -360,25 +423,32 @@ class IdealDigestionsProblem(DigestionProblem):
             linear=linear, max_enzymes_per_digestion=max_enzymes_per_digestion,
             relative_migration_precision=relative_migration_precision)
 
-    def parameter_element_score(self, digestion, sequence):
-        """Return True iff the pattern has the right band number and they are
-           well separated."""
+    def _parameter_element_score(self, digestion, sequence):
+        """Compute the sequence's ``.migration_score`` for each digestion."""
         digestion = self.sequences_digestions[sequence][digestion]
         if digestion['same_as'] in self.scores[sequence]:
             return self.scores[sequence][digestion['same_as']]
         migration = digestion['migration']
         return self.migration_score(migration)
 
-    def migration_score(self, band_migrations):
-        if not self.min_bands <= len(band_migrations) <= self.max_bands:
+    def _migration_score(self, band_migrations):
+        """Score the well-numbering and well-separation of all bands.
 
+        If some bands are too high or too low, or the number of bands is out
+        of bounds, return 0. Else, return the minimal distance between two
+        consecutive bands.
+        """
+        if not self.min_bands <= len(band_migrations) <= self.max_bands:
             return 0
+
         t = self.border_tolerance
-        mini, maxi = (1+t) * self.migration_min, (1-t) * self.migration_max
+        mini, maxi = (1 + t) * self.migration_min, (1 - t) * self.migration_max
         if not (mini <= min(band_migrations) <= max(band_migrations) < maxi):
             return 0
+
         min_gap = np.diff(sorted(band_migrations)).min()
         return 1.0 * min_gap / self.migration_span
 
-    def compute_elements(self):
+    def _compute_elements(self):
+        """Return the list of digestions to serve as elements."""
         return set(self.sequences.keys())

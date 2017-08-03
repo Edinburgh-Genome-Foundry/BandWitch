@@ -18,6 +18,17 @@ from .tools import band_patterns_discrepancy
 from .bands_predictions import predict_digestion_bands
 
 class BandsObservation:
+    """One observation of a bands pattern.
+
+    Parameters
+    ----------
+
+    
+
+
+
+
+    """
 
     def __init__(self, name, bands, ladder, migration_image=None):
         self.name = name
