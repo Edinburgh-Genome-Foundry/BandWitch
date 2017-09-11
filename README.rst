@@ -1,20 +1,16 @@
 Bandwitch
 =========
 
-Bandwitch is a Python library implementing algorithms to select digestions for
-the verification or identification of DNA constructs. It solves the following
-problems:
+Bandwitch is a Python library for the planning and analysis of restriction
+experiments, written to support DNA assembly operations.
 
-- Given a set of construct, find a digestion that will produce *nice* band patterns
-  for all the constructs at once (the conditions for *nice* patterns being
-  set by the user.
-- Given a set of constructs, find a digestion that will give
+It implements digestion suggestion methods (to digest or identify batches of
+assemblies) and methods to compile experimental data into reports.
 
-In these problems, a *digestion* can contain one or more enzymes depending on the settings.
-If one digestion is not enough to solve the problem, BandWitch will find two or more
-digestions which collectively solve the problem, i.e. cover the conditions for all
-the constructs.
+Examples of use
+----------------
 
+For instance, assume that we have assembled 30 constructs. Let us ask for for the best digestion
 
 Installation
 -------------

@@ -153,8 +153,8 @@ class SetCoverProblem:
         self.elements = elements
         self.parameters = parameters
         if progress_logger is None:
-            def progress_logger(**k):
-                pass
+            progress_logger = lambda **k: None
+            progress_logger.iter_bar = lambda **k: k.popitem()[1]
         self.progress_logger = progress_logger
         self._compute_scores()
 

@@ -37,6 +37,14 @@ class Ladder:
             for band in (self.dna_sizes.max(), self.dna_sizes.min())
         ]
 
+    def __repr__(self):
+        """Represent."""
+        return "Ladder(%d-%d)" % (min(self.dna_sizes), max(self.dna_sizes))
+
+    def __str__(self):
+        """Represent."""
+        return "Ladder(%d-%d)" % (min(self.dna_sizes), max(self.dna_sizes))
+
 LADDERS = {
 
     '100_to_10k': Ladder(bands={

@@ -58,6 +58,8 @@ class DigestionProblem(SetCoverProblem):
                  relative_migration_precision=0.1,
                  progress_logger=None):
         """Initialize."""
+        if isinstance(sequences, (list, tuple)):
+            sequences = OrderedDict([(r.id, str(r.seq)) for r in sequences])
         self.sequences = sequences
         self.ladder = ladder
         self.linear = linear
@@ -255,6 +257,9 @@ class SeparatingDigestionsProblem(DigestionProblem):
                  min_discrepancy='auto',
                  relative_migration_precision=0.1):
         """Initialize."""
+        if isinstance(sequences, (list, tuple)):
+            sequences = OrderedDict([(r.id, str(r.seq)) for r in sequences])
+
         if categories is None:
             categories = OrderedDict([
                 (seq_name, {seq_name: sequence})
