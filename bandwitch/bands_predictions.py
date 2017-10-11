@@ -52,7 +52,11 @@ def predict_digestion_bands(sequence, enzymes, linear=True):
         sequence = Seq(sequence)
 
     batch = Restriction.RestrictionBatch(enzymes)
-    cut_sites = batch.search(sequence, linear=linear)
+    cut_sites = [
+        cut
+        for cuts in batch.search(sequence, linear=linear).values()
+        for cut in cuts
+    ]
     bands = _compute_bands_from_cuts(cut_sites, len(sequence), linear=linear)
     return sorted(bands)
 

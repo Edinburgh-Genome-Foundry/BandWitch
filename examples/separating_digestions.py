@@ -1,38 +1,34 @@
 
 import os
-from bandwitch import SeparatingDigestionsProblem, LADDERS
-from Bio import SeqIO, Restriction
-from collections import OrderedDict
+from bandwitch import (SeparatingDigestionsProblem, list_common_enzymes,
+                       LADDERS, load_genbank)
 
 
 # DEFINE THE SEQUENCES AND THE ENZYME SET
 
 # all common enzymes with a site of 6bp and at least 3 known providers
-enzymes = sorted([
-    str(enzyme) for enzyme in Restriction.CommOnly
-    if (enzyme.size == 6) and (len(enzyme.supplier_list()) >= 3)
-])
+enzymes = list_common_enzymes(site_length=(6,), min_suppliers=3)
 
-sequences = OrderedDict([
-    (f, str(SeqIO.read(os.path.join('example_data', f), 'genbank').seq))
-    for f in sorted(os.listdir('example_data'))
-])
+records_folder = os.path.join('example_data', 'digestion_selection_data')
+sequences = [
+    load_genbank(os.path.join(records_folder, f), name=f)
+    for f in sorted(os.listdir(records_folder))
+]
 
 # DEFINE AND SOLVE THE PROBLEM
 
-problem = SeparatingDigestionsProblem(sequences, enzymes, linear=False,
+problem = SeparatingDigestionsProblem(enzymes=enzymes,
                                       ladder=LADDERS['100_to_4k'],
-                                      max_enzymes_per_digestion=2,
-                                      relative_error=0.05)
-selected_digestions = problem.select_digestions()
+                                      sequences=sequences,
+                                      max_enzymes_per_digestion=1)
+score, selected_digestions = problem.select_digestions(max_digestions=2)
 
 # GENERATE A FIGURE OF THE BAND PATTERNS
 
 axes = problem.plot_digestions(
     selected_digestions,
-    patterns_props={'label_fontdict': {'rotation': 35}}
+    patterns_props={'label_fontdict': {'rotation': 35}},
+    target_file="separating_digestions.png"
 )
-axes[0].figure.savefig("separating_digestions.png", bbox_inches="tight")
-
-ax = problem.plot_distances_map(digestions=selected_digestions)
-ax.figure.savefig("distances.png", bbox_inches="tight")
+problem.plot_distances_map(digestions=selected_digestions,
+                           target_file="separating_digestions_distances.png")

@@ -18,6 +18,28 @@ DigestionProblem
 Clone Observations
 ------------------
 
+.. mermaid::
+
+  graph TD;
+    aati[AATI fragment analysis file] -- parser --> bobs[BandsObervation-s];
+    bobs --> clone[Clone-s]
+    bobs --> clone
+    digestions[digestion enzymes infos] -- parser --> clone
+
+    clone --> ClonesObservations
+    clone --> ClonesObservations
+    cs[constructs sequences] --> ClonesObservations
+    ClonesObservations --pdf generator--> reports
+    style aati stroke:none, fill: none
+    style digestions stroke:none, fill: none
+    style cs stroke:none, fill: none
+    style reports stroke:none, fill: none
+
+Note: the classes in this module have a complicated organization, mostly due
+to the history of this module and the heterogeneity of the sources of data
+necessary for clone validation. It may get better in the future.
+.. automodule:: bandwitch.Ladder
+   :members: bandwitch.ClonesObservations
 
 Ladder
 ---------

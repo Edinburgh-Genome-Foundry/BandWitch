@@ -101,7 +101,7 @@ LADDERS = {
         200: 2034,
         100: 2378,
         35: 2581
-    }, infos="AATI Fragment analyzer ladder from calibration file."),
+    }, infos="AATI Fragment analyzer ladder, from calibration file."),
 
     '75_to_15k': Ladder(bands={
         15000: 28,

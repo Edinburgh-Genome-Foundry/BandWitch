@@ -103,7 +103,8 @@ class DigestionProblem(SetCoverProblem):
         return self.ladder.dna_size_to_migration(np.array(bands_sizes))
 
     def plot_digestions(self, digestions, axes=None, bands_props=None,
-                        patterns_props=None, patternset_props=None):
+                        patterns_props=None, patternset_props=None,
+                        target_file=None):
         """Plot the patterns for each sequence, for each digestion in the list.
 
         Requires Bandwagon.
@@ -122,6 +123,16 @@ class DigestionProblem(SetCoverProblem):
         bands_props, patterns_props, patternset_props
           Graphical properties (colors, labels, etc.) of band patterns, see
           code and BandWagon for more details.
+
+        target_file
+          The name of the (PNG, SVG, JPEG...) file in which to write the plot.
+
+        Returns
+        -------
+
+        axes
+          The axes of the generated figure (if a target file is written to,
+          the figure is closed and None is returned instead)
 
         """
         if not PLOTS_AVAILABLE:
@@ -157,6 +168,9 @@ class DigestionProblem(SetCoverProblem):
                 global_patterns_props=patterns_props,
                 **patternset_props
             ).plot(ax)
+        if target_file is not None:
+            axes[0].figure.savefig(target_file, bbox_inches='tight')
+            plt.close(axes[0].figure)
         return axes
 
     def select_digestions(self, minimal_score=None, max_digestions=None,
@@ -322,7 +336,7 @@ class SeparatingDigestionsProblem(DigestionProblem):
         return (max(0, min(1, score / maxi)),
                 min(1, max(0, 1 - score / maxi)), 0, .5)
 
-    def plot_distances_map(self, digestions, ax=None):
+    def plot_distances_map(self, digestions, ax=None, target_file=None):
         """Plot how well the digestions separate each construct pair.
 
         Parameters
@@ -334,26 +348,35 @@ class SeparatingDigestionsProblem(DigestionProblem):
           A matplotlib ax on which to plot, if none is provided, one is created
           and returned at the end.
 
+        target_file
+          The name of the (PNG, SVG, JPEG...) file in which to write the plot.
+
+        Returns
+        -------
+
+        axes
+          The axes of the generated figure (if a target file is written to,
+          the figure is closed and None is returned instead)
+
         """
 
         if not PLOTS_AVAILABLE:
             raise ImportError("Plots require Matplotlib/Bandwagon installed.")
         grid = np.zeros(2 * (len(self.sequences),))
-        for i, seq1 in enumerate(self.sequences):
-            for j, seq2 in enumerate(self.sequences):
+        for i, s1 in enumerate(self.sequences):
+            for j, s2 in enumerate(self.sequences):
                 if i >= j:
                     grid[i, j] = np.nan
                 else:
                     scores = [
-                        self.max_patterns_difference(seq1, seq2, digestion) /
-                        (self.migration_max - self.migration_min)
+                        self._parameter_element_score(digestion, (s1, s2))
                         for digestion in digestions
                     ]
                     grid[i, j] = max(scores)
         if ax is None:
             _, ax = plt.subplots(1, figsize=2 * (0.8 * len(grid),))
         ax.imshow(grid[:, ::-1], interpolation='nearest', cmap='OrRd_r',
-                  vmin=0, vmax=0.5)
+                  vmin=0, vmax=0.2)
         for i in range(len(grid)):
             for j in range(len(grid)):
                 if i > j:
@@ -378,6 +401,10 @@ class SeparatingDigestionsProblem(DigestionProblem):
                            rotation=90, size=14, fontdict={'weight': 'bold'})
         ax.set_xlim(-0.5, len(self.sequences) - 1.5)
         ax.set_ylim(len(self.sequences) - 1.5, -0.5)
+
+        if target_file is not None:
+            ax.figure.savefig(target_file, bbox_inches='tight')
+            plt.close(ax.figure)
         return ax
 
 
