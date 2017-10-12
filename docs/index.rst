@@ -1,25 +1,19 @@
-BandWitch Documentation
-==========================
-
-.. image:: _static/images/title.png
-   :width: 400px
+.. image:: https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/docs/_static/images/title.png
+   :alt: [logo]
    :align: center
+   :width: 400px
 
+BandWitch
+==========
 
-Bandwitch is a Python library implementing algorithms to select digestions for
-the verification or identification of DNA constructs. It solves the following
-problems:
+(the documentation is under construction, come back later for more)
 
-- Given a set of construct, find a digestion that will produce *nice* band patterns
-  for all the constructs at once (the conditions for *nice* patterns being
-  set by the user.
-- Given a set of constructs, find a digestion that will give
+Bandwitch is a Python library for the planning and analysis of restriction
+experiments in DNA assembly operations. Bandwitch implements enzyme selection
+methods to validate or identify DNA assemblies, and routines to automatically
+validate/identify assemblies from experimental data.
 
-In these problems, a *digestion* can contain one or more enzymes depending on the settings.
-If one digestion is not enough to solve the problem, BandWitch will find two or more
-digestions which collectively solve the problem, i.e. cover the conditions for all
-the constructs.
-
+You can try BandWitch in `this interactive webdemo <>`_.
 
 Installation
 -------------
@@ -31,6 +25,12 @@ You can install DnaCauldron through PIP
 
     sudo pip install bandwitch
 
+On Ubuntu at least, you may need to install libblas first:
+
+.. code::
+
+    sudo apt-get install libblas-dev liblapack-dev
+
 Alternatively, you can unzip the sources in a folder and type
 
 .. code:: shell
@@ -38,86 +38,109 @@ Alternatively, you can unzip the sources in a folder and type
     sudo python setup.py install
 
 
-Usage
-------
+Enzyme selection with BandWitch
+-------------------------------
 
-Say you have a list of constructs
+In the following examples, we assume that we have a set of 12 constructs which we will
+need to either validate (i.e. we digest these constructs and compare each pattern
+with the expected pattern for that construct) or identify (i.e. we will digest an
+a-priori unknown construct and use the migration patterns to un-ambiguously
+identify each construct among the 12 possible candidates).
 
-First load these files as a dictionary of the form ``{construct_name: sequence}``
-where ``sequence`` is simply a string of an ATGC sequence.
+For validation purposes, the difficulty is to find a digestion that will produce
+harmonious patterns for all the constructs at once: well-spaced bands, and not
+too many or too few of them. For identification purposes, the difficulty is to
+find a digestion giving very distant patterns for each construct in the set of
+candidates.
 
-Next we use BioPython to make a list of ~60 enzymes whose restriction site has
-six basepairs and and who have at least three known providers:
+Every time when the problem cannot be solved with a single digestion, BandWitch
+can propose 2 or 3 digestions which collectively solve the problem.
 
-.. code:: python
-
-    from Bio import Restriction
-    enzymes = [str(e) for e in Restriction.CommOnly
-               if (e.size==6) and (len(e.supplier_list()) > 2)]
-
-**Scenario 1:** Suppose that we want digestion(s) that will yield between 2 and
-3 bands in the central zone of the migration ladder. We first write a solver
-that implements this condition:
-
-.. code:: python
-
-    from bandwitch import IdealDigestionProblem
-    class MyIdealDigestionProblem(IdealDigestionProblem):
-        def migration_pattern_is_ideal(self, migration):
-            """Are there 2-3 bands between 30% and 70% of the migration span?"""
-            min_migration = 0.7 * self.migration_min + 0.3 * self.migration_max
-            max_migration = 0.3 * self.migration_min + 0.7 * self.migration_max
-            bands_in_central_zone = [band for band in migration
-                                     if min_migration <= band <= max_migration]
-            return 2 <= len(bands_in_central_zone) <= 3
-
-Next we create an instance of this problem. We provide the construct sequences,
-the ladder used, the maximum number of enzymes per digestion, and we ask for a
-solution:
+To select enzymes that will **produce nice patterns for all constructs, for validation:**
 
 .. code:: python
 
-    from bandwitch import LADDER_100_to_4k
-    problem = MyIdealDigestionProblem(constructs, enzymes, linear=False,
-                                      ladder=LADDER_100_to_4k,
-                                      max_enzymes_per_digestion=2)
-    selected_digestions = problem.select_digestions()
-    print selected_digestions
+  from bandwitch import IdealDigestionsProblem, LADDERS, load_genbank
 
-This will return a list of digestions, each containing one or more enzymes, e.g.
-``[('Xba', 'EcoRI'), ('AseI',)]``.
+  # DEFINE THE SEQUENCES AND THE ENZYME SET
+  enzymes = ["EcoRI", "BamHI", "XhoI", "EcoRV", "SpeI", "XbaI",
+             "NotI", "SacI", "SmaI", "HindIII", "PstI"]
+  sequences = [
+      load_genbank(genbank_file_path, name=f)
+      for genbank_file_path in some_llist_of_files)
+  ]
 
-**Scenario 2:** Now suppose that we want to select digestion(s) that produce
-distinct patterns for the different constructs, so that each construct can be
-clearly identified from its digestion pattern(s). We will consider that two bands
-in two different patterns are different if their migration distance is more than
-5% of the ladder's migration span. Here is the code to solve the problem:
+  # SELECT THE BEST SINGLE DIGESTION WITH AT MOST ENZYMES
+  problem = IdealDigestionsProblem(enzymes=enzymes,
+                                   ladder=LADDERS['100_to_4k'],
+                                   sequences=sequences,
+                                   max_enzymes_per_digestion=2)
+  score, selected_digestions = problem.select_digestions(max_digestions=1)
 
-.. code:: python
+  # PLOT THE BAND PATTERNS PRODUCED BY THE SELECTED DIGESTION
+  problem.plot_digestions(
+      digestions=selected_digestions,
+      patterns_props={'label_fontdict': {'rotation': 35}}
+      target_file="ideal_digestions.png"
+  )
 
-    from bandwitch import SeparatingDigestionsProblem
-    problem = SeparatingDigestionsProblem(sequences, enzymes, linear=False,
-                                              ladder=ladder,
-                                              max_enzymes_per_digestion=2,
-                                              relative_error=0.05)
-    selected_digestions = problem.select_digestions()
+Result:
 
-**Plotting the results:** the bands created by the digestion(s) can be easily
-plotted if you have BandWagon installed:
-
-.. code:: python
-
-    axes = problem.plot_digestions(
-        selected_digestions,
-        patterns_props={'label_fontdict': {'rotation': 35}}
-    )
-    axes[0].figure.savefig("digestion_patterns.png", bbox_inches="tight")
-
-Here is an example result in the case of scenario 1:
-
-.. image:: _static/images/example_ideal.png
-   :width: 700px
+.. image:: https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/examples/ideal_digestions.png
+   :alt: [logo]
    :align: center
+
+To select enzymes that will produce **different patterns for each construct, for identification:**
+
+.. code:: python
+
+    from bandwitch import (SeparatingDigestionsProblem, list_common_enzymes,
+                           LADDERS, load_genbank)
+
+
+    # DEFINE SEQUENCES AND ENZYME SET (6-CUTTERS WITH >3 COMMERCIAL PROVIDERS)
+    enzymes = list_common_enzymes(site_length=(6,), min_suppliers=3)
+    sequences = [
+        load_genbank(genbank_file_path, name=f)
+        for genbank_file_path in some_llist_of_files)
+    ]
+
+    # SELECT THE BEST DIGESTION PAIRS (AT MOST 1 ENZYME PER DIGESTION)
+    problem = SeparatingDigestionsProblem(enzymes=enzymes,
+                                          ladder=LADDERS['100_to_4k'],
+                                          sequences=sequences,
+                                          max_enzymes_per_digestion=1)
+    score, selected_digestions = problem.select_digestions(max_digestions=2)
+
+    # GENERATE A FIGURE OF THE BAND PATTERNS
+
+    problem.plot_digestions(
+        selected_digestions,
+        patterns_props={'label_fontdict': {'rotation': 35}},
+        target_file="separating_digestions.png"
+    )
+
+    problem.plot_distances_map(digestions=selected_digestions,
+                               target_file="separating_digestions_distances.png")
+
+Result:
+
+.. image:: https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/examples/separating_digestions.png
+   :alt: [logo]
+   :align: center
+
+Usage: Construct validation or identification from experimental data
+---------------------------------------------------------------------
+
+This part is still under construction.
+
+Bandwitch can process output files from an automated fragment analyzer and produce
+informative reports as illustrated below:
+
+.. image:: https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/docs/_static/images/bands_validation.png
+   :alt: [logo]
+   :align: center
+   :width: 600px
 
 
 Contribute
@@ -126,6 +149,11 @@ Contribute
 BandWitch is an open-source library originally written at the
 Edinburgh Genome Foundry by Zulko_. It is released on Github_ under the MIT
 licence (¢ Edinburgh Genome Foundry), everyone is welcome to contribute.
+
+.. _Zulko: https://github.com/Zulko/
+.. _Github: https://github.com/EdinburghGenomeFoundry/BandWitch
+.. _PYPI: https://pypi.python.org/pypi/bandwitch
+
 
 .. raw:: html
 

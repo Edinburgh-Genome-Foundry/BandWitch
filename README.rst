@@ -12,11 +12,13 @@ BandWitch
 
 (the documentation is incomplete, come back later for more)
 
-Bandwitch (full documentation `here <https://edinburgh-genome-foundry.github.io/BandWitch/>`_))
+Bandwitch (full documentation `here <https://edinburgh-genome-foundry.github.io/BandWitch/>`_)
 is a Python library for the planning and analysis of restriction
 experiments in DNA assembly operations. Bandwitch implements enzyme selection
 methods to validate or identify DNA assemblies, and routines to automatically
 validate/identify assemblies from experimental data.
+
+You can try BandWitch in this interactive webdemo.
 
 Installation
 -------------
