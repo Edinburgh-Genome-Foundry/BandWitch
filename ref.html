@@ -1,0 +1,581 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>BandWitch Reference manual &mdash; BandWitch 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/css/main.css" type="text/css" />
+  
+    <link rel="stylesheet" href="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="BandWitch 0.1.0 documentation" href="index.html"/>
+        <link rel="prev" title="BandWitch" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> BandWitch
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">BandWitch</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">BandWitch Reference manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#digestionproblem">DigestionProblem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clone-observations">Clone Observations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-bandwitch.Ladder">Ladder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bands-predictions">Bands Predictions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setcoverproblem">SetCoverProblem</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BandWitch</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>BandWitch Reference manual</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ref.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bandwitch-reference-manual">
+<h1>BandWitch Reference manual<a class="headerlink" href="#bandwitch-reference-manual" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="digestionproblem">
+<h2>DigestionProblem<a class="headerlink" href="#digestionproblem" title="Permalink to this headline">¶</a></h2>
+
+            <style>
+            .section {
+                opacity: 1.0 !important;
+            }
+            </style>
+            <script>mermaid.initialize({startOnLoad:true});</script><div class="mermaid">
+            graph TD
+  SC[SetCoverProblem] --&gt; DP[DigestionProblem]
+  DP --&gt; SDP[SeparatingDigestionProblem]
+  DP --&gt; IDP[IdealDigestionProblem]
+        </div><span class="target" id="module-bandwitch.DigestionProblem"></span><p>Implements the SeparatingDigestions- and IdealDigestionProbem classes.</p>
+<dl class="class">
+<dt id="bandwitch.DigestionProblem.DigestionProblem">
+<em class="property">class </em><code class="descclassname">bandwitch.DigestionProblem.</code><code class="descname">DigestionProblem</code><span class="sig-paren">(</span><em>enzymes</em>, <em>ladder</em>, <em>sequences</em>, <em>linear=False</em>, <em>max_enzymes_per_digestion=1</em>, <em>relative_migration_precision=0.1</em>, <em>progress_logger=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem.html#DigestionProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.DigestionProblem" title="Permalink to this definition">¶</a></dt>
+<dd><p>General class for solving digestions problems.</p>
+<p>By digestion problem we mean <em>enzymatic</em> digestion problems. For other
+kinds of digestion problems, see a proctologist.</p>
+<p>Other digestion problems subclass this problem for particular cases such
+as construct validation and identification.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>enzymes</strong></p>
+<blockquote>
+<div><p>List of the names of the enzymes to consider, e.g. <code class="docutils literal"><span class="pre">['EcoRI',</span> <span class="pre">'XbaI']</span></code>.</p>
+</div></blockquote>
+<p><strong>ladder</strong></p>
+<blockquote>
+<div><p>A Ladder object representing the ladder used for migrations.</p>
+</div></blockquote>
+<p><strong>sequences</strong></p>
+<blockquote>
+<div><p>An (ordered) dictionary of the form {sequence_name: sequence} where the
+sequence is an ATGC string</p>
+</div></blockquote>
+<p><strong>linear</strong></p>
+<blockquote>
+<div><p>True for linear sequences, false for circular sequences</p>
+</div></blockquote>
+<p><strong>max_enzymes_per_digestion</strong></p>
+<blockquote>
+<div><p>Maximal number of enzymes that can go in a single digestion.
+Experimentally the best is 1, but you can try 2, or 3 in desperate
+situations. Not sure if more enzymes will work.</p>
+</div></blockquote>
+<p><strong>relative_migration_precision</strong></p>
+<blockquote class="last">
+<div><p>Variance of the bands measured during the migration, given as a
+proportion of the total migration span (difference between the migration
+of the ladder’s smallest and largest bands).</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="bandwitch.DigestionProblem.DigestionProblem.bands_to_migration_pattern">
+<code class="descname">bands_to_migration_pattern</code><span class="sig-paren">(</span><em>bands_sizes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem.html#DigestionProblem.bands_to_migration_pattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.DigestionProblem.bands_to_migration_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the distance migrations from several bands sizes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bandwitch.DigestionProblem.DigestionProblem.plot_digestions">
+<code class="descname">plot_digestions</code><span class="sig-paren">(</span><em>digestions</em>, <em>axes=None</em>, <em>bands_props=None</em>, <em>patterns_props=None</em>, <em>patternset_props=None</em>, <em>target_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem.html#DigestionProblem.plot_digestions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.DigestionProblem.plot_digestions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the patterns for each sequence, for each digestion in the list.</p>
+<p>Requires Bandwagon.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>digestions</strong></p>
+<blockquote>
+<div><p>A list of digestions, e.g. [(‘EcoRI’,), (‘BamHI’, ‘XbaI’), …]</p>
+</div></blockquote>
+<p><strong>axes</strong></p>
+<blockquote>
+<div><p>Axes on which to plot the plot. There should be as many axes in the
+list as there are digestions provided. Ideally the axes would be
+vertically stacked. If not provided, new axes are created and
+returned in the end</p>
+</div></blockquote>
+<p><strong>bands_props, patterns_props, patternset_props</strong></p>
+<blockquote>
+<div><p>Graphical properties (colors, labels, etc.) of band patterns, see
+code and BandWagon for more details.</p>
+</div></blockquote>
+<p><strong>target_file</strong></p>
+<blockquote>
+<div><p>The name of the (PNG, SVG, JPEG…) file in which to write the plot.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">axes</p>
+<blockquote class="last">
+<div><p>The axes of the generated figure (if a target file is written to,
+the figure is closed and None is returned instead)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bandwitch.DigestionProblem.DigestionProblem.select_digestions">
+<code class="descname">select_digestions</code><span class="sig-paren">(</span><em>minimal_score=None</em>, <em>max_digestions=None</em>, <em>search='greedy'</em>, <em>min_score_precision=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem.html#DigestionProblem.select_digestions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.DigestionProblem.select_digestions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select one or more digestions which collectively solve the problem.</p>
+<p>This lets you either find the highest-score solution of less than N
+digestions, or the best free-sized set of digestions solving the
+problem with the highest minimal score.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>minimal_score</strong></p>
+<blockquote>
+<div><p>If provided and max_digestions is not provided, the method will
+return a free-sized set of parameters covering all elements.
+If max_digestions is provided, the subset will not exceed
+max_digestions in size. This can result in unsolvable problems.</p>
+</div></blockquote>
+<p><strong>max_digestions</strong></p>
+<blockquote>
+<div><p>When provided instead of minimal_score, the method will find the
+highest minimal_score which allows solutions in max_digestions or
+less.</p>
+</div></blockquote>
+<p><strong>search</strong></p>
+<blockquote>
+<div><p>Either ‘greedy’ for fast approximate solving or ‘full’ for full
+solving</p>
+</div></blockquote>
+<p><strong>min_score_precision</strong></p>
+<blockquote>
+<div><p>When max_digestions is provided and not minimal_score, the returned
+solution will have the optimal minimal_score, plus or minus this
+tolerance.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">min_score, [digestion1, digestion2, …]</p>
+<blockquote class="last">
+<div><p>Where min_score is the lowest score that an element (sequence or
+sequence pair) gets from the coverage, and the list indicates the
+digestions in the order in which they have been selected. This list
+will be “None” for unsolvable problems.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bandwitch.DigestionProblem.IdealDigestionsProblem">
+<em class="property">class </em><code class="descclassname">bandwitch.DigestionProblem.</code><code class="descname">IdealDigestionsProblem</code><span class="sig-paren">(</span><em>enzymes</em>, <em>ladder</em>, <em>sequences</em>, <em>min_bands=3</em>, <em>max_bands=7</em>, <em>border_tolerance=0.1</em>, <em>linear=False</em>, <em>max_enzymes_per_digestion=1</em>, <em>relative_migration_precision=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem.html#IdealDigestionsProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.IdealDigestionsProblem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find ideal digestion(s) to validate constructs.</p>
+<p>Other digestion problems subclass this problem and implement a computation
+of coverages which depends on the problem.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sequences</strong></p>
+<blockquote>
+<div><p>An (ordered) dictionary of the form {sequence_name: sequence} where the
+sequence is an ATGC string</p>
+</div></blockquote>
+<p><strong>enzymes</strong></p>
+<blockquote>
+<div><p>List of the names of the enzymes to consider, e.g. <code class="docutils literal"><span class="pre">['EcoRI',</span> <span class="pre">'XbaI']</span></code>.</p>
+</div></blockquote>
+<p><strong>ladder</strong></p>
+<blockquote>
+<div><p>A Ladder object representing the ladder used for migrations.</p>
+</div></blockquote>
+<p><strong>linear</strong></p>
+<blockquote>
+<div><p>True for linear sequences, false for circular sequences</p>
+</div></blockquote>
+<p><strong>max_enzymes_per_digestion</strong></p>
+<blockquote>
+<div><p>Maximal number of enzymes that can go in a single digestion.
+Experimentally the best is 1, but you can try 2, or 3 in desperate
+situations. Not sure if more enzymes will work.</p>
+</div></blockquote>
+<p><strong>relative_migration_error</strong></p>
+<blockquote class="last">
+<div><p>Variance of the bands measured during the migration, given as a
+proportion of the total migration span (difference between the migration
+of the ladder’s smallest and largest bands).</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="bandwitch.DigestionProblem.IdealDigestionsProblem.migration_score">
+<code class="descname">migration_score</code><span class="sig-paren">(</span><em>band_migrations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem.html#IdealDigestionsProblem.migration_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.IdealDigestionsProblem.migration_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Score the well-numbering and well-separation of all bands.</p>
+<p>If some bands are too high or too low, or the number of bands is out
+of bounds, return 0. Else, return the minimal distance between two
+consecutive bands.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bandwitch.DigestionProblem.SeparatingDigestionsProblem">
+<em class="property">class </em><code class="descclassname">bandwitch.DigestionProblem.</code><code class="descname">SeparatingDigestionsProblem</code><span class="sig-paren">(</span><em>enzymes</em>, <em>ladder</em>, <em>sequences=None</em>, <em>categories=None</em>, <em>linear=False</em>, <em>max_enzymes_per_digestion=1</em>, <em>min_discrepancy='auto'</em>, <em>relative_migration_precision=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem.html#SeparatingDigestionsProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.SeparatingDigestionsProblem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Problem: find best digestion(s) to identify constructs.</p>
+<p>Provided a set of constructs (possibly from a combinatorial assembly),
+find a list of digestions such that all pair of constructs have different
+migration patterns for at least one digestion of the list.</p>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="bandwitch.DigestionProblem.SeparatingDigestionsProblem.plot_distances_map">
+<code class="descname">plot_distances_map</code><span class="sig-paren">(</span><em>digestions</em>, <em>ax=None</em>, <em>target_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem.html#SeparatingDigestionsProblem.plot_distances_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.SeparatingDigestionsProblem.plot_distances_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot how well the digestions separate each construct pair.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>digestions</strong></p>
+<blockquote>
+<div><p>A list of digestions, eg <code class="docutils literal"><span class="pre">[('EcoRV'),</span> <span class="pre">('XbaI',</span> <span class="pre">'MfeI')]</span></code>.</p>
+</div></blockquote>
+<p><strong>ax</strong></p>
+<blockquote>
+<div><p>A matplotlib ax on which to plot, if none is provided, one is created
+and returned at the end.</p>
+</div></blockquote>
+<p><strong>target_file</strong></p>
+<blockquote>
+<div><p>The name of the (PNG, SVG, JPEG…) file in which to write the plot.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">axes</p>
+<blockquote class="last">
+<div><p>The axes of the generated figure (if a target file is written to,
+the figure is closed and None is returned instead)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="clone-observations">
+<h2>Clone Observations<a class="headerlink" href="#clone-observations" title="Permalink to this headline">¶</a></h2>
+<div class="mermaid">
+            graph TD;
+  aati[AATI fragment analysis file] -- parser --&gt; bobs[BandsObervation-s];
+  bobs --&gt; clone[Clone-s]
+  bobs --&gt; clone
+  digestions[digestion enzymes infos] -- parser --&gt; clone
+
+  clone --&gt; ClonesObservations
+  clone --&gt; ClonesObservations
+  cs[constructs sequences] --&gt; ClonesObservations
+  ClonesObservations --pdf generator--&gt; reports
+  style aati stroke:none, fill: none
+  style digestions stroke:none, fill: none
+  style cs stroke:none, fill: none
+  style reports stroke:none, fill: none
+        </div><p>Note: the classes in this module have a complicated organization, mostly due
+to the history of this module and the heterogeneity of the sources of data
+necessary for clone validation. It may get better in the future.
+.. automodule:: bandwitch.Ladder</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">members:</th><td class="field-body">bandwitch.ClonesObservations</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="module-bandwitch.Ladder">
+<span id="ladder"></span><h2>Ladder<a class="headerlink" href="#module-bandwitch.Ladder" title="Permalink to this headline">¶</a></h2>
+<p>Minimal implementation of a Ladder, which is used to predict band migration
+patterns from band DNA sizes.</p>
+<dl class="class">
+<dt id="bandwitch.Ladder.Ladder">
+<em class="property">class </em><code class="descclassname">bandwitch.Ladder.</code><code class="descname">Ladder</code><span class="sig-paren">(</span><em>bands</em>, <em>infos=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/Ladder.html#Ladder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.Ladder.Ladder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to represent gel ladders. These ladders serve as a scale for
+plotting any other gel simulation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>bands</strong></p>
+<blockquote class="last">
+<div><p>A dictionnary of the form {dna_size: migration distance}</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="bandwitch.Ladder.Ladder.dna_size_to_migration">
+<code class="descname">dna_size_to_migration</code><span class="sig-paren">(</span><em>dna_sizes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/Ladder.html#Ladder.dna_size_to_migration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.Ladder.Ladder.dna_size_to_migration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the migration distances for the given dna sizes</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="bands-predictions">
+<h2>Bands Predictions<a class="headerlink" href="#bands-predictions" title="Permalink to this headline">¶</a></h2>
+<div class="mermaid">
+            graph TD
+  pcomp[_compute_digestion_bands] --&gt; pr[predict_digestion_bands]
+  pcomp --&gt; pds[predict_sequences_digestions]
+        </div></div>
+<div class="section" id="setcoverproblem">
+<h2>SetCoverProblem<a class="headerlink" href="#setcoverproblem" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="BandWitch" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Edinburgh Genome Foundry.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.min.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

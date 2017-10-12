@@ -1,0 +1,360 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>BandWitch &mdash; BandWitch 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/css/main.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="BandWitch 0.1.0 documentation" href="#"/>
+        <link rel="next" title="BandWitch Reference manual" href="ref.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> BandWitch
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">BandWitch</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ref.html">BandWitch Reference manual</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">BandWitch</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>BandWitch</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <a class="reference internal image-reference" href="https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/docs/_static/images/title.png"><img alt="[logo]" class="align-center" src="https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/docs/_static/images/title.png" style="width: 400px;" /></a>
+<div class="section" id="bandwitch">
+<h1>BandWitch<a class="headerlink" href="#bandwitch" title="Permalink to this headline">¶</a></h1>
+<p>(the documentation is under construction, come back later for more)</p>
+<p>Bandwitch is a Python library for the planning and analysis of restriction
+experiments in DNA assembly operations. Bandwitch implements enzyme selection
+methods to validate or identify DNA assemblies, and routines to automatically
+validate/identify assemblies from experimental data.</p>
+<p>You can try BandWitch in <a href="#id4"><span class="problematic" id="id5">`this interactive webdemo &lt;&gt;`_</span></a>.</p>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>You can install DnaCauldron through PIP</p>
+<div class="code shell highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">bandwitch</span>
+</pre></div>
+</div>
+<p>On Ubuntu at least, you may need to install libblas first:</p>
+<div class="code highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">libblas</span><span class="o">-</span><span class="n">dev</span> <span class="n">liblapack</span><span class="o">-</span><span class="n">dev</span>
+</pre></div>
+</div>
+<p>Alternatively, you can unzip the sources in a folder and type</p>
+<div class="code shell highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="enzyme-selection-with-bandwitch">
+<h2>Enzyme selection with BandWitch<a class="headerlink" href="#enzyme-selection-with-bandwitch" title="Permalink to this headline">¶</a></h2>
+<p>In the following examples, we assume that we have a set of 12 constructs which we will
+need to either validate (i.e. we digest these constructs and compare each pattern
+with the expected pattern for that construct) or identify (i.e. we will digest an
+a-priori unknown construct and use the migration patterns to un-ambiguously
+identify each construct among the 12 possible candidates).</p>
+<p>For validation purposes, the difficulty is to find a digestion that will produce
+harmonious patterns for all the constructs at once: well-spaced bands, and not
+too many or too few of them. For identification purposes, the difficulty is to
+find a digestion giving very distant patterns for each construct in the set of
+candidates.</p>
+<p>Every time when the problem cannot be solved with a single digestion, BandWitch
+can propose 2 or 3 digestions which collectively solve the problem.</p>
+<p>To select enzymes that will <strong>produce nice patterns for all constructs, for validation:</strong></p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bandwitch</span> <span class="k">import</span> <span class="n">IdealDigestionsProblem</span><span class="p">,</span> <span class="n">LADDERS</span><span class="p">,</span> <span class="n">load_genbank</span>
+
+<span class="c1"># DEFINE THE SEQUENCES AND THE ENZYME SET</span>
+<span class="n">enzymes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;EcoRI&quot;</span><span class="p">,</span> <span class="s2">&quot;BamHI&quot;</span><span class="p">,</span> <span class="s2">&quot;XhoI&quot;</span><span class="p">,</span> <span class="s2">&quot;EcoRV&quot;</span><span class="p">,</span> <span class="s2">&quot;SpeI&quot;</span><span class="p">,</span> <span class="s2">&quot;XbaI&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;NotI&quot;</span><span class="p">,</span> <span class="s2">&quot;SacI&quot;</span><span class="p">,</span> <span class="s2">&quot;SmaI&quot;</span><span class="p">,</span> <span class="s2">&quot;HindIII&quot;</span><span class="p">,</span> <span class="s2">&quot;PstI&quot;</span><span class="p">]</span>
+<span class="n">sequences</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">load_genbank</span><span class="p">(</span><span class="n">genbank_file_path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">genbank_file_path</span> <span class="ow">in</span> <span class="n">some_llist_of_files</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="c1"># SELECT THE BEST SINGLE DIGESTION WITH AT MOST ENZYMES</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">IdealDigestionsProblem</span><span class="p">(</span><span class="n">enzymes</span><span class="o">=</span><span class="n">enzymes</span><span class="p">,</span>
+                                 <span class="n">ladder</span><span class="o">=</span><span class="n">LADDERS</span><span class="p">[</span><span class="s1">&#39;100_to_4k&#39;</span><span class="p">],</span>
+                                 <span class="n">sequences</span><span class="o">=</span><span class="n">sequences</span><span class="p">,</span>
+                                 <span class="n">max_enzymes_per_digestion</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">score</span><span class="p">,</span> <span class="n">selected_digestions</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">select_digestions</span><span class="p">(</span><span class="n">max_digestions</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># PLOT THE BAND PATTERNS PRODUCED BY THE SELECTED DIGESTION</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">plot_digestions</span><span class="p">(</span>
+    <span class="n">digestions</span><span class="o">=</span><span class="n">selected_digestions</span><span class="p">,</span>
+    <span class="n">patterns_props</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;label_fontdict&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;rotation&#39;</span><span class="p">:</span> <span class="mi">35</span><span class="p">}}</span>
+    <span class="n">target_file</span><span class="o">=</span><span class="s2">&quot;ideal_digestions.png&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Result:</p>
+<img alt="[logo]" class="align-center" src="https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/examples/ideal_digestions.png" />
+<p>To select enzymes that will produce <strong>different patterns for each construct, for identification:</strong></p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bandwitch</span> <span class="k">import</span> <span class="p">(</span><span class="n">SeparatingDigestionsProblem</span><span class="p">,</span> <span class="n">list_common_enzymes</span><span class="p">,</span>
+                       <span class="n">LADDERS</span><span class="p">,</span> <span class="n">load_genbank</span><span class="p">)</span>
+
+
+<span class="c1"># DEFINE SEQUENCES AND ENZYME SET (6-CUTTERS WITH &gt;3 COMMERCIAL PROVIDERS)</span>
+<span class="n">enzymes</span> <span class="o">=</span> <span class="n">list_common_enzymes</span><span class="p">(</span><span class="n">site_length</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,),</span> <span class="n">min_suppliers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">sequences</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">load_genbank</span><span class="p">(</span><span class="n">genbank_file_path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">genbank_file_path</span> <span class="ow">in</span> <span class="n">some_llist_of_files</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="c1"># SELECT THE BEST DIGESTION PAIRS (AT MOST 1 ENZYME PER DIGESTION)</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">SeparatingDigestionsProblem</span><span class="p">(</span><span class="n">enzymes</span><span class="o">=</span><span class="n">enzymes</span><span class="p">,</span>
+                                      <span class="n">ladder</span><span class="o">=</span><span class="n">LADDERS</span><span class="p">[</span><span class="s1">&#39;100_to_4k&#39;</span><span class="p">],</span>
+                                      <span class="n">sequences</span><span class="o">=</span><span class="n">sequences</span><span class="p">,</span>
+                                      <span class="n">max_enzymes_per_digestion</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">score</span><span class="p">,</span> <span class="n">selected_digestions</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">select_digestions</span><span class="p">(</span><span class="n">max_digestions</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># GENERATE A FIGURE OF THE BAND PATTERNS</span>
+
+<span class="n">problem</span><span class="o">.</span><span class="n">plot_digestions</span><span class="p">(</span>
+    <span class="n">selected_digestions</span><span class="p">,</span>
+    <span class="n">patterns_props</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;label_fontdict&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;rotation&#39;</span><span class="p">:</span> <span class="mi">35</span><span class="p">}},</span>
+    <span class="n">target_file</span><span class="o">=</span><span class="s2">&quot;separating_digestions.png&quot;</span>
+<span class="p">)</span>
+
+<span class="n">problem</span><span class="o">.</span><span class="n">plot_distances_map</span><span class="p">(</span><span class="n">digestions</span><span class="o">=</span><span class="n">selected_digestions</span><span class="p">,</span>
+                           <span class="n">target_file</span><span class="o">=</span><span class="s2">&quot;separating_digestions_distances.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Result:</p>
+<img alt="[logo]" class="align-center" src="https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/examples/separating_digestions.png" />
+</div>
+<div class="section" id="usage-construct-validation-or-identification-from-experimental-data">
+<h2>Usage: Construct validation or identification from experimental data<a class="headerlink" href="#usage-construct-validation-or-identification-from-experimental-data" title="Permalink to this headline">¶</a></h2>
+<p>This part is still under construction.</p>
+<p>Bandwitch can process output files from an automated fragment analyzer and produce
+informative reports as illustrated below:</p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/docs/_static/images/bands_validation.png"><img alt="[logo]" class="align-center" src="https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/docs/_static/images/bands_validation.png" style="width: 600px;" /></a>
+</div>
+<div class="section" id="contribute">
+<h2>Contribute<a class="headerlink" href="#contribute" title="Permalink to this headline">¶</a></h2>
+<p>BandWitch is an open-source library originally written at the
+Edinburgh Genome Foundry by <a class="reference external" href="https://github.com/Zulko/">Zulko</a>. It is released on <a href="#id6"><span class="problematic" id="id7">Github_</span></a> under the MIT
+licence (¢ Edinburgh Genome Foundry), everyone is welcome to contribute.</p>
+<a href="https://twitter.com/share" class="twitter-share-button"
+data-text="Bandwitch - Digestion enzyme selection with Python" data-size="large" data-hashtags="Bioprinting">Tweet
+</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';
+fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<iframe src="http://ghbtns.com/github-btn.html?user=Edinburgh-Genome-Foundry&repo=bandwitch&type=watch&count=true&size=large"
+allowtransparency="true" frameborder="0" scrolling="0" width="152px" height="30px" margin-bottom="30px"></iframe><div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ref.html" class="btn btn-neutral float-right" title="BandWitch Reference manual" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Edinburgh Genome Foundry.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
