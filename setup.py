@@ -15,5 +15,6 @@ setup(
     keywords="Restriction enzyme synthetic biology DNA band patterns",
     packages= find_packages(exclude='docs'),
     include_package_data=True,
-    install_requires=('tqdm', 'biopython', 'scipy', 'matplotlib')
+    install_requires=('tqdm', 'biopython', 'scipy', 'matplotlib',
+                      'dna_features_viewer')
 )
