@@ -23,11 +23,12 @@ def test_separating_digestions(tmpdir, sequences):
         str(enzyme) for enzyme in Restriction.CommOnly
         if (enzyme.size == 6) and (len(enzyme.supplier_list()) >= 3)
     ])
-    problem = SeparatingDigestionsProblem(sequences, enzymes, linear=False,
+    problem = SeparatingDigestionsProblem(sequences=sequences, enzymes=enzymes,
+                                          linear=False,
                                           ladder=LADDERS['100_to_4k'],
-                                          max_enzymes_per_digestion=2,
-                                          relative_error=0.05)
-    selected_digestions = problem.select_digestions()
+                                          max_enzymes_per_digestion=1,
+                                          relative_migration_precision=0.05)
+    score, selected_digestions = problem.select_digestions(max_digestions=1)
     assert selected_digestions == [('AvaI',)]
 
     axes = problem.plot_digestions(
@@ -60,8 +61,10 @@ def test_ideal_digestions(sequences):
 
     # DEFINE AND SOLVE THE PROBLEM
 
-    problem = MyIdealDigestionsProblem(sequences, enzymes, linear=False,
+    problem = MyIdealDigestionsProblem(sequences=sequences, enzymes=enzymes,
                                        ladder=LADDERS['100_to_4k'],
+                                       linear=False,
                                        max_enzymes_per_digestion=2)
-    selected_digestions = problem.select_digestions()
-    assert selected_digestions == [('EcoRI', 'SmaI')]
+    score, selected_digestions = problem.select_digestions(max_digestions=1)
+    assert score > 0.09
+    assert selected_digestions == [('BamHI', 'SacI')]

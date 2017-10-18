@@ -119,6 +119,7 @@ def band_patterns_discrepancy(bands1, bands2, ladder, relative_tolerance=0.1,
               for b in (bands1, bands2))
     mini, maxi = ladder.migration_distances_span
     tolerance = relative_tolerance * (maxi - mini)
+    zone = [ladder.dna_size_to_migration(b) for b in zone][::-1]
     return 1.0 * max_min_distance(m1, m2, zone=zone) / tolerance
 
 def updated_dict(dic1, dic2):

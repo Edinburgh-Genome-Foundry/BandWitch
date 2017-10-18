@@ -1,7 +1,8 @@
-from collections import OrderedDict
-import numpy as np
+from collections import OrderedDict, Counter
 import matplotlib.pyplot as plt
 from Bio import Restriction
+from io import BytesIO
+from matplotlib.backends.backend_pdf import PdfPages
 
 from dna_features_viewer import (GraphicRecord, GraphicFeature,
                                  BiopythonTranslator)
@@ -298,6 +299,27 @@ class Clone:
         return CloneValidation(self, bands_by_digestion,
                                discrepancies=discrepancies)
 
+    def from_bands_observations(observations, constructs_map, digestions_map,
+                                clones_map=None):
+        if isinstance(observations, (dict, OrderedDict)):
+            observations = list(observations.values())
+        if clones_map is None:
+            clones_map = {obs.name: obs.name for obs in observations}
+        clones = OrderedDict()
+
+        for obs in observations:
+            clone_name = clones_map[obs.name]
+            if clone_name not in clones:
+                clones[clone_name] = Clone(
+                    name=clone_name,
+                    construct_id=constructs_map[clone_name],
+                    digestions={}
+                )
+            digestion = digestions_map[obs.name]
+            clones[clone_name].digestions[digestion] = obs
+
+        return clones
+
 
 class ClonesObservations:
     """All useful informations for a collection of clones to be validated.
@@ -308,20 +330,21 @@ class ClonesObservations:
       Either a list of Clones (each with a unique name) or a dictionnary
       ``{name: Clone}``.
 
-    constructs_dict
+    constructs_records
       A dictionnary ``{construct_name: biopython_record}`` indicating the
       sequence of the different constructs. For each construct, set the
       attribute ``construct.linear = False`` if the construct is circular.
 
     """
 
-    def __init__(self, clones, constructs_dict):
+    def __init__(self, clones, constructs_records):
         """Initialize"""
         if isinstance(clones, (list, tuple)):
             clones = {clone.name: clone for clone in clones}
         self.clones = clones
-        self.constructs_dict = constructs_dict
-        self.constructs_digestions = {ct: {} for ct in constructs_dict}
+        self.constructs_records = constructs_records
+        self.constructs_digestions = {ct: {} for ct in constructs_records}
+
 
     def get_digestion_bands_for_construct(self, construct_id, digestion):
         """Return the bands resulting from the digestion of the construct.
@@ -334,7 +357,7 @@ class ClonesObservations:
 
         construct_id
           ID of the construct as it appears in this object'
-          ``constructs_dict``.
+          ``constructs_records``.
 
         digestion
           For instance ``('BamHI', 'XbaI')``
@@ -342,7 +365,7 @@ class ClonesObservations:
         """
         construct_digestions = self.constructs_digestions[construct_id]
         if digestion not in construct_digestions:
-            construct_record = self.constructs_dict[construct_id]
+            construct_record = self.constructs_records[construct_id]
             construct_digestions[digestion] = predict_digestion_bands(
                 str(construct_record.seq),
                 linear=construct_record.__dict__.get('linear', True),
@@ -405,7 +428,7 @@ class ClonesObservations:
                     min_band_cutoff=min_band_cutoff,
                     max_band_cutoff=max_band_cutoff
                 )
-                for construct_id in self.constructs_dict
+                for construct_id in self.constructs_records
             })
             for clone_name, clone in self.clones.items()
         ])
@@ -429,7 +452,7 @@ class ClonesObservations:
                                          key=lambda v: v.max_discrepancy)
         return results
 
-    def plot_validations_plate_map(self, validations, target_file=None,
+    def plot_validations_plate_map(self, validations, target=None,
                                    ax=None):
         """Plot a map of the plate with passing/failing wells in green/red."""
 
@@ -455,15 +478,14 @@ class ClonesObservations:
         pass_plotter = PlateColorsPlotter(lambda w: w.data.pass_color,
                                           well_radius=250)
         pass_plotter.plot_plate(plate, ax=ax)
-        if target_file is not None:
-            ax.figure.savefig(target_file, bbox_inches='tight')
+        if target is not None:
+            ax.figure.savefig(target, bbox_inches='tight')
             plt.close(ax.figure)
         else:
             return ax
 
-    def plot_validations_summary(self, validations,
-                                 target_file=None,
-                                 per_digestion_discrepancy=False):
+    def plot_all_validations_patterns(self, validations, target=None,
+                                      per_digestion_discrepancy=False):
         """Plot a Graphic report of the gel validation.
 
         The report displays the patterns, with green and red backgrounds
@@ -490,74 +512,85 @@ class ClonesObservations:
         """
 
         summary = self.validations_summary(validations)
+        max_x = Counter([
+            clone.construct_id
+            for clone in self.clones.values()
+        ]).most_common(1)[0][1] + 2
         digestions_by_construct = {construct: [] for construct in summary}
         for construct, validations in summary.items():
             for validation in validations:
                 for digestion in validation.discrepancies:
                     if digestion not in digestions_by_construct[construct]:
                         digestions_by_construct[construct].append(digestion)
-        lines_per_construct = [
-            len(digestions)
-            for c, digestions in digestions_by_construct.items()
-        ]
-        total_lines = sum(lines_per_construct)
-        max_x = max(len(clones) for construct, clones in summary.items()) + 1
-
-        fig, axes = plt.subplots(total_lines, 2, figsize=(2.2 * max_x,
-                                                          3 * total_lines))
-        axes_lines = (line for line in axes)
         ladder = list(validations[0].clone.digestions.values())[0].ladder
-        for construct_id, validations in summary.items():
-            digestions = digestions_by_construct[construct_id]
-            for i, digestion in enumerate(digestions):
-                reference_bands = self.get_digestion_bands_for_construct(
-                    construct_id, digestion)
-                reference = BandsPattern(
-                    bands=reference_bands,
-                    ladder=ladder,
-                    label="exp." if (i == 0) else None,
-                    background_color="#c6dcff",
-                    corner_note="Total: %d bp" % sum(reference_bands),
-                    global_bands_props={"label_fontdict": {"size": 5}}
-                )
-                sorted_bands = sorted(reference.bands,
-                                      key=lambda b: -b.dna_size)
-                for band_name, band in zip("abcdefghijklm", sorted_bands):
-                    band.label = band_name
-                patterns = [
-                    validation.to_bandwagon_bandpattern(
-                        digestion=digestion,
-                        per_digestion_discrepancy=per_digestion_discrepancy,
-                        label='auto' if (i == 0) else None
+        pdf_io = BytesIO()
+        with PdfPages(pdf_io) as pdf:
+            for construct_id, validations in summary.items():
+                digestions = digestions_by_construct[construct_id]
+                band_patterns = OrderedDict()
+                for i, digestion in enumerate(digestions):
+                    reference_bands = self.get_digestion_bands_for_construct(
+                        construct_id, digestion)
+                    reference = BandsPattern(
+                        bands=reference_bands,
+                        ladder=ladder,
+                        label="exp." if (i == 0) else None,
+                        background_color="#c6dcff",
+                        corner_note="Total: %d bp" % sum(reference_bands),
+                        global_bands_props={"label_fontdict": {"size": 5}}
                     )
-                    for validation in validations
-                ]
-                patterns_set = BandsPatternsSet(
-                    [reference] + patterns, ladder=ladder,
-                    label="\n".join([construct_id, " + ".join(digestion)]),
-                    ladder_ticks=5,
-                    global_patterns_props={"label_fontdict": {"rotation": 60}}
+                    sorted_bands = sorted(reference.bands,
+                                          key=lambda b: -b.dna_size)
+                    for band_name, band in zip("abcdefghijklm", sorted_bands):
+                        band.label = band_name
+                    patterns = [
+                        validation.to_bandwagon_bandpattern(
+                            digestion=digestion,
+                            per_digestion_discrepancy=per_digestion_discrepancy,
+                            label='auto' if (i == 0) else None
+                        )
+                        for validation in validations
+                    ]
+                    band_patterns[digestion] = BandsPatternsSet(
+                        [reference] + patterns, ladder=ladder,
+                        label=" + ".join(digestion),
+                        ladder_ticks=5,
+                        global_patterns_props={
+                            "label_fontdict": {"rotation": 60}}
+                    )
+
+                digestions = digestions_by_construct[construct_id]
+                fig, axes = plt.subplots(
+                    len(digestions), 1, sharex=True,
+                    figsize=(1.1 * max_x, 3 * len(digestions)),
                 )
+                if len(digestions) == 1:
+                    axes = [axes]
+                axes[-1].set_xlim(xmax=max_x)
 
-                record = self.constructs_dict[construct_id]
+                for ax, (digestion, pattern_set) in zip(axes, band_patterns.items()):
+                    pattern_set.plot(ax)
 
-                ax_left, ax_right = next(axes_lines)
-                ax_left.set_xlim(0.5, max_x + 2)
-                patterns_set.plot(ax_left)
-                ax_left.set_xlim(0.5, max_x + 2)
-                self._plot_digestion(record, enzymes=digestion, ax=ax_right)
-
-        fig.subplots_adjust(hspace=0.3)
-        if target_file is not None:
-            fig.savefig(target_file, bbox_inches="tight")
-            plt.close(fig)
+                axes[-1].set_xlabel(construct_id,
+                                    fontdict=dict(size=14, weight='bold'),
+                                    ha='left', position=(0.0, 0.1))
+                pdf.attach_note(construct_id)
+                pdf.savefig(fig, bbox_inches="tight")
+                plt.close(fig)
+        pdf_data = pdf_io.getvalue()
+        if target is None:
+            return pdf_data
+        elif target == 'base64':
+            return 'data:application/pdf;base64,' + pdf_data.decode("utf-8")
         else:
-            return axes
+            with open(target, 'wb') as f:
+                f.write(pdf_data)
 
     def write_identification_report(self, target_file=None,
                                     relative_tolerance=0.1,
                                     min_band_cutoff=None,
-                                    max_band_cutoff=None):
+                                    max_band_cutoff=None,
+                                    plot_constructs_cuts=False):
         """Plot a Graphic report of the gel validation.
 
         The report displays the patterns, with green and red backgrounds
@@ -682,3 +715,45 @@ class ClonesObservations:
         translator = BiopythonTranslator([features_filter], features_prop)
         gr_record = translator.translate_record(record)
         gr_record.plot(ax, fontsize=4, level_offset=7)
+
+    def plot_all_constructs_digestions(self, target=None, figsize=(12, 4)):
+        """Plot schemas of all constructs with cuts, in a multipage PDF.
+
+        Parameters
+        ----------
+        target
+          Either None (at which case the function returns raw data of the PDF)
+          or 'base64' (the function returns base64-encoded data, e.g. for
+          web transfer), or a file path to be written to
+        figsize
+          The size in inches of each figure (=page of the pdf).
+        """
+        constructs_digestions = OrderedDict([
+            (construct_id, set())
+            for construct_id in self.constructs_records
+        ])
+        for clone in self.clones.values():
+            for digestion in clone.digestions:
+                constructs_digestions[clone.construct_id].add(digestion)
+        pdf_io = BytesIO()
+        with PdfPages(pdf_io) as pdf:
+            for construct, digestions in constructs_digestions.items():
+                digestions = sorted(digestions)
+
+                for digestion in digestions:
+                    fig, ax = plt.subplots(1, figsize=figsize)
+                    self._plot_digestion(self.constructs_records[construct],
+                                         digestion, ax)
+                    title = construct + '\n' + " + ".join(digestion)
+                    ax.set_title(title, fontdict=dict(weight='bold'))
+                    pdf.attach_note(construct)
+                    pdf.savefig(fig, bbox_inches="tight")
+                    plt.close(fig)
+        pdf_data = pdf_io.getvalue()
+        if target is None:
+            return pdf_data
+        elif target == 'base64':
+            return 'data:application/pdf;base64,' + pdf_data.decode("utf-8")
+        else:
+            with open(target, 'wb') as f:
+                f.write(pdf_data)
