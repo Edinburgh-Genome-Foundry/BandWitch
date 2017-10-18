@@ -2,6 +2,9 @@
 Basic tests to check that the core functionalities are at least running.
 """
 
+import matplotlib
+matplotlib.use("Agg")
+
 import os
 from collections import OrderedDict
 from bandwitch import (SeparatingDigestionsProblem, IdealDigestionsProblem,
