@@ -299,6 +299,7 @@ class Clone:
         return CloneValidation(self, bands_by_digestion,
                                discrepancies=discrepancies)
 
+    @staticmethod
     def from_bands_observations(observations, constructs_map, digestions_map,
                                 clones_map=None):
         if isinstance(observations, (dict, OrderedDict)):
