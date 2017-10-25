@@ -3,19 +3,20 @@
 The class offers methods useful when the coverage is determined by thresholding
 scores (see below).
 
-Use in other projects
-~~~~~~~~~~~~~~~~~~~~~
+**Use in other projects**
+
 
 Note you can use this file in your project as long as the following licence
 appears:
 
-Copyright Edinburgh Genome Foundry, 2017
-Licence: MIT
-Author: Zulko
+::
+
+    Copyright Edinburgh Genome Foundry, 2017
+    Licence: MIT
+    Author: Zulko
 
 
-Technical explanations:
-~~~~~~~~~~~~~~~~~~~~~~~~
+**Technical explanations:**
 
 
 The problem of enzyme digestion can be generalized and formalized as follows:
@@ -27,7 +28,7 @@ A score function score(Pi, ej) => some positive score
 The coverage of Pi with threshold T:
 C[Pi](T) = [elements e such that score(Pi, e) > T]
 
-The minimal set cover for T is defined as
+The minimal set cover for a threshold T is defined as
 M(T) = [Px, Py...] such that [C[Px](T), C[Py](T)...] is minimal set cover of
 all elements
 
@@ -37,35 +38,60 @@ B. Find the largest T such that the lenght of M(T) is less than some number N.
 
 Problem A is solved by a standard greedy selection:
 
-```
-greedy_selection(T):
- compute all  C[Pi](T)
- while all elements not covered:
-     select a new element.
-```
+.. code::
+
+  greedy_selection(T):
+    compute all  C[Pi](T)
+    while all elements not covered:
+      select a new element.
+
 
 
 Problem 2 is solved by bisection on T:
 
-```
-T_minimax = min_Pi(max_ej score(Pi, e_j))
-Tmin, Tmax = 0, T_minimax
-while (Tmax - Tmin) > tolerance:
-    Tcenter = (Tmin + Tmax) / 2
-    M_center = greedy_selection(Tcenter)
-    if length(M_center) > N:
-        Tmax = Tcenter
-    else:
-        Tmin = Tcenter
-return greedy_selection(Tmin)
-```
+.. code::
+
+  T_minimax = min_Pi(max_ej score(Pi, e_j))
+  Tmin, Tmax = 0, T_minimax
+  while (Tmax - Tmin) > tolerance:
+      Tcenter = (Tmin + Tmax) / 2
+      M_center = greedy_selection(Tcenter)
+      if length(M_center) > N:
+          Tmax = Tcenter
+      else:
+          Tmin = Tcenter
+  return greedy_selection(Tmin)
+
 """
 
 
-def maximizing_bisection(f, x_min, x_max, tolerance=0.001, score=None):
-    """Find the largest x with score(f(x)) <= 0. where score(f(x)) increasing.
+def maximizing_bisection(f, x_min, x_max, precision=0.001, score=None):
+    """Find largest x such that ``score(f(x)) <= 0`` (score(f(x)) increasing).
 
-    Return x, f(x), score(f(x))
+    Parameters
+    ----------
+
+    f
+      A function f(x) => anything. The returned value must be either a score,
+      or something that can be scored via the ``score`` parameter.
+
+    x_min, x_max
+      Range of allowed values for variable x
+
+    precision
+      Precision on x (the algorithm stops when x is less than this far away
+      from the optimum)
+
+    score
+      Scoring function. Leave to none if function f(x) is already a score.
+
+
+
+    Returns
+    -------
+
+    x, f(x), score(f(x))
+      Everything you may need !
 
     """
     if score is None:
@@ -81,8 +107,8 @@ def maximizing_bisection(f, x_min, x_max, tolerance=0.001, score=None):
     if score_xmax <= 0:
         return x_max, f_xmax, score_xmax
 
-    while (x_max - x_min) / 2.0 > tolerance:
-        center = (x_min + x_max) / 2.000
+    while (x_max - x_min) > precision:
+        center = (x_min + x_max) / 2.0
         f_center = f(center)
         score_center = score(f_center)
         if score_center > 0:
@@ -97,6 +123,38 @@ def maximizing_bisection(f, x_min, x_max, tolerance=0.001, score=None):
 
 def minimal_cover(elements_set, subsets, max_subsets=None, heuristic='default',
                   selected=(), depth=0):
+    """
+
+    Parameters
+    ----------
+    elements_set
+      The set of all ements to cover
+
+    subsets
+      A list of (name, subset)
+
+    max_subsets
+      Maximal number of subsets allowed
+
+    heuristic
+      A function ``((name, subset), selected) => value`` where ``name`` is the
+      name of a subset, ``subset`` is what remains of the subset at this stage,
+      ``selected`` is a list of already-selected subset names.
+
+    selected
+      (Recursion parameter, do not use.) Already-selected elements
+
+    depth
+      (Recursion parameter, do not use.). Depth of the recursion
+
+    Returns
+    -------
+
+      None if no solution was found, else a collection of [(name, subset)...]
+      in the order in which the subsets
+    """
+
+
     if len(elements_set) == 0:
         return []
     if max_subsets == 0:
@@ -148,6 +206,38 @@ def minimal_cover(elements_set, subsets, max_subsets=None, heuristic='default',
 
 
 class SetCoverProblem:
+    """Generic class for the resolution of score-based set cover problems.
+
+    Parameters
+    ----------
+
+    elements
+      A set of all elements to be covered
+
+    parameters
+      A set of parameters (a parameter and a threshold will determine a subset)
+
+    process_logger
+      A ProgLog process logger.
+
+    Note
+    ----
+
+    The somwhat complicated math problem solved by the algorithms implemented
+    in this class is:
+
+    Given set of parameters (Pi), a set of elements (ej), and a score function
+    score(Pi, ej) => some positive score, we call "T-coverage of Pi" the set
+    ``C[Pi](T) = (elements e such that score(Pi, e) > T)``
+
+    The minimal set cover M(T) is defined as
+    M(T) = [Px, Py...] such that [C[Px](T), C[Py](T)...] is minimal subset
+    cover of all elements (ej)
+
+    The class allows to solve the two following problems::
+    1. Find M(T) given T.
+    2. Find the largest T such that the lenght of M(T) is under some number N.
+    """
 
     def __init__(self, elements, parameters, progress_logger=None):
         self.elements = elements
@@ -164,7 +254,8 @@ class SetCoverProblem:
         return len(subset)
 
     def _parameter_element_score(self, parameter, element):
-        pass
+        raise NotImplementedError('Each subset cover problem must overwrite '
+                                  'this function.')
 
     def _compute_scores(self):
         self.scores = {element: {} for element in self.elements}

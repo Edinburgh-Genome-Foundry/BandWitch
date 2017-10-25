@@ -13,7 +13,7 @@ experiments in DNA assembly operations. Bandwitch implements enzyme selection
 methods to validate or identify DNA assemblies, and routines to automatically
 validate/identify assemblies from experimental data.
 
-You can try BandWitch in `this interactive webdemo <>`_.
+You can try BandWitch's enzyme suggestion feature in `this web demo <http://cuba.genomefoundry.org/digestion-selector>`_, and the sequence validation (from AATI fragment analyzer files) in `this other demo <http://cuba.genomefoundry.org/analyze-digests>`_
 
 Installation
 -------------
@@ -149,11 +149,6 @@ Contribute
 BandWitch is an open-source library originally written at the
 Edinburgh Genome Foundry by Zulko_. It is released on Github_ under the MIT
 licence (¢ Edinburgh Genome Foundry), everyone is welcome to contribute.
-
-.. _Zulko: https://github.com/Zulko/
-.. _Github: https://github.com/EdinburghGenomeFoundry/BandWitch
-.. _PYPI: https://pypi.python.org/pypi/bandwitch
-
 
 .. raw:: html
 

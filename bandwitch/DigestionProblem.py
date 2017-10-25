@@ -376,7 +376,7 @@ class SeparatingDigestionsProblem(DigestionProblem):
         if ax is None:
             _, ax = plt.subplots(1, figsize=2 * (0.8 * len(grid),))
         ax.imshow(grid[:, ::-1], interpolation='nearest', cmap='OrRd_r',
-                  vmin=0, vmax=0.2)
+                  vmin=0, vmax=self.relative_migration_precision)
         for i in range(len(grid)):
             for j in range(len(grid)):
                 if i > j:

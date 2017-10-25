@@ -1,3 +1,5 @@
+"""Classes for parsing and analyzis of DNA migration data.
+"""
 from collections import OrderedDict, Counter
 import matplotlib.pyplot as plt
 from Bio import Restriction
@@ -671,7 +673,17 @@ class ClonesObservations:
             return axes
 
     def _create_digestion_graphic_record(self, record, enzymes):
-        """Create a DnaFeaturesViewer graphic record showing the cuts."""
+        """Create a DnaFeaturesViewer graphic record showing the cuts.
+
+        Parameters
+        ----------
+        record
+          A Biopython record
+
+        enzymes
+          A list of enzyme names. e.g. ('EcoRI'. 'BamHI')
+
+        """
         batch = Restriction.RestrictionBatch(enzymes)
         cuts_dict = batch.search(record.seq)
         all_cuts = sorted(
@@ -697,7 +709,20 @@ class ClonesObservations:
         return gr_cuts, all_cuts
 
     def _plot_digestion(self, record, enzymes, ax):
-        """Plot the record and its cuts one above the other."""
+        """Plot the record and its cuts one above the other.
+
+        Parameters
+        ----------
+        record
+          A Biopython record
+
+        enzymes
+          A list of enzyme names. e.g. ('EcoRI'. 'BamHI')
+
+        ax
+          Matplotlib ax on which to plot the figure.
+
+        """
 
         gr_cuts, all_cuts = self._create_digestion_graphic_record(
             record, enzymes)
@@ -728,6 +753,7 @@ class ClonesObservations:
           web transfer), or a file path to be written to
         figsize
           The size in inches of each figure (=page of the pdf).
+
         """
         constructs_digestions = OrderedDict([
             (construct_id, set())
