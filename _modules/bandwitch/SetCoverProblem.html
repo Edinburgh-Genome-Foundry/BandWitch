@@ -1,0 +1,614 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bandwitch.SetCoverProblem &mdash; BandWitch 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/main.css" type="text/css" />
+  
+    <link rel="stylesheet" href="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="BandWitch 0.1.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BandWitch
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">BandWitch</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ref.html">BandWitch Reference manual</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BandWitch</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>bandwitch.SetCoverProblem</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for bandwitch.SetCoverProblem</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Generic class to solve minimal set cover problems.</span>
+
+<span class="sd">The class offers methods useful when the coverage is determined by thresholding</span>
+<span class="sd">scores (see below).</span>
+
+<span class="sd">**Use in other projects**</span>
+
+
+<span class="sd">Note you can use this file in your project as long as the following licence</span>
+<span class="sd">appears:</span>
+
+<span class="sd">::</span>
+
+<span class="sd">    Copyright Edinburgh Genome Foundry, 2017</span>
+<span class="sd">    Licence: MIT</span>
+<span class="sd">    Author: Zulko</span>
+
+
+<span class="sd">**Technical explanations:**</span>
+
+
+<span class="sd">The problem of enzyme digestion can be generalized and formalized as follows:</span>
+
+<span class="sd">A set of parameters Pi</span>
+<span class="sd">A set of elements ej</span>
+<span class="sd">A score function score(Pi, ej) =&gt; some positive score</span>
+
+<span class="sd">The coverage of Pi with threshold T:</span>
+<span class="sd">C[Pi](T) = [elements e such that score(Pi, e) &gt; T]</span>
+
+<span class="sd">The minimal set cover for a threshold T is defined as</span>
+<span class="sd">M(T) = [Px, Py...] such that [C[Px](T), C[Py](T)...] is minimal set cover of</span>
+<span class="sd">all elements</span>
+
+<span class="sd">Two problems:</span>
+<span class="sd">A. Find M(T) given T.</span>
+<span class="sd">B. Find the largest T such that the lenght of M(T) is less than some number N.</span>
+
+<span class="sd">Problem A is solved by a standard greedy selection:</span>
+
+<span class="sd">.. code::</span>
+
+<span class="sd">  greedy_selection(T):</span>
+<span class="sd">    compute all  C[Pi](T)</span>
+<span class="sd">    while all elements not covered:</span>
+<span class="sd">      select a new element.</span>
+
+
+
+<span class="sd">Problem 2 is solved by bisection on T:</span>
+
+<span class="sd">.. code::</span>
+
+<span class="sd">  T_minimax = min_Pi(max_ej score(Pi, e_j))</span>
+<span class="sd">  Tmin, Tmax = 0, T_minimax</span>
+<span class="sd">  while (Tmax - Tmin) &gt; tolerance:</span>
+<span class="sd">      Tcenter = (Tmin + Tmax) / 2</span>
+<span class="sd">      M_center = greedy_selection(Tcenter)</span>
+<span class="sd">      if length(M_center) &gt; N:</span>
+<span class="sd">          Tmax = Tcenter</span>
+<span class="sd">      else:</span>
+<span class="sd">          Tmin = Tcenter</span>
+<span class="sd">  return greedy_selection(Tmin)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="maximizing_bisection"><a class="viewcode-back" href="../../ref.html#bandwitch.SetCoverProblem.maximizing_bisection">[docs]</a><span class="k">def</span> <span class="nf">maximizing_bisection</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find largest x such that ``score(f(x)) &lt;= 0`` (score(f(x)) increasing).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    f</span>
+<span class="sd">      A function f(x) =&gt; anything. The returned value must be either a score,</span>
+<span class="sd">      or something that can be scored via the ``score`` parameter.</span>
+
+<span class="sd">    x_min, x_max</span>
+<span class="sd">      Range of allowed values for variable x</span>
+
+<span class="sd">    precision</span>
+<span class="sd">      Precision on x (the algorithm stops when x is less than this far away</span>
+<span class="sd">      from the optimum)</span>
+
+<span class="sd">    score</span>
+<span class="sd">      Scoring function. Leave to none if function f(x) is already a score.</span>
+
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    x, f(x), score(f(x))</span>
+<span class="sd">      Everything you may need !</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">score</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+    <span class="n">f_xmin</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x_min</span><span class="p">)</span>
+    <span class="n">score_xmin</span> <span class="o">=</span> <span class="n">score</span><span class="p">(</span><span class="n">f_xmin</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">score_xmin</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="n">f_xmax</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+    <span class="n">score_xmax</span> <span class="o">=</span> <span class="n">score</span><span class="p">(</span><span class="n">f_xmax</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">score_xmax</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">f_xmax</span><span class="p">,</span> <span class="n">score_xmax</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">x_max</span> <span class="o">-</span> <span class="n">x_min</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">precision</span><span class="p">:</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_min</span> <span class="o">+</span> <span class="n">x_max</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">f_center</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">center</span><span class="p">)</span>
+        <span class="n">score_center</span> <span class="o">=</span> <span class="n">score</span><span class="p">(</span><span class="n">f_center</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">score_center</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">x_max</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x_min</span> <span class="o">=</span> <span class="n">center</span>
+            <span class="n">f_xmin</span> <span class="o">=</span> <span class="n">f_center</span>
+            <span class="n">score_xmin</span> <span class="o">=</span> <span class="n">score_center</span>
+
+    <span class="k">return</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">f_xmin</span><span class="p">,</span> <span class="n">score_xmin</span></div>
+
+
+<div class="viewcode-block" id="minimal_cover"><a class="viewcode-back" href="../../ref.html#bandwitch.SetCoverProblem.minimal_cover">[docs]</a><span class="k">def</span> <span class="nf">minimal_cover</span><span class="p">(</span><span class="n">elements_set</span><span class="p">,</span> <span class="n">subsets</span><span class="p">,</span> <span class="n">max_subsets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">heuristic</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span>
+                  <span class="n">selected</span><span class="o">=</span><span class="p">(),</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    elements_set</span>
+<span class="sd">      The set of all ements to cover</span>
+
+<span class="sd">    subsets</span>
+<span class="sd">      A list of (name, subset)</span>
+
+<span class="sd">    max_subsets</span>
+<span class="sd">      Maximal number of subsets allowed</span>
+
+<span class="sd">    heuristic</span>
+<span class="sd">      A function ``((name, subset), selected) =&gt; value`` where ``name`` is the</span>
+<span class="sd">      name of a subset, ``subset`` is what remains of the subset at this stage,</span>
+<span class="sd">      ``selected`` is a list of already-selected subset names.</span>
+
+<span class="sd">    selected</span>
+<span class="sd">      (Recursion parameter, do not use.) Already-selected elements</span>
+
+<span class="sd">    depth</span>
+<span class="sd">      (Recursion parameter, do not use.). Depth of the recursion</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">      None if no solution was found, else a collection of [(name, subset)...]</span>
+<span class="sd">      in the order in which the subsets</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">elements_set</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">max_subsets</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">full_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">subset</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">subset</span> <span class="ow">in</span> <span class="n">subsets</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">full_set</span> <span class="o">!=</span> <span class="n">elements_set</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">subsets</span> <span class="o">=</span> <span class="p">[(</span><span class="n">n</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="n">subsets</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">sorting_heuristic</span><span class="p">(</span><span class="n">named_subset</span><span class="p">):</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">subset</span> <span class="o">=</span> <span class="n">named_subset</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">heuristic</span> <span class="o">==</span> <span class="s1">&#39;default&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">heuristic</span><span class="p">(</span><span class="n">named_subset</span><span class="p">,</span> <span class="n">selected</span><span class="p">)</span>
+
+    <span class="n">ordered_subsets</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">subsets</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">sorting_heuristic</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">ordered_subsets</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">max_subsets</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">critical_subset_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">elements_set</span><span class="p">)</span> <span class="o">/</span> <span class="n">max_subsets</span>
+            <span class="n">max_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">ordered_subsets</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">max_len</span> <span class="o">&lt;</span> <span class="n">critical_subset_length</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">subset</span> <span class="o">=</span> <span class="n">ordered_subsets</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">new_elements_set</span> <span class="o">=</span> <span class="n">elements_set</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span>
+        <span class="n">new_subsets</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">name_</span><span class="p">,</span> <span class="n">sub</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">subset</span><span class="p">))</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">name_</span><span class="p">,</span> <span class="n">sub</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ordered_subsets</span>
+        <span class="p">]</span>
+        <span class="n">new_max_subsets</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="p">(</span><span class="n">max_subsets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="k">else</span> <span class="n">max_subsets</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">minimal_cover</span><span class="p">(</span><span class="n">new_elements_set</span><span class="p">,</span> <span class="n">new_subsets</span><span class="p">,</span>
+                               <span class="n">heuristic</span><span class="o">=</span><span class="n">heuristic</span><span class="p">,</span>
+                               <span class="n">selected</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">subset</span><span class="p">],</span>
+                               <span class="n">max_subsets</span><span class="o">=</span><span class="n">new_max_subsets</span><span class="p">,</span>
+                               <span class="n">depth</span><span class="o">=</span><span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span> <span class="o">+</span> <span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">ordered_subsets</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">subset_</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">subset_</span><span class="p">,</span> <span class="p">(</span><span class="n">new_name</span><span class="p">,</span> <span class="n">new_subset</span><span class="p">))</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ordered_subsets</span><span class="p">,</span>
+                                                         <span class="n">new_subsets</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_subset</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+        <span class="p">]</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="SetCoverProblem"><a class="viewcode-back" href="../../ref.html#bandwitch.SetCoverProblem.SetCoverProblem">[docs]</a><span class="k">class</span> <span class="nc">SetCoverProblem</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Generic class for the resolution of score-based set cover problems.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    elements</span>
+<span class="sd">      A set of all elements to be covered</span>
+
+<span class="sd">    parameters</span>
+<span class="sd">      A set of parameters (a parameter and a threshold will determine a subset)</span>
+
+<span class="sd">    process_logger</span>
+<span class="sd">      A ProgLog process logger.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+
+<span class="sd">    The somwhat complicated math problem solved by the algorithms implemented</span>
+<span class="sd">    in this class is:</span>
+
+<span class="sd">    Given set of parameters (Pi), a set of elements (ej), and a score function</span>
+<span class="sd">    score(Pi, ej) =&gt; some positive score, we call &quot;T-coverage of Pi&quot; the set</span>
+<span class="sd">    ``C[Pi](T) = (elements e such that score(Pi, e) &gt; T)``</span>
+
+<span class="sd">    The minimal set cover M(T) is defined as</span>
+<span class="sd">    M(T) = [Px, Py...] such that [C[Px](T), C[Py](T)...] is minimal subset</span>
+<span class="sd">    cover of all elements (ej)</span>
+
+<span class="sd">    The class allows to solve the two following problems::</span>
+<span class="sd">    1. Find M(T) given T.</span>
+<span class="sd">    2. Find the largest T such that the lenght of M(T) is under some number N.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">progress_logger</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">elements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+        <span class="k">if</span> <span class="n">progress_logger</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">progress_logger</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">**</span><span class="n">k</span><span class="p">:</span> <span class="kc">None</span>
+            <span class="n">progress_logger</span><span class="o">.</span><span class="n">iter_bar</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">**</span><span class="n">k</span><span class="p">:</span> <span class="n">k</span><span class="o">.</span><span class="n">popitem</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress_logger</span> <span class="o">=</span> <span class="n">progress_logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_scores</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_default_heuristic</span><span class="p">(</span><span class="n">named_subset</span><span class="p">,</span> <span class="n">current_selection</span><span class="p">):</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">subset</span> <span class="o">=</span> <span class="n">named_subset</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_parameter_element_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Each subset cover problem must overwrite &#39;</span>
+                                  <span class="s1">&#39;this function.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_compute_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scores</span> <span class="o">=</span> <span class="p">{</span><span class="n">element</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">progress_logger</span><span class="p">(</span><span class="n">element_index</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">):</span>
+                <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_element_score</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="n">element</span><span class="p">][</span><span class="n">parameter</span><span class="p">]</span> <span class="o">=</span> <span class="n">score</span>
+
+        <span class="k">for</span> <span class="n">parameters_dict</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">parameters_dict</span><span class="p">[</span><span class="s2">&quot;MAX_SCORE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">parameter</span><span class="p">)</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span> <span class="ow">in</span> <span class="n">parameters_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="p">((</span><span class="n">min_max_score</span><span class="p">,</span> <span class="n">parameter</span><span class="p">),</span> <span class="n">element</span><span class="p">)</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">parameters_dict</span><span class="p">[</span><span class="s2">&quot;MAX_SCORE&quot;</span><span class="p">],</span> <span class="n">element</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">element</span><span class="p">,</span> <span class="n">parameters_dict</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bottleneck</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">score</span><span class="o">=</span><span class="n">min_max_score</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="n">parameter</span><span class="p">,</span>
+                               <span class="n">element</span><span class="o">=</span><span class="n">element</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_compute_coverages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">parameter</span><span class="p">:</span> <span class="nb">set</span><span class="p">(</span>
+                <span class="n">element</span>
+                <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="n">element</span><span class="p">][</span><span class="n">parameter</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">threshold</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_select_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_set_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">covering_algorithm</span><span class="o">=</span><span class="s1">&#39;greedy&#39;</span><span class="p">,</span> <span class="n">heuristic</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span>
+                        <span class="n">threshold_tolerance</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">bisection</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Select a subset of parameters which collectively cover all elements.</span>
+
+<span class="sd">        This lets you either find the highest-score cover of less than N</span>
+<span class="sd">        elements, or the best free-sized set of parameters covering elements</span>
+<span class="sd">        with the highest minimal score.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        min_score, [param1, param2, param3...]</span>
+<span class="sd">          Where min_score is a value lower than all the score coverages, and</span>
+<span class="sd">          the list indicates the parameters in the order in which they have</span>
+<span class="sd">          been selected.</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        threshold</span>
+<span class="sd">          If provided and max_set_size is not provided, the method will return</span>
+<span class="sd">          a free-sized set of parameters covering all elements. If max_set_size</span>
+<span class="sd">          is provided, the subset will not exceed max_set_size in size. This</span>
+<span class="sd">          can result in unsolvable.</span>
+
+<span class="sd">        max_set_size</span>
+<span class="sd">          When provided instead of threshold, the method will find the highest</span>
+<span class="sd">          threshold which allows solutions in max_set_size or less.</span>
+
+<span class="sd">        covering_algorithm</span>
+<span class="sd">          Either &#39;greedy&#39; for fast approximate solving or &#39;full&#39; for full</span>
+<span class="sd">          solving</span>
+
+<span class="sd">        heuristic</span>
+<span class="sd">          Scoring function to prioritize some parameters over others.</span>
+
+<span class="sd">        threshold_tolerance</span>
+<span class="sd">          When max_set_size is provided and not threshold, the returned</span>
+<span class="sd">          solution will have the optimal threshold, plus or minus this</span>
+<span class="sd">          tolerance.</span>
+
+<span class="sd">        bisection</span>
+<span class="sd">          For internal recursion. Do not modify.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">heuristic</span> <span class="o">==</span> <span class="s1">&#39;default&#39;</span><span class="p">:</span>
+            <span class="n">heuristic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_heuristic</span>
+        <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bottleneck</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">max_set_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">bisection</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">minimal_cover</span><span class="p">(</span>
+                    <span class="n">elements_set</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span>
+                    <span class="n">subsets</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_coverages</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+                    <span class="n">max_subsets</span><span class="o">=</span><span class="n">max_set_size</span><span class="p">,</span>
+                    <span class="n">heuristic</span><span class="o">=</span><span class="n">heuristic</span>
+                <span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="n">thr</span><span class="p">):</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">selection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_parameters</span><span class="p">(</span>
+                    <span class="n">threshold</span><span class="o">=</span><span class="n">thr</span><span class="p">,</span>
+                    <span class="n">covering_algorithm</span><span class="o">=</span><span class="n">covering_algorithm</span><span class="p">,</span>
+                    <span class="n">heuristic</span><span class="o">=</span><span class="n">heuristic</span><span class="p">,</span>
+                    <span class="n">max_set_size</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">covering_algorithm</span> <span class="o">==</span> <span class="s1">&#39;greedy&#39;</span>
+                    <span class="k">else</span> <span class="n">max_set_size</span><span class="p">,</span>
+                    <span class="n">bisection</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="n">selection</span>
+
+            <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="n">selection</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">selection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="mf">1e10</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span> <span class="o">-</span> <span class="n">max_set_size</span>
+            <span class="n">threshold</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">maximizing_bisection</span><span class="p">(</span>
+                <span class="n">f</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">x_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="n">score</span><span class="p">,</span>
+                <span class="n">tolerance</span><span class="o">=</span><span class="n">threshold_tolerance</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">selection</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">covering_algorithm</span> <span class="o">==</span> <span class="s1">&#39;greedy&#39;</span><span class="p">:</span>
+                <span class="n">max_subsets</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">max_subsets</span> <span class="o">=</span> <span class="n">max_set_size</span>
+            <span class="k">return</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">minimal_cover</span><span class="p">(</span>
+                <span class="n">elements_set</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span>
+                <span class="n">subsets</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_coverages</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+                <span class="n">max_subsets</span><span class="o">=</span><span class="n">max_subsets</span><span class="p">,</span>
+                <span class="n">heuristic</span><span class="o">=</span><span class="n">heuristic</span><span class="p">,</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="SetCoverProblem.min_parameter_score"><a class="viewcode-back" href="../../ref.html#bandwitch.SetCoverProblem.SetCoverProblem.min_parameter_score">[docs]</a>    <span class="k">def</span> <span class="nf">min_parameter_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the smallest score on any element for the given parameter.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="n">e</span><span class="p">][</span><span class="n">parameter</span><span class="p">]</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">])</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Edinburgh Genome Foundry.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.min.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
