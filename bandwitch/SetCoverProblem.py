@@ -364,7 +364,7 @@ class SetCoverProblem:
                     return len(selection) - max_set_size
             threshold, selection, _ = maximizing_bisection(
                 f=select, x_min=0, x_max=threshold, score=score,
-                tolerance=threshold_tolerance)
+                precision=threshold_tolerance)
             return threshold, selection
         else:
             if covering_algorithm == 'greedy':
