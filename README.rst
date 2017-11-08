@@ -10,15 +10,11 @@ BandWitch
    :target: https://travis-ci.org/Edinburgh-Genome-Foundry/BandWitch
    :alt: Travis CI build status
 
-(the documentation is incomplete, come back later for more)
-
 Bandwitch (full documentation `here <https://edinburgh-genome-foundry.github.io/BandWitch/>`_)
 is a Python library for the planning and analysis of restriction
-experiments in DNA assembly operations. Bandwitch implements enzyme selection
-methods to validate or identify DNA assemblies, and routines to automatically
-validate/identify assemblies from experimental data.
+experiments in DNA assembly operations. Bandwitch implements method to select the best enzyme(s) to validate or identify DNA assemblies. It also provides report generation methods to automatically validate/identify assemblies from experimental data.
 
-You can try BandWitch in this interactive webdemo.
+You can try BandWitch's enzyme suggestion feature in `this web demo <http://cuba.genomefoundry.org/digestion-selector>`_, and the sequence validation (from AATI fragment analyzer files) in `this other demo <http://cuba.genomefoundry.org/analyze-digests>`_
 
 Installation
 -------------
