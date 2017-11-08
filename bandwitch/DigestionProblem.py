@@ -104,7 +104,7 @@ class DigestionProblem(SetCoverProblem):
 
     def plot_digestions(self, digestions, axes=None, bands_props=None,
                         patterns_props=None, patternset_props=None,
-                        target_file=None):
+                        target_file=None, close_figure=False):
         """Plot the patterns for each sequence, for each digestion in the list.
 
         Requires Bandwagon.
@@ -170,6 +170,7 @@ class DigestionProblem(SetCoverProblem):
             ).plot(ax)
         if target_file is not None:
             axes[0].figure.savefig(target_file, bbox_inches='tight')
+        if close_figure:
             plt.close(axes[0].figure)
         return axes
 

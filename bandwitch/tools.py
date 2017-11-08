@@ -1,7 +1,7 @@
 """Collection of useful methods and solvers for BandWitch."""
 
 from Bio import Restriction
-from .enzymes_infos import enzymes_infos
+from .data.enzymes_infos import enzymes_infos
 from Bio.Seq import Seq
 from Bio import SeqIO
 import numpy as np

@@ -61,7 +61,10 @@ candidates.
 Every time when the problem cannot be solved with a single digestion, BandWitch
 can propose 2 or 3 digestions which collectively solve the problem.
 
-To select enzymes that will **produce nice patterns for all constructs, for validation:**
+**Important:** when providing BandWitch with a record, make sure to set the linearity/circularity with ``record.linear=True/False``.
+
+
+Here is the code to select enzymes that will **produce nice patterns for all constructs, for validation:**
 
 .. code:: python
 
@@ -71,8 +74,8 @@ To select enzymes that will **produce nice patterns for all constructs, for vali
   enzymes = ["EcoRI", "BamHI", "XhoI", "EcoRV", "SpeI", "XbaI",
              "NotI", "SacI", "SmaI", "HindIII", "PstI"]
   sequences = [
-      load_genbank(genbank_file_path, name=f)
-      for genbank_file_path in some_llist_of_files)
+      load_genbank(genbank_file_path, name=f, linear=False)
+      for genbank_file_path in some_list_of_files)
   ]
 
   # SELECT THE BEST SINGLE DIGESTION WITH AT MOST ENZYMES
@@ -85,7 +88,7 @@ To select enzymes that will **produce nice patterns for all constructs, for vali
   # PLOT THE BAND PATTERNS PRODUCED BY THE SELECTED DIGESTION
   problem.plot_digestions(
       digestions=selected_digestions,
-      patterns_props={'label_fontdict': {'rotation': 35}}
+      patterns_props={'label_fontdict': {'rotation': 35}},
       target_file="ideal_digestions.png"
   )
 
@@ -107,7 +110,7 @@ To select enzymes that will produce **different patterns for each construct, for
     enzymes = list_common_enzymes(site_length=(6,), min_suppliers=3)
     sequences = [
         load_genbank(genbank_file_path, name=f)
-        for genbank_file_path in some_llist_of_files)
+        for genbank_file_path in some_list_of_files)
     ]
 
     # SELECT THE BEST DIGESTION PAIRS (AT MOST 1 ENZYME PER DIGESTION)
