@@ -2,12 +2,9 @@
 """
 from collections import OrderedDict, Counter
 import matplotlib.pyplot as plt
-from Bio import Restriction
 from io import BytesIO
 from matplotlib.backends.backend_pdf import PdfPages
 
-from dna_features_viewer import (GraphicRecord, GraphicFeature,
-                                 BiopythonTranslator)
 from bandwagon import BandsPattern, BandsPatternsSet
 from bandwagon.ladders import ladder_from_aati_fa_calibration_table
 
@@ -21,6 +18,7 @@ except:
 
 from .tools import band_patterns_discrepancy
 from .bands_predictions import predict_digestion_bands
+from .plots import plot_cuts_map, plot_all_constructs_cuts_maps
 
 
 class BandsObservation:
@@ -662,8 +660,8 @@ class ClonesObservations:
             )
             ax1.set_xlim(0.5, max_x + 2)
             record = self.constructs_records[construct_id]
-            self._plot_digestion(record, enzymes=self.digestions[construct_id],
-                                 ax=ax2)
+            plot_cuts_map(record, enzymes=self.digestions[construct_id],
+                          ax=ax2)
             patterns_set.plot(ax1)
         fig.subplots_adjust(hspace=0.3)
         if target_file is not None:
@@ -672,77 +670,7 @@ class ClonesObservations:
         else:
             return axes
 
-    def _create_digestion_graphic_record(self, record, enzymes):
-        """Create a DnaFeaturesViewer graphic record showing the cuts.
-
-        Parameters
-        ----------
-        record
-          A Biopython record
-
-        enzymes
-          A list of enzyme names. e.g. ('EcoRI'. 'BamHI')
-
-        """
-        batch = Restriction.RestrictionBatch(enzymes)
-        cuts_dict = batch.search(record.seq)
-        all_cuts = sorted(
-            set([0, len(record)] +
-                [c for cc in cuts_dict.values() for c in cc])
-        )
-        bands = list(zip(all_cuts, all_cuts[1:]))
-        if not record.__dict__.get('linear', True):
-            start, end = bands.pop()
-            band0 = [-(end - start), bands[0][1]]
-            if bands == []:
-                bands = [band0]
-            else:
-                bands[0] = band0
-        sorted_bands = sorted(
-            bands, key=lambda start_end: start_end[0] - start_end[1])
-        gr_cuts = GraphicRecord(len(record), [
-            GraphicFeature(_start, _end,  strand=1, label=name,
-                           color="#ede15c", thickness=5)
-            for name, (_start, _end) in zip("abcdefghijklmn", sorted_bands)
-        ])
-        gr_cuts.split_overflowing_features_circularly()
-        return gr_cuts, all_cuts
-
-    def _plot_digestion(self, record, enzymes, ax):
-        """Plot the record and its cuts one above the other.
-
-        Parameters
-        ----------
-        record
-          A Biopython record
-
-        enzymes
-          A list of enzyme names. e.g. ('EcoRI'. 'BamHI')
-
-        ax
-          Matplotlib ax on which to plot the figure.
-
-        """
-
-        gr_cuts, all_cuts = self._create_digestion_graphic_record(
-            record, enzymes)
-        gr_cuts.plot(ax, fontsize=7, with_ruler=False)
-        for cut in all_cuts:
-            ax.axvline(cut, ls=":", color="k", lw=0.5)
-
-        def features_prop(f):
-            return dict(label=f.qualifiers.get("source", [False])[0],
-                        color="#93a8ea",
-                        thickness=5)
-
-        def features_filter(f):
-            return features_prop(f)["label"]
-
-        translator = BiopythonTranslator([features_filter], features_prop)
-        gr_record = translator.translate_record(record)
-        gr_record.plot(ax, fontsize=4, level_offset=7)
-
-    def plot_all_constructs_digestions(self, target=None, figsize=(12, 4)):
+    def plot_all_constructs_cuts_maps(self, target=None, figsize=(12, 4)):
         """Plot schemas of all constructs with cuts, in a multipage PDF.
 
         Parameters
@@ -762,25 +690,8 @@ class ClonesObservations:
         for clone in self.clones.values():
             for digestion in clone.digestions:
                 constructs_digestions[clone.construct_id].add(digestion)
-        pdf_io = BytesIO()
-        with PdfPages(pdf_io) as pdf:
-            for construct, digestions in constructs_digestions.items():
-                digestions = sorted(digestions)
-
-                for digestion in digestions:
-                    fig, ax = plt.subplots(1, figsize=figsize)
-                    self._plot_digestion(self.constructs_records[construct],
-                                         digestion, ax)
-                    title = construct + '\n' + " + ".join(digestion)
-                    ax.set_title(title, fontdict=dict(weight='bold'))
-                    pdf.attach_note(construct)
-                    pdf.savefig(fig, bbox_inches="tight")
-                    plt.close(fig)
-        pdf_data = pdf_io.getvalue()
-        if target is None:
-            return pdf_data
-        elif target == 'base64':
-            return 'data:application/pdf;base64,' + pdf_data.decode("utf-8")
-        else:
-            with open(target, 'wb') as f:
-                f.write(pdf_data)
+        return plot_all_constructs_cuts_maps([
+            (self.constructs_records[construct_id], digestion)
+            for construct_id, digestions in constructs_digestions.items()
+            for digestion in sorted(digestions)
+        ], target=target, figsize=figsize)
