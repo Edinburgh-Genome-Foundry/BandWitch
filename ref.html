@@ -32,8 +32,6 @@
   
     <link rel="stylesheet" href="_static/css/main.css" type="text/css" />
   
-    <link rel="stylesheet" href="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.css" type="text/css" />
-  
 
   
         <link rel="index" title="Index"
@@ -175,6 +173,7 @@
 <h2>DigestionProblem<a class="headerlink" href="#digestionproblem" title="Permalink to this headline">¶</a></h2>
 
             <style>
+            /* mermaid issue 527 workaround */
             .section {
                 opacity: 1.0 !important;
             }
@@ -238,7 +237,7 @@ of the ladder’s smallest and largest bands).</p>
 
 <dl class="method">
 <dt id="bandwitch.DigestionProblem.DigestionProblem.plot_digestions">
-<code class="descname">plot_digestions</code><span class="sig-paren">(</span><em>digestions</em>, <em>axes=None</em>, <em>bands_props=None</em>, <em>patterns_props=None</em>, <em>patternset_props=None</em>, <em>target_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem.html#DigestionProblem.plot_digestions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.DigestionProblem.plot_digestions" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_digestions</code><span class="sig-paren">(</span><em>digestions</em>, <em>axes=None</em>, <em>bands_props=None</em>, <em>patterns_props=None</em>, <em>patternset_props=None</em>, <em>target_file=None</em>, <em>close_figure=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem.html#DigestionProblem.plot_digestions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.DigestionProblem.plot_digestions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the patterns for each sequence, for each digestion in the list.</p>
 <p>Requires Bandwagon.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -430,7 +429,14 @@ the figure is closed and None is returned instead)</p>
 </div>
 <div class="section" id="clone-observations">
 <h2>Clone Observations<a class="headerlink" href="#clone-observations" title="Permalink to this headline">¶</a></h2>
-<div class="mermaid">
+
+            <style>
+            /* mermaid issue 527 workaround */
+            .section {
+                opacity: 1.0 !important;
+            }
+            </style>
+            <div class="mermaid">
             graph TD;
   aati[AATI fragment analysis file] -- parser --&gt; bobs[BandsObervation-s];
   bobs --&gt; clone[Clone-s]
@@ -789,8 +795,8 @@ band size in the ladder.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="bandwitch.ClonesObservations.ClonesObservations.plot_all_constructs_digestions">
-<code class="descname">plot_all_constructs_digestions</code><span class="sig-paren">(</span><em>target=None</em>, <em>figsize=(12</em>, <em>4)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations.html#ClonesObservations.plot_all_constructs_digestions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.plot_all_constructs_digestions" title="Permalink to this definition">¶</a></dt>
+<dt id="bandwitch.ClonesObservations.ClonesObservations.plot_all_constructs_cuts_maps">
+<code class="descname">plot_all_constructs_cuts_maps</code><span class="sig-paren">(</span><em>target=None</em>, <em>figsize=(12</em>, <em>4)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations.html#ClonesObservations.plot_all_constructs_cuts_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.plot_all_constructs_cuts_maps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot schemas of all constructs with cuts, in a multipage PDF.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -912,7 +918,7 @@ be considered similar to the expected patterns.</p>
 patterns from band DNA sizes.</p>
 <dl class="class">
 <dt id="bandwitch.Ladder.Ladder">
-<em class="property">class </em><code class="descclassname">bandwitch.Ladder.</code><code class="descname">Ladder</code><span class="sig-paren">(</span><em>bands</em>, <em>infos=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/Ladder.html#Ladder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.Ladder.Ladder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">bandwitch.Ladder.</code><code class="descname">Ladder</code><span class="sig-paren">(</span><em>bands</em>, <em>name=None</em>, <em>infos=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/Ladder.html#Ladder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.Ladder.Ladder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to represent gel ladders. These ladders serve as a scale for
 plotting any other gel simulation.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -938,7 +944,14 @@ plotting any other gel simulation.</p>
 </div>
 <div class="section" id="bands-predictions">
 <h2>Bands Predictions<a class="headerlink" href="#bands-predictions" title="Permalink to this headline">¶</a></h2>
-<div class="mermaid">
+
+            <style>
+            /* mermaid issue 527 workaround */
+            .section {
+                opacity: 1.0 !important;
+            }
+            </style>
+            <div class="mermaid">
             graph TD
   pcomp[_compute_digestion_bands] --&gt; pr[predict_digestion_bands]
   pcomp --&gt; pds[predict_sequences_digestions]
@@ -1226,7 +1239,7 @@ name of a subset, <code class="docutils literal"><span class="pre">subset</span>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.min.js"></script>
+      <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
 
   
 

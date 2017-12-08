@@ -32,8 +32,6 @@
   
     <link rel="stylesheet" href="../../_static/css/main.css" type="text/css" />
   
-    <link rel="stylesheet" href="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.css" type="text/css" />
-  
 
   
         <link rel="index" title="Index"
@@ -180,7 +178,7 @@
 <span class="sd">      A dictionnary of the form {dna_size: migration distance}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bands</span><span class="p">,</span> <span class="n">infos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bands</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">infos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bands</span> <span class="o">=</span> <span class="n">bands</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dna_sizes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">migration_distances</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -194,6 +192,13 @@
 <div class="viewcode-block" id="Ladder.dna_size_to_migration"><a class="viewcode-back" href="../../ref.html#bandwitch.Ladder.Ladder.dna_size_to_migration">[docs]</a>    <span class="k">def</span> <span class="nf">dna_size_to_migration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dna_sizes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the migration distances for the given dna sizes&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dna_size_to_migration_interpolator</span><span class="p">(</span><span class="n">dna_sizes</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">from_csv_file</span><span class="p">(</span><span class="n">csv_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">csv_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">migration_distances_span</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -209,84 +214,6 @@
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Represent.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;Ladder(</span><span class="si">%d</span><span class="s2">-</span><span class="si">%d</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dna_sizes</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dna_sizes</span><span class="p">))</span></div>
-
-<span class="n">LADDERS</span> <span class="o">=</span> <span class="p">{</span>
-
-    <span class="s1">&#39;100_to_10k&#39;</span><span class="p">:</span> <span class="n">Ladder</span><span class="p">(</span><span class="n">bands</span><span class="o">=</span><span class="p">{</span>
-        <span class="mi">100</span><span class="p">:</span> <span class="mi">318</span><span class="p">,</span>
-        <span class="mi">200</span><span class="p">:</span> <span class="mi">287</span><span class="p">,</span>
-        <span class="mi">300</span><span class="p">:</span> <span class="mi">261</span><span class="p">,</span>
-        <span class="mi">400</span><span class="p">:</span> <span class="mi">239</span><span class="p">,</span>
-        <span class="mi">500</span><span class="p">:</span> <span class="mi">220</span><span class="p">,</span>
-        <span class="mi">600</span><span class="p">:</span> <span class="mi">203</span><span class="p">,</span>
-        <span class="mi">700</span><span class="p">:</span> <span class="mi">190</span><span class="p">,</span>
-        <span class="mi">800</span><span class="p">:</span> <span class="mi">178</span><span class="p">,</span>
-        <span class="mi">900</span><span class="p">:</span> <span class="mi">167</span><span class="p">,</span>
-        <span class="mi">1000</span><span class="p">:</span> <span class="mi">157</span><span class="p">,</span>
-        <span class="mi">1200</span><span class="p">:</span> <span class="mi">138</span><span class="p">,</span>
-        <span class="mi">1500</span><span class="p">:</span> <span class="mi">116</span><span class="p">,</span>
-        <span class="mi">2000</span><span class="p">:</span> <span class="mi">91</span><span class="p">,</span>
-        <span class="mi">3000</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
-        <span class="mi">4000</span><span class="p">:</span> <span class="mi">46</span><span class="p">,</span>
-        <span class="mi">5000</span><span class="p">:</span> <span class="mi">38</span><span class="p">,</span>
-        <span class="mi">6000</span><span class="p">:</span> <span class="mi">33</span><span class="p">,</span>
-        <span class="mi">8000</span><span class="p">:</span> <span class="mi">27</span><span class="p">,</span>
-        <span class="mi">10000</span><span class="p">:</span> <span class="mi">21</span>
-    <span class="p">},</span> <span class="n">infos</span><span class="o">=</span><span class="s1">&#39;Also known as the 2-Log DNA ladder&#39;</span><span class="p">),</span>
-
-    <span class="s1">&#39;100_to_4k&#39;</span><span class="p">:</span> <span class="n">Ladder</span><span class="p">(</span><span class="n">bands</span><span class="o">=</span><span class="p">{</span>
-        <span class="mi">100</span><span class="p">:</span> <span class="mi">205</span><span class="p">,</span>
-        <span class="mi">200</span><span class="p">:</span> <span class="mi">186</span><span class="p">,</span>
-        <span class="mi">300</span><span class="p">:</span> <span class="mi">171</span><span class="p">,</span>
-        <span class="mi">400</span><span class="p">:</span> <span class="mi">158</span><span class="p">,</span>
-        <span class="mi">500</span><span class="p">:</span> <span class="mi">149</span><span class="p">,</span>
-        <span class="mi">650</span><span class="p">:</span> <span class="mi">139</span><span class="p">,</span>
-        <span class="mi">850</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
-        <span class="mi">1000</span><span class="p">:</span> <span class="mi">121</span><span class="p">,</span>
-        <span class="mi">1650</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-        <span class="mi">2000</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span>
-        <span class="mi">3000</span><span class="p">:</span> <span class="mi">73</span><span class="p">,</span>
-        <span class="mi">4000</span><span class="p">:</span> <span class="mi">65</span>
-    <span class="p">},</span> <span class="n">infos</span><span class="o">=</span><span class="s1">&#39;Some typical ladder.&#39;</span><span class="p">),</span>
-
-    <span class="s1">&#39;35_to_5k&#39;</span><span class="p">:</span> <span class="n">Ladder</span><span class="p">(</span><span class="n">bands</span><span class="o">=</span><span class="p">{</span>
-        <span class="mi">5000</span><span class="p">:</span> <span class="mi">234</span><span class="p">,</span>
-        <span class="mi">3000</span><span class="p">:</span> <span class="mi">407</span><span class="p">,</span>
-        <span class="mi">2000</span><span class="p">:</span> <span class="mi">528</span><span class="p">,</span>
-        <span class="mi">1500</span><span class="p">:</span> <span class="mi">607</span><span class="p">,</span>
-        <span class="mi">1200</span><span class="p">:</span> <span class="mi">666</span><span class="p">,</span>
-        <span class="mi">1000</span><span class="p">:</span> <span class="mi">733</span><span class="p">,</span>
-        <span class="mi">900</span><span class="p">:</span> <span class="mi">778</span><span class="p">,</span>
-        <span class="mi">800</span><span class="p">:</span> <span class="mi">848</span><span class="p">,</span>
-        <span class="mi">700</span><span class="p">:</span> <span class="mi">929</span><span class="p">,</span>
-        <span class="mi">600</span><span class="p">:</span> <span class="mi">1081</span><span class="p">,</span>
-        <span class="mi">500</span><span class="p">:</span> <span class="mi">1244</span><span class="p">,</span>
-        <span class="mi">400</span><span class="p">:</span> <span class="mi">1488</span><span class="p">,</span>
-        <span class="mi">300</span><span class="p">:</span> <span class="mi">1734</span><span class="p">,</span>
-        <span class="mi">200</span><span class="p">:</span> <span class="mi">2034</span><span class="p">,</span>
-        <span class="mi">100</span><span class="p">:</span> <span class="mi">2378</span><span class="p">,</span>
-        <span class="mi">35</span><span class="p">:</span> <span class="mi">2581</span>
-    <span class="p">},</span> <span class="n">infos</span><span class="o">=</span><span class="s2">&quot;AATI Fragment analyzer ladder, from calibration file.&quot;</span><span class="p">),</span>
-
-    <span class="s1">&#39;75_to_15k&#39;</span><span class="p">:</span> <span class="n">Ladder</span><span class="p">(</span><span class="n">bands</span><span class="o">=</span><span class="p">{</span>
-        <span class="mi">15000</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
-        <span class="mi">10000</span><span class="p">:</span> <span class="mi">46</span><span class="p">,</span>
-        <span class="mi">8000</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span>
-        <span class="mi">6000</span><span class="p">:</span> <span class="mi">69</span><span class="p">,</span>
-        <span class="mi">5000</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
-        <span class="mi">4000</span><span class="p">:</span> <span class="mi">86</span><span class="p">,</span>
-        <span class="mi">3500</span><span class="p">:</span> <span class="mi">91</span><span class="p">,</span>
-        <span class="mi">3000</span><span class="p">:</span> <span class="mi">97</span><span class="p">,</span>
-        <span class="mi">2500</span><span class="p">:</span> <span class="mi">104</span><span class="p">,</span>
-        <span class="mi">2000</span><span class="p">:</span> <span class="mi">111</span><span class="p">,</span>
-        <span class="mi">1500</span><span class="p">:</span> <span class="mi">124</span><span class="p">,</span>
-        <span class="mi">1000</span><span class="p">:</span> <span class="mi">158</span><span class="p">,</span>
-        <span class="mi">750</span><span class="p">:</span> <span class="mi">189</span><span class="p">,</span>
-        <span class="mi">500</span><span class="p">:</span> <span class="mi">229</span><span class="p">,</span>
-        <span class="mi">200</span><span class="p">:</span> <span class="mi">276</span><span class="p">,</span>
-        <span class="mi">75</span><span class="p">:</span>	<span class="mi">310</span>
-    <span class="p">},</span> <span class="n">infos</span><span class="o">=</span><span class="s2">&quot;AATI Fragment analyzer ladder, values determined from image&quot;</span><span class="p">)</span>
-<span class="p">}</span>
 </pre></div>
 
            </div>
@@ -333,7 +260,7 @@
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.min.js"></script>
+      <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
 
   
 

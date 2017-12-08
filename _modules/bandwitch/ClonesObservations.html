@@ -32,8 +32,6 @@
   
     <link rel="stylesheet" href="../../_static/css/main.css" type="text/css" />
   
-    <link rel="stylesheet" href="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.css" type="text/css" />
-  
 
   
         <link rel="index" title="Index"
@@ -167,12 +165,9 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">Counter</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">Bio</span> <span class="k">import</span> <span class="n">Restriction</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">BytesIO</span>
 <span class="kn">from</span> <span class="nn">matplotlib.backends.backend_pdf</span> <span class="k">import</span> <span class="n">PdfPages</span>
 
-<span class="kn">from</span> <span class="nn">dna_features_viewer</span> <span class="k">import</span> <span class="p">(</span><span class="n">GraphicRecord</span><span class="p">,</span> <span class="n">GraphicFeature</span><span class="p">,</span>
-                                 <span class="n">BiopythonTranslator</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">bandwagon</span> <span class="k">import</span> <span class="n">BandsPattern</span><span class="p">,</span> <span class="n">BandsPatternsSet</span>
 <span class="kn">from</span> <span class="nn">bandwagon.ladders</span> <span class="k">import</span> <span class="n">ladder_from_aati_fa_calibration_table</span>
 
@@ -186,6 +181,7 @@
 
 <span class="kn">from</span> <span class="nn">.tools</span> <span class="k">import</span> <span class="n">band_patterns_discrepancy</span>
 <span class="kn">from</span> <span class="nn">.bands_predictions</span> <span class="k">import</span> <span class="n">predict_digestion_bands</span>
+<span class="kn">from</span> <span class="nn">.plots</span> <span class="k">import</span> <span class="n">plot_cuts_map</span><span class="p">,</span> <span class="n">plot_all_constructs_cuts_maps</span>
 
 
 <div class="viewcode-block" id="BandsObservation"><a class="viewcode-back" href="../../ref.html#bandwitch.ClonesObservations.BandsObservation">[docs]</a><span class="k">class</span> <span class="nc">BandsObservation</span><span class="p">:</span>
@@ -480,7 +476,7 @@
             <span class="k">if</span> <span class="n">clone_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">clones</span><span class="p">:</span>
                 <span class="n">clones</span><span class="p">[</span><span class="n">clone_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Clone</span><span class="p">(</span>
                     <span class="n">name</span><span class="o">=</span><span class="n">clone_name</span><span class="p">,</span>
-                    <span class="n">construct_id</span><span class="o">=</span><span class="n">constructs_map</span><span class="p">[</span><span class="n">clone_name</span><span class="p">],</span>
+                    <span class="n">construct_id</span><span class="o">=</span><span class="n">constructs_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">clone_name</span><span class="p">,</span> <span class="s1">&#39;no_clone&#39;</span><span class="p">),</span>
                     <span class="n">digestions</span><span class="o">=</span><span class="p">{}</span>
                 <span class="p">)</span>
             <span class="n">digestion</span> <span class="o">=</span> <span class="n">digestions_map</span><span class="p">[</span><span class="n">obs</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
@@ -827,8 +823,8 @@
             <span class="p">)</span>
             <span class="n">ax1</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">max_x</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">constructs_records</span><span class="p">[</span><span class="n">construct_id</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_digestion</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">enzymes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">digestions</span><span class="p">[</span><span class="n">construct_id</span><span class="p">],</span>
-                                 <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">)</span>
+            <span class="n">plot_cuts_map</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">enzymes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">digestions</span><span class="p">[</span><span class="n">construct_id</span><span class="p">],</span>
+                          <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">)</span>
             <span class="n">patterns_set</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax1</span><span class="p">)</span>
         <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">target_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -837,77 +833,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">axes</span></div>
 
-    <span class="k">def</span> <span class="nf">_create_digestion_graphic_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">enzymes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a DnaFeaturesViewer graphic record showing the cuts.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        record</span>
-<span class="sd">          A Biopython record</span>
-
-<span class="sd">        enzymes</span>
-<span class="sd">          A list of enzyme names. e.g. (&#39;EcoRI&#39;. &#39;BamHI&#39;)</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">batch</span> <span class="o">=</span> <span class="n">Restriction</span><span class="o">.</span><span class="n">RestrictionBatch</span><span class="p">(</span><span class="n">enzymes</span><span class="p">)</span>
-        <span class="n">cuts_dict</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span>
-        <span class="n">all_cuts</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-            <span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">record</span><span class="p">)]</span> <span class="o">+</span>
-                <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="n">cuts_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cc</span><span class="p">])</span>
-        <span class="p">)</span>
-        <span class="n">bands</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">all_cuts</span><span class="p">,</span> <span class="n">all_cuts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">record</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
-            <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">bands</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-            <span class="n">band0</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">),</span> <span class="n">bands</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
-            <span class="k">if</span> <span class="n">bands</span> <span class="o">==</span> <span class="p">[]:</span>
-                <span class="n">bands</span> <span class="o">=</span> <span class="p">[</span><span class="n">band0</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">bands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">band0</span>
-        <span class="n">sorted_bands</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-            <span class="n">bands</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">start_end</span><span class="p">:</span> <span class="n">start_end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">start_end</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">gr_cuts</span> <span class="o">=</span> <span class="n">GraphicRecord</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">record</span><span class="p">),</span> <span class="p">[</span>
-            <span class="n">GraphicFeature</span><span class="p">(</span><span class="n">_start</span><span class="p">,</span> <span class="n">_end</span><span class="p">,</span>  <span class="n">strand</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                           <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#ede15c&quot;</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">_start</span><span class="p">,</span> <span class="n">_end</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="s2">&quot;abcdefghijklmn&quot;</span><span class="p">,</span> <span class="n">sorted_bands</span><span class="p">)</span>
-        <span class="p">])</span>
-        <span class="n">gr_cuts</span><span class="o">.</span><span class="n">split_overflowing_features_circularly</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">gr_cuts</span><span class="p">,</span> <span class="n">all_cuts</span>
-
-    <span class="k">def</span> <span class="nf">_plot_digestion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">enzymes</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot the record and its cuts one above the other.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        record</span>
-<span class="sd">          A Biopython record</span>
-
-<span class="sd">        enzymes</span>
-<span class="sd">          A list of enzyme names. e.g. (&#39;EcoRI&#39;. &#39;BamHI&#39;)</span>
-
-<span class="sd">        ax</span>
-<span class="sd">          Matplotlib ax on which to plot the figure.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">gr_cuts</span><span class="p">,</span> <span class="n">all_cuts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_digestion_graphic_record</span><span class="p">(</span>
-            <span class="n">record</span><span class="p">,</span> <span class="n">enzymes</span><span class="p">)</span>
-        <span class="n">gr_cuts</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">with_ruler</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">cut</span> <span class="ow">in</span> <span class="n">all_cuts</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">cut</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-
-        <span class="k">def</span> <span class="nf">features_prop</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">qualifiers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="p">[</span><span class="kc">False</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span>
-                        <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#93a8ea&quot;</span><span class="p">,</span>
-                        <span class="n">thickness</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-
-        <span class="k">def</span> <span class="nf">features_filter</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">features_prop</span><span class="p">(</span><span class="n">f</span><span class="p">)[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
-
-        <span class="n">translator</span> <span class="o">=</span> <span class="n">BiopythonTranslator</span><span class="p">([</span><span class="n">features_filter</span><span class="p">],</span> <span class="n">features_prop</span><span class="p">)</span>
-        <span class="n">gr_record</span> <span class="o">=</span> <span class="n">translator</span><span class="o">.</span><span class="n">translate_record</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
-        <span class="n">gr_record</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">level_offset</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
-
-<div class="viewcode-block" id="ClonesObservations.plot_all_constructs_digestions"><a class="viewcode-back" href="../../ref.html#bandwitch.ClonesObservations.ClonesObservations.plot_all_constructs_digestions">[docs]</a>    <span class="k">def</span> <span class="nf">plot_all_constructs_digestions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+<div class="viewcode-block" id="ClonesObservations.plot_all_constructs_cuts_maps"><a class="viewcode-back" href="../../ref.html#bandwitch.ClonesObservations.ClonesObservations.plot_all_constructs_cuts_maps">[docs]</a>    <span class="k">def</span> <span class="nf">plot_all_constructs_cuts_maps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot;Plot schemas of all constructs with cuts, in a multipage PDF.</span>
 
 <span class="sd">        Parameters</span>
@@ -927,28 +853,11 @@
         <span class="k">for</span> <span class="n">clone</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clones</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">digestion</span> <span class="ow">in</span> <span class="n">clone</span><span class="o">.</span><span class="n">digestions</span><span class="p">:</span>
                 <span class="n">constructs_digestions</span><span class="p">[</span><span class="n">clone</span><span class="o">.</span><span class="n">construct_id</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">digestion</span><span class="p">)</span>
-        <span class="n">pdf_io</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
-        <span class="k">with</span> <span class="n">PdfPages</span><span class="p">(</span><span class="n">pdf_io</span><span class="p">)</span> <span class="k">as</span> <span class="n">pdf</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">construct</span><span class="p">,</span> <span class="n">digestions</span> <span class="ow">in</span> <span class="n">constructs_digestions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">digestions</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">digestions</span><span class="p">)</span>
-
-                <span class="k">for</span> <span class="n">digestion</span> <span class="ow">in</span> <span class="n">digestions</span><span class="p">:</span>
-                    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_plot_digestion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constructs_records</span><span class="p">[</span><span class="n">construct</span><span class="p">],</span>
-                                         <span class="n">digestion</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
-                    <span class="n">title</span> <span class="o">=</span> <span class="n">construct</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">digestion</span><span class="p">)</span>
-                    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">))</span>
-                    <span class="n">pdf</span><span class="o">.</span><span class="n">attach_note</span><span class="p">(</span><span class="n">construct</span><span class="p">)</span>
-                    <span class="n">pdf</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span>
-                    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
-        <span class="n">pdf_data</span> <span class="o">=</span> <span class="n">pdf_io</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">pdf_data</span>
-        <span class="k">elif</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;base64&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">&#39;data:application/pdf;base64,&#39;</span> <span class="o">+</span> <span class="n">pdf_data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pdf_data</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">plot_all_constructs_cuts_maps</span><span class="p">([</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constructs_records</span><span class="p">[</span><span class="n">construct_id</span><span class="p">],</span> <span class="n">digestion</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">construct_id</span><span class="p">,</span> <span class="n">digestions</span> <span class="ow">in</span> <span class="n">constructs_digestions</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">digestion</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">digestions</span><span class="p">)</span>
+        <span class="p">],</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -995,7 +904,7 @@
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.min.js"></script>
+      <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
 
   
 

@@ -32,8 +32,6 @@
   
     <link rel="stylesheet" href="../../_static/css/main.css" type="text/css" />
   
-    <link rel="stylesheet" href="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.css" type="text/css" />
-  
 
   
         <link rel="index" title="Index"
@@ -269,7 +267,7 @@
 
 <div class="viewcode-block" id="DigestionProblem.plot_digestions"><a class="viewcode-back" href="../../ref.html#bandwitch.DigestionProblem.DigestionProblem.plot_digestions">[docs]</a>    <span class="k">def</span> <span class="nf">plot_digestions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digestions</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bands_props</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">patterns_props</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">patternset_props</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                        <span class="n">target_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                        <span class="n">target_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">close_figure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plot the patterns for each sequence, for each digestion in the list.</span>
 
 <span class="sd">        Requires Bandwagon.</span>
@@ -335,6 +333,7 @@
             <span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">target_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">target_file</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">close_figure</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">figure</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">axes</span></div>
 
@@ -695,7 +694,7 @@
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.min.js"></script>
+      <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
 
   
 

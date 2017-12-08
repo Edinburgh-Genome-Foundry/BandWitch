@@ -32,8 +32,6 @@
   
     <link rel="stylesheet" href="../../_static/css/main.css" type="text/css" />
   
-    <link rel="stylesheet" href="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.css" type="text/css" />
-  
 
   
         <link rel="index" title="Index"
@@ -529,7 +527,7 @@
                     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span> <span class="o">-</span> <span class="n">max_set_size</span>
             <span class="n">threshold</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">maximizing_bisection</span><span class="p">(</span>
                 <span class="n">f</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">x_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="n">score</span><span class="p">,</span>
-                <span class="n">tolerance</span><span class="o">=</span><span class="n">threshold_tolerance</span><span class="p">)</span>
+                <span class="n">precision</span><span class="o">=</span><span class="n">threshold_tolerance</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">selection</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">covering_algorithm</span> <span class="o">==</span> <span class="s1">&#39;greedy&#39;</span><span class="p">:</span>
@@ -592,7 +590,7 @@
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.min.js"></script>
+      <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
 
   
 
