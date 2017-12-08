@@ -26,7 +26,7 @@ def create_cuts_map_graphic_record(record, enzymes):
             [c for cc in cuts_dict.values() for c in cc])
     )
     bands = list(zip(all_cuts, all_cuts[1:]))
-    if not record.__dict__.get('linear', True):
+    if not record.__dict__.get('linear', True) and (len(bands) > 1):
         start, end = bands.pop()
         band0 = [-(end - start), bands[0][1]]
         if bands == []:

@@ -313,7 +313,7 @@ class Clone:
             if clone_name not in clones:
                 clones[clone_name] = Clone(
                     name=clone_name,
-                    construct_id=constructs_map[clone_name],
+                    construct_id=constructs_map.get(clone_name, 'no_clone'),
                     digestions={}
                 )
             digestion = digestions_map[obs.name]
