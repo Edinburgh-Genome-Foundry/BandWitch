@@ -616,7 +616,7 @@ class ClonesObservations:
           Bands with a size above this value will not be considered
 
         """
-        bands_validatities = self.compute_all_bands_validities(
+        bands_validities = self.compute_all_bands_validities(
             relative_tolerance=relative_tolerance,
             min_band_cutoff=min_band_cutoff,
             max_band_cutoff=max_band_cutoff)
@@ -626,7 +626,7 @@ class ClonesObservations:
             for measures in self.observed_bands.values()
         ) + 1
         fig, axes = plt.subplots(L, 2, figsize=(2.2 * max_x, 3 * L))
-        axes_validities = zip(axes, bands_validatities.items())
+        axes_validities = zip(axes, bands_validities.items())
         for (ax1, ax2), (construct_id, validities) in axes_validities:
             reference = BandsPattern(
                 self.expected_bands[construct_id], ladder=self.ladder,
