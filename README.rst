@@ -1,10 +1,9 @@
-.. image:: https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/docs/_static/images/title.png
-   :alt: [logo]
-   :align: center
-   :width: 600px
+.. raw:: html
 
-BandWitch
-==========
+    <p align="center">
+    <img alt="BandWitch Logo" title="BandWitch Logo" src="https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/docs/_static/images/title.png" width="400">
+    <br /><br />
+    </p>
 
 .. image:: https://travis-ci.org/Edinburgh-Genome-Foundry/BandWitch.svg?branch=master
    :target: https://travis-ci.org/Edinburgh-Genome-Foundry/BandWitch
