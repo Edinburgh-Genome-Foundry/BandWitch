@@ -309,6 +309,8 @@ class Clone:
         clones = OrderedDict()
 
         for obs in observations:
+            if obs.name not in clones_map:
+                continue
             clone_name = clones_map[obs.name]
             if clone_name not in clones:
                 clones[clone_name] = Clone(
