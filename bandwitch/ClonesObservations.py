@@ -305,7 +305,7 @@ class Clone:
         if isinstance(observations, (dict, OrderedDict)):
             observations = list(observations.values())
         if clones_map is None:
-            clones_map = {obs.name: obs.name for obs in observations}
+            clones_map = {name: name for name in constructs_map}
         clones = OrderedDict()
 
         for obs in observations:
