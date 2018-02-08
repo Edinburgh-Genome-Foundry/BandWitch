@@ -15,7 +15,7 @@ import pytest
 
 @pytest.fixture
 def sequences():
-    data_path = os.path.join('tests', 'test_data')
+    data_path = os.path.join('tests', 'test_data', 'test_sequences')
     return OrderedDict([
         (fname, str(SeqIO.read(os.path.join(data_path, fname), 'genbank').seq))
         for fname in sorted(os.listdir(data_path))

@@ -2,10 +2,11 @@
 
 # __all__ = []
 
-from .DigestionProblem import (SeparatingDigestionsProblem,
-                               IdealDigestionsProblem)
+from .enzyme_suggestion import (SeparatingDigestionsProblem,
+                                IdealDigestionsProblem)
+from .migration_analysis import BandsObservation, Clone, ClonesObservations
 from .Ladder import Ladder
-from .ClonesObservations import BandsObservation, Clone, ClonesObservations
+
 from .tools import (band_patterns_discrepancy, digestions_list_to_string,
                     load_genbank, list_common_enzymes)
 from .bands_predictions import predict_digestion_bands

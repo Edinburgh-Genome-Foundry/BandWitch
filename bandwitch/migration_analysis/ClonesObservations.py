@@ -1,327 +1,26 @@
-"""Classes for parsing and analyzis of DNA migration data.
-"""
+"""Classes for parsing and analyzis of DNA migration data."""
 from collections import OrderedDict, Counter
 import matplotlib.pyplot as plt
 from io import BytesIO
 from matplotlib.backends.backend_pdf import PdfPages
 
 from bandwagon import BandsPattern, BandsPatternsSet
-from bandwagon.ladders import ladder_from_aati_fa_calibration_table
+import flametree
 
 try:
-    from plateo.parsers import plate_from_aati_fragment_analyzer_zip
     from plateo.exporters.plate_to_matplotlib_plots import PlateColorsPlotter
+    from plateo.parsers import plate_from_platemap_spreadsheet
     from plateo.containers import Plate96
     PLATEO_AVAILABLE = True
 except:
     PLATEO_AVAILABLE = False
 
-from .tools import band_patterns_discrepancy
-from .bands_predictions import predict_digestion_bands
-from .plots import plot_cuts_map, plot_all_constructs_cuts_maps
 
-
-class BandsObservation:
-    """One observation of a bands pattern.
-
-    Parameters
-    ----------
-    name
-      Name of the observation (used for the top label in plots)
-
-    bands
-      A BandPattern object
-
-    ladder
-      A BandPattern object representing a ladder.
-
-    migration_image
-      Optional RGB array (HxWx3) representing the gel "image" (which will be
-      displayed on the side of the plot).
-
-    """
-
-    def __init__(self, name, bands, ladder, migration_image=None):
-        """Initialize."""
-        self.name = name
-        self.bands = sorted(bands)
-        self.ladder = ladder
-        self.migration_image = migration_image
-
-    @staticmethod
-    def from_aati_fa_archive(archive_path, min_rfu_size_ratio=0.3):
-        """Return a dictionnary of all band observations in AATI output files.
-
-        Parameters
-        ----------
-        archive_path
-          A path to a ZIP file containing all files output by the AATI fragment
-          analyzer.
-
-        min_rfu_size_ratio
-          Cut-off ratio to filter-out bands whose intensity is below some
-          threshold. The higher the value, the more bands will be filtered out.
-
-        Returns
-        -------
-        A dictionary ``{'A1': BandsObservation(), 'A2': ...}`` containing the
-        measured pattern information for a whole 96-well microplate.
-
-        """
-        if not PLATEO_AVAILABLE:
-            raise ImportError("Plateo must be installed to parse AATI zips.")
-
-        plate = plate_from_aati_fragment_analyzer_zip(archive_path)
-        ladder_data = plate.data.ladder
-        ladder = ladder_from_aati_fa_calibration_table(dataframe=ladder_data)
-        # get the set of constructs sorted by order of columnwise appearance:
-
-        def band_is_strong_enough(band):
-            """Return True iff the band's intensity is above the set level."""
-            return (1.0 * band["RFU"] / band["Size (bp)"] > min_rfu_size_ratio)
-
-        return {
-            well.name: BandsObservation(
-                name=well.name,
-                ladder=ladder,
-                bands=[
-                    band["Size (bp)"]
-                    for band in well.data.bands.values()
-                    if band_is_strong_enough(band)
-                ],
-                migration_image=well.data.migration_image
-            )
-            for well in plate.iter_wells()
-        }
-
-    def patterns_discrepancy(self, other_bands, relative_tolerance=0.1,
-                             min_band_cutoff=None, max_band_cutoff=None):
-        """Return the maximal discrepancy between two band patterns.
-
-        The discrepancy is defined as the largest distance between a band in
-        one pattern and the closest band in the other pattern.
-
-        Parameters
-        ----------
-        other_bands
-          A list of bands (integers) to be compared with the current bands
-
-        relative_tolerance
-          Tolerance, as a ratio of the full ladder span. If =0.1, then the
-          discrepancy will have a value of 1 when a band's nearest
-          correspondent in the other pattern is more that 10% of the ladder
-          span apart.
-
-        min_band_cutoff
-          Discrepancies involving at least one band below this minimal band
-          size will be ignored. By default, it will be set to the smallest
-          band size in the ladder.
-
-        max_band_cutoff
-          Discrepancies involving at least one band above this minimal band
-          size will be ignored. By default, it will be set to the smallest
-          band size in the ladder.
-
-        """
-        ladder_min, ladder_max = self.ladder.dna_size_span
-        if min_band_cutoff is None:
-            min_band_cutoff = ladder_min
-        if max_band_cutoff is None:
-            max_band_cutoff = ladder_max
-        return band_patterns_discrepancy(
-            other_bands, self.bands, ladder=self.ladder,
-            relative_tolerance=relative_tolerance,
-            zone=[min_band_cutoff, max_band_cutoff],
-            reference_and_gel=True
-        )
-
-    def to_bandwagon_bandpattern(self, background_color=None, label='auto'):
-        """Return a pattern version for the plotting library Bandwagon.
-
-        If label is left to 'auto', it will be the pattern's name.
-        """
-        if label == 'auto':
-            label = self.name
-        return BandsPattern(
-            self.bands,
-            corner_note="Total: %d bp." % sum(self.bands),
-            ladder=self.ladder,
-            label=label,
-            gel_image=self.migration_image,
-            background_color=background_color
-        )
-
-
-class CloneValidation:
-    """Report from comparing a clone's pband patterns with expectations.
-
-    Instances of this class are produced by validating a ``Clone`` object.
-
-    Parameters
-    ----------
-    clone
-      A Clone object.
-
-    expected
-      A dictionnary ``{digestion: expected_pattern}`` where ``digestion`` is
-      of the form ``('EcoRI', 'BamHI')`` and ``expected_pattern`` is a
-      BandsPattern
-
-    discrepancies
-      A dictionnary ``{digestion: float}`` where the float indicates the
-      observed discrepancy between observed and predicted for this digestion.
-
-    """
-
-    def __init__(self, clone, expected, discrepancies):
-        """Initialize."""
-        self.clone = clone
-        self.expected = expected
-        self.discrepancies = discrepancies
-
-    @property
-    def passes(self):
-        """True iff the clone is valid.
-
-        (This means that all patterns are similar enough to expectations).
-        """
-        return self.max_discrepancy < 1.0
-
-    @property
-    def max_discrepancy(self):
-        """Return the largest discrepancy in all patterns"""
-        return max(self.discrepancies.values())
-
-    def color(self, discrepancy='max'):
-        """Return a color depending on the discrepancy level (in 0-1)."""
-        if discrepancy == "max":
-            discrepancy = self.max_discrepancy
-        factor = min(1.0, discrepancy ** 10)
-        return ((2 + factor) / 3.0, (3 - factor) / 3.0, 2 / 3.0)
-
-    def to_bandwagon_bandpattern(self, digestion, label='auto',
-                                 per_digestion_discrepancy=True):
-        """Return a (plottable) bandwagon pattern for the selected digestion.
-
-        The pattern has a color indicating the match similarity, as well as
-        a corner note indicating the gap to similarity.
-
-        Parameters
-        ----------
-        digestion
-          A set of enzymes such as ``('EcoRI',)`` or ````
-
-        label
-          A label for the pattern, for instance the name of a microplate well.
-
-        per_digestion_discrepancy
-          If true, each pattern for each clone will have an indication of
-          how close it is from the expected pattern. If False, and the
-          validation involves several digestions, the biggest discrepancy
-          among all patterns is shown.
-
-        """
-        if digestion not in self.clone.digestions:
-            return None
-        if per_digestion_discrepancy:
-            discrepancy = self.discrepancies[digestion]
-        else:
-            discrepancy = self.max_discrepancy
-        obs = self.clone.digestions[digestion]
-        pattern = obs.to_bandwagon_bandpattern(
-            background_color=self.color(discrepancy=discrepancy), label=label)
-        pattern.corner_note += " Gap: %d" % (100 * discrepancy)
-        return pattern
-
-
-class Clone:
-    """Gather all informations necessary to validate a clone.
-
-    Parameters
-    ----------
-    name
-      Name of the clone. Could be for instance a microplate well.
-
-    digestions
-      A dictionnary ``{digestion: CloneObservation}`` where ``digestion`` is
-      of the form ``('EcoRI', 'BamHI')``.
-
-    construct_id
-      ID of the construct to be validated. This is used to group clones
-      by construct in the validation reports.
-    """
-
-    def __init__(self, name, digestions, construct_id=None):
-        """Initialize."""
-        self.name = name
-        self.digestions = digestions
-        self.construct_id = construct_id
-
-    def validate_bands(self, bands_by_digestion, relative_tolerance=0.1,
-                       min_band_cutoff=None, max_band_cutoff=None):
-        """Return a validation results (comparison of observed and expected).
-
-        The result is a CloneValidation object.
-
-        Parameters
-        ----------
-        bands_by_digestion
-          A dictionnary ``{digestion: [bands]}`` where ``digestion`` is
-          of the form ``('EcoRI', 'BamHI')``, and bands is a list of band sizes
-
-        relative_tolerance
-          Tolerance, as a ratio of the full ladder span. If =0.1, then the
-          discrepancy will have a value of 1 when a band's nearest
-          correspondent in the other pattern is more that 10% of the ladder
-          span apart.
-
-        min_band_cutoff
-          Discrepancies involving at least one band below this minimal band
-          size will be ignored. By default, it will be set to the smallest
-          band size in the ladder.
-
-        max_band_cutoff
-          Discrepancies involving at least one band above this minimal band
-          size will be ignored. By default, it will be set to the smallest
-          band size in the ladder.
-
-        """
-        for digestion, observation in self.digestions.items():
-            discrepancies = {
-                digestion: observation.patterns_discrepancy(
-                    other_bands=bands_by_digestion[digestion],
-                    relative_tolerance=relative_tolerance,
-                    min_band_cutoff=min_band_cutoff,
-                    max_band_cutoff=max_band_cutoff
-                )
-                for digestion, observation in self.digestions.items()
-            }
-        return CloneValidation(self, bands_by_digestion,
-                               discrepancies=discrepancies)
-
-    @staticmethod
-    def from_bands_observations(observations, constructs_map, digestions_map,
-                                clones_map=None):
-        if isinstance(observations, (dict, OrderedDict)):
-            observations = list(observations.values())
-        if clones_map is None:
-            clones_map = {name: name for name in constructs_map}
-        clones = OrderedDict()
-
-        for obs in observations:
-            if obs.name not in clones_map:
-                continue
-            clone_name = clones_map[obs.name]
-            if clone_name not in clones:
-                clones[clone_name] = Clone(
-                    name=clone_name,
-                    construct_id=constructs_map.get(clone_name, 'no_clone'),
-                    digestions={}
-                )
-            digestion = digestions_map[obs.name]
-            clones[clone_name].digestions[digestion] = obs
-
-        return clones
+from ..bands_predictions import predict_digestion_bands
+from ..plots import plot_cuts_map, plot_all_constructs_cuts_maps
+from ..tools import load_genbank
+from .Clone import Clone
+from .BandsObservation import BandsObservation
 
 
 class ClonesObservations:
@@ -571,7 +270,7 @@ class ClonesObservations:
                     axes = [axes]
                 axes[-1].set_xlim(xmax=max_x)
 
-                for ax, (digestion, pattern_set) in zip(axes, band_patterns.items()):
+                for ax, (dig, pattern_set) in zip(axes, band_patterns.items()):
                     pattern_set.plot(ax)
 
                 axes[-1].set_xlabel(construct_id,
@@ -697,3 +396,43 @@ class ClonesObservations:
             for construct_id, digestions in constructs_digestions.items()
             for digestion in sorted(digestions)
         ], target=target, figsize=figsize)
+
+    def from_files(records_path, constructs_map_path, aati_zip_path,
+                   digestions_map_path=None, digestion=None):
+        constructs_records = {
+            f._name_no_extension: load_genbank(
+                f.open('r'), linear=False, name=f._name_no_extension)
+            for f in flametree.file_tree(records_path)._all_files
+        }
+        constructs_records = OrderedDict(sorted(constructs_records.items()))
+
+        constructs_plate = plate_from_platemap_spreadsheet(
+            constructs_map_path, data_field='construct', headers=True)
+        constructs_map = OrderedDict([
+            (well.name, well.data.construct)
+            for well in constructs_plate.iter_wells(direction='row')
+            if 'construct' in well.data
+            and str(well.data.construct) != 'nan'
+        ])
+
+        if digestion:
+            digestion = tuple(digestion)
+            digestions_map = OrderedDict([
+                (wellname, digestion)
+                for wellname in constructs_map
+            ])
+        else:
+            digestions_plate = plate_from_platemap_spreadsheet(
+                digestions_map_path, data_field='digestion', headers=True)
+            digestions_map = OrderedDict([
+                (well.name, tuple(well.data.digestion.split(', ')))
+                for well in digestions_plate.iter_wells(direction='row')
+                if 'digestion' in well.data
+                and str(well.data.digestion) != 'nan'
+            ])
+
+        observations = BandsObservation.from_aati_fa_archive(aati_zip_path)
+        clones = Clone.from_bands_observations(observations, constructs_map,
+                                               digestions_map)
+        clones_observations = ClonesObservations(clones, constructs_records)
+        return clones_observations

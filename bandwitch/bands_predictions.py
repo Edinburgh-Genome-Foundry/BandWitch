@@ -28,6 +28,13 @@ def _compute_bands_from_cuts(cuts, sequence_length, linear=True):
         bands[0] += bands.pop()
     return bands
 
+def find_cuts(sequence, enzymes, linear=True):
+    batch = Restriction.RestrictionBatch(enzymes)
+    return [
+        cut
+        for cuts in batch.search(sequence, linear=linear).values()
+        for cut in cuts
+    ]
 
 def predict_digestion_bands(sequence, enzymes, linear=True):
     """Return the band sizes from digestion by all enzymes at once.
@@ -50,13 +57,7 @@ def predict_digestion_bands(sequence, enzymes, linear=True):
     """
     if not isinstance(sequence, Seq):
         sequence = Seq(sequence)
-
-    batch = Restriction.RestrictionBatch(enzymes)
-    cut_sites = [
-        cut
-        for cuts in batch.search(sequence, linear=linear).values()
-        for cut in cuts
-    ]
+    cut_sites = find_cuts(sequence, enzymes, linear=linear)
     bands = _compute_bands_from_cuts(cut_sites, len(sequence), linear=linear)
     return sorted(bands)
 
