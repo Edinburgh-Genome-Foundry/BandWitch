@@ -146,12 +146,18 @@ informative reports as illustrated below:
    :width: 600px
 
 
-Contribute
-----------
+License = MIT
+--------------
 
-BandWitch is an open-source library originally written at the
-Edinburgh Genome Foundry by Zulko_. It is released on Github_ under the MIT
-licence (¢ Edinburgh Genome Foundry), everyone is welcome to contribute.
+BandWitch is an open-source software originally written at the `Edinburgh Genome Foundry <http://edinburgh-genome-foundry.github.io/home.html>`_ by `Zulko <https://github.com/Zulko>`_ and `released on Github <https://github.com/Edinburgh-Genome-Foundry/Primavera>`_ under the MIT licence (¢ Edinburg Genome Foundry). Everyone is welcome to contribute !
+
+More biology software
+-----------------------
+
+.. image:: https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/Edinburgh-Genome-Foundry.github.io/master/static/imgs/logos/egf-codon-horizontal.png
+:target: https://edinburgh-genome-foundry.github.io/
+
+BandWitch is part of the `EGF Codons <https://edinburgh-genome-foundry.github.io/>`_ synthetic biology software suite for DNA design, manufacturing and validation.
 
 .. _Zulko: https://github.com/Zulko/
 .. _Github: https://github.com/EdinburghGenomeFoundry/BandWitch
