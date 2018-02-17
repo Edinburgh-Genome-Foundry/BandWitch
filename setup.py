@@ -10,7 +10,7 @@ setup(
     version=__version__,
     author='Zulko',
     description='Enzyme selection for DNA verification and identification',
-    long_description=open('README.rst').read(),
+    long_description=open('pypi-readme.rst').read(),
     license='MIT',
     keywords="Restriction enzyme synthetic biology DNA band patterns",
     packages= find_packages(exclude='docs'),

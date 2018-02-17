@@ -1,4 +1,4 @@
-include *.txt
+include *.txt *.rst
 recursive-include examples *.txt *.py
 recursive-include bandwitch/data/ladders_data *
 recursive-include bandwitch/data/enzymes_data *
