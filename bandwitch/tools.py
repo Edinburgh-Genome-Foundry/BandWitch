@@ -1,4 +1,5 @@
 """Collection of useful methods and solvers for BandWitch."""
+import itertools
 
 from Bio import Restriction
 from .data.enzymes_infos import enzymes_infos
@@ -133,3 +134,7 @@ def updated_dict(dic1, dic2):
     if dic2 is not None:
         dic1.update(dic2)
     return dic1
+
+def all_subsets(mylist):
+    return itertools.chain.from_iterable(
+        itertools.combinations(mylist, k) for k in range(len(mylist)+1))

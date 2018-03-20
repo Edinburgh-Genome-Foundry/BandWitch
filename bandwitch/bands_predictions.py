@@ -3,6 +3,9 @@
 from Bio import Restriction
 from Bio.Seq import Seq
 from collections import OrderedDict
+import numpy as np
+
+from .tools import all_subsets
 
 
 def _compute_bands_from_cuts(cuts, sequence_length, linear=True):
@@ -36,7 +39,8 @@ def find_cuts(sequence, enzymes, linear=True):
         for cut in cuts
     ]
 
-def predict_digestion_bands(sequence, enzymes, linear=True):
+def predict_digestion_bands(sequence, enzymes, linear=True,
+                            partial_cutters=()):
     """Return the band sizes from digestion by all enzymes at once.
 
     Returns a list of bands sizes sorted from smallest to largest
@@ -54,17 +58,54 @@ def predict_digestion_bands(sequence, enzymes, linear=True):
     linear
       True if the DNA fragment is linearized, False if it is circular
 
+    partial_cutters
+      List of enzymes that are tired or inhibited would randomly miss
+      some sites, thus creating extra bands in the final digest.
+
     """
     if not isinstance(sequence, Seq):
         sequence = Seq(sequence)
-    cut_sites = find_cuts(sequence, enzymes, linear=linear)
-    bands = _compute_bands_from_cuts(cut_sites, len(sequence), linear=linear)
+    cuts = find_cuts(sequence, enzymes, linear=linear)
+    if len(partial_cutters) == 0:
+        bands = _compute_bands_from_cuts(cuts, len(sequence), linear=linear)
+    else:
+        propartial_cuts = find_cuts(sequence, partial_cutters, linear=linear)
+        bands = set(
+             band
+             for partial_cuts in all_subsets(propartial_cuts)
+             for band in _compute_bands_from_cuts(
+                 cuts + list(partial_cuts), len(sequence), linear)
+        )
     return sorted(bands)
 
 
+
+def compute_sequence_digestions_migrations(sequences_digestions, ladder):
+    """Add a 'migration' field to the data in sequences_digestions.
+
+    ``sequences_digestions`` is a dict ``{seq: digestions_data}``
+    where ``digestions_data`` is a result of ``predict_sequence_digestions``,
+    ``ladder`` is a Ladder object.
+    """
+    all_bands = set()
+    for seq, digestions_data in sequences_digestions.items():
+        for digestion, data in digestions_data.items():
+            all_bands.update(data['bands'])
+    all_bands = sorted(all_bands)
+    all_migrations = ladder.dna_size_to_migration(list(all_bands))
+    band_to_migration = {
+        band: migration
+        for band, migration in zip(all_bands, all_migrations)
+    }
+    for seq, digestions_data in sequences_digestions.items():
+        for digestion, data in digestions_data.items():
+            data['migration'] = np.array([
+                band_to_migration[b]
+                for b in data['bands']
+            ])
+
 def predict_sequence_digestions(sequence, enzymes, linear=True,
-                                max_enzymes_per_digestion=1,
-                                bands_to_migration=None):
+                                max_enzymes_per_digestion=1):
     """Return a dict giving bands sizes pattern for all possible digestions.
 
     The digestions, double-digestions, etc. are listed and for each the
@@ -125,9 +166,11 @@ def predict_sequence_digestions(sequence, enzymes, linear=True,
                     if ((enzyme,) in digestions_dict) and one_no_bands:
                         if no_enzyme_band:
                             digestions_dict[digestion] = digestions_dict[enzs]
+                            digestions_dict[digestion]['same_as'] = enzs
                         elif no_enzs_band:
                             dig = (enzyme,)
                             digestions_dict[digestion] = digestions_dict[dig]
+                            digestions_dict[digestion]['same_as'] = dig
                     else:
                         digestions_dict[digestion] = _merge_digestions(
                             digestion1=get_cuts(enzyme),
@@ -135,10 +178,6 @@ def predict_sequence_digestions(sequence, enzymes, linear=True,
                             sequence_length=len(sequence),
                             linear=linear
                         )
-                        if bands_to_migration is not None:
-                            bands = digestions_dict[digestion]["bands"]
-                            migration = bands_to_migration(bands)
-                            digestions_dict[digestion]["migration"] = migration
                         digestions_dict[digestion]['same_as'] = digestion
     digestions_dict.pop(())
 

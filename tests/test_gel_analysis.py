@@ -12,7 +12,7 @@ from Bio import SeqIO, Restriction
 import pytest
 
 
-def test_complex_validation():
+def test_complex_validation(tmpdir):
     data_dir = os.path.join('tests', 'test_data', 'complex_validation_data')
     records_path = os.path.join(data_dir, 'constructs_sequences.zip')
     constructs_map_path = os.path.join(data_dir, 'constructs_map.xls')
@@ -25,4 +25,8 @@ def test_complex_validation():
         digestions_map_path=digestions_map_path
     )
     validations = clones.validate_all_clones(relative_tolerance=0.03)
-    validations_summary = clones.validations_summary(validations)
+    clones.plot_validations_plate_map(validations)
+    clones.plot_all_constructs_cuts_maps()
+    clones.plot_all_validations_patterns(validations)
+    partial_digest_analysis = clones.partial_digests_analysis()
+    clones.plot_partial_digests_analysis(partial_digest_analysis)

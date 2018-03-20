@@ -6,7 +6,8 @@ from collections import OrderedDict
 import numpy as np
 from ..tools import (digestions_list_to_string, updated_dict)
 from .SetCoverProblem import SetCoverProblem
-from ..bands_predictions import predict_sequence_digestions
+from ..bands_predictions import (predict_sequence_digestions,
+                                 compute_sequence_digestions_migrations)
 
 try:
     import bandwagon
@@ -60,31 +61,35 @@ class DigestionProblem(SetCoverProblem):
         if isinstance(sequences, (list, tuple)):
             sequences = OrderedDict([(r.id, str(r.seq)) for r in sequences])
         self.sequences = sequences
-        self.ladder = ladder
         self.linear = linear
         self.relative_migration_precision = relative_migration_precision
         self.max_enzymes_per_digestion = max_enzymes_per_digestion
 
         self.sequences_names = list(sequences.keys())
-        mini, maxi = self.ladder.migration_distances_span
-        self.migration_min, self.migration_max = mini, maxi
-        self.migration_span = maxi - mini
+        self.progress_logger = progress_logger
 
         self.enzymes = enzymes
 
         self.sequences_digestions = {
             name: predict_sequence_digestions(
                 sequence=sequence, enzymes=self.enzymes, linear=self.linear,
-                max_enzymes_per_digestion=self.max_enzymes_per_digestion,
-                bands_to_migration=self.bands_to_migration_pattern)
+                max_enzymes_per_digestion=self.max_enzymes_per_digestion)
             for name, sequence in self.sequences.items()
         }
-
         digestions = self.sequences_digestions[self.sequences_names[0]]
-        self.digestions = parameters = list(digestions.keys())
-        elements = self._compute_elements()
-        SetCoverProblem.__init__(self, elements=elements, parameters=parameters,
-                                 progress_logger=progress_logger)
+        self.digestions = list(digestions.keys())
+        self.change_ladder(ladder)
+
+    def change_ladder(self, ladder):
+        self.ladder = ladder
+        mini, maxi = self.ladder.migration_distances_span
+        self.migration_min, self.migration_max = mini, maxi
+        self.migration_span = maxi - mini
+        compute_sequence_digestions_migrations(self.sequences_digestions,
+                                               self.ladder)
+        SetCoverProblem.__init__(self, elements=self._compute_elements(),
+                                 parameters=self.digestions,
+                                 progress_logger=self.progress_logger)
 
     @staticmethod
     def _default_heuristic(named_subset, selected):

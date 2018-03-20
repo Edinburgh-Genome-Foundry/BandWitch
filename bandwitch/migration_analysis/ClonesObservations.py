@@ -18,7 +18,7 @@ except:
 
 from ..bands_predictions import predict_digestion_bands
 from ..plots import plot_cuts_map, plot_all_constructs_cuts_maps
-from ..tools import load_genbank
+from ..tools import load_genbank, all_subsets
 from .Clone import Clone
 from .BandsObservation import BandsObservation
 
@@ -39,13 +39,14 @@ class ClonesObservations:
 
     """
 
-    def __init__(self, clones, constructs_records):
+    def __init__(self, clones, constructs_records, partial_cutters=()):
         """Initialize"""
         if isinstance(clones, (list, tuple)):
             clones = {clone.name: clone for clone in clones}
         self.clones = clones
         self.constructs_records = constructs_records
         self.constructs_digestions = {ct: {} for ct in constructs_records}
+        self.partial_cutters = partial_cutters
 
 
     def get_digestion_bands_for_construct(self, construct_id, digestion):
@@ -71,7 +72,9 @@ class ClonesObservations:
             construct_digestions[digestion] = predict_digestion_bands(
                 str(construct_record.seq),
                 linear=construct_record.__dict__.get('linear', True),
-                enzymes=digestion
+                enzymes=[enzyme for enzyme in digestion
+                         if enzyme not in self.partial_cutters],
+                partial_cutters=self.partial_cutters
             )
         return construct_digestions[digestion]
 
@@ -436,3 +439,70 @@ class ClonesObservations:
                                                digestions_map)
         clones_observations = ClonesObservations(clones, constructs_records)
         return clones_observations
+
+    def partial_digests_analysis(self):
+        """Compute good clones under different partial digest assumptions.
+
+        Returns a dictionnary ``{partial: {'valid_clones': 60, 'label': 'x'}}``
+        where for a given scenario ``partial`` is a tuple of all enzymes
+        considered to have partia activity in this scenario (it defines the
+        scenario) ``valid_clones`` is the number of good clones under this
+        assumption, and ``label`` is a string representation of all enzymes
+        involved, with partial activity enzymes in parenthesis.
+
+        This result can be fed to ``ClonesObservations``'s
+        ``.plot_partial_digests_analysis`` method for plotting
+        """
+        all_enzymes = set(
+            enzyme
+            for clone in self.clones.values()
+            for digestion in clone.digestions
+            for enzyme in digestion
+        )
+        all_enzymes
+        results = {}
+        for good_cutters in all_subsets(all_enzymes):
+            partial_cutters = tuple([e for e in all_enzymes
+                                     if e not in good_cutters])
+            clones_observations = ClonesObservations(
+                self.clones, self.constructs_records,
+                partial_cutters=partial_cutters
+            )
+            validations = clones_observations.validate_all_clones(
+                relative_tolerance=0.1
+            )
+            label = " + ".join(sorted(good_cutters) +
+                               sorted(["(%s)" % c for c in partial_cutters]))
+            valid = sum([v.passes for name, v in validations.items()])
+            results[partial_cutters] = {'valid_clones': valid, 'label': label}
+        return results
+
+    @staticmethod
+    def plot_partial_digests_analysis(analysis_results, ax=None):
+        """Plot partial digests analysis results.
+
+        Parameters
+        ----------
+        analysis_results
+          results from ``ClonesObservations.partial_digest_analysis``
+
+        ax
+          A Matplotlib ax. If none, one is created and returned at the end.
+
+        """
+        if ax is None:
+            fig, ax = plt.subplots(figsize=(5, 0.5 * len(analysis_results)))
+        ax.axis("off")
+        values, labels = zip(*sorted([
+            (data['valid_clones'], data['label'])
+            for partial, data in analysis_results.items()
+        ]))
+        ax.barh(range(len(values)), values)
+        for i, (value, label) in enumerate(zip(values, labels)):
+            ax.text(0, i, label + " ", ha='right', va='center',
+                    fontweight=('normal' if '(' in label else 'bold'))
+            ax.text(value, i, str(value) + " ", ha='right', va='center',
+                    fontdict={'color': 'white', 'weight': 'bold'})
+        ax.set_ylim(-0.5, len(values)-0.5)
+        ax.set_title("Number of good clones, by scenario")
+        return ax

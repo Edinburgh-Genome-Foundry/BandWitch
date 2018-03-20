@@ -8,6 +8,8 @@
 .. image:: https://travis-ci.org/Edinburgh-Genome-Foundry/BandWitch.svg?branch=master
    :target: https://travis-ci.org/Edinburgh-Genome-Foundry/BandWitch
    :alt: Travis CI build status
+.. image:: https://coveralls.io/repos/github/Edinburgh-Genome-Foundry/BandWitch/badge.svg?branch=master
+   :target: https://coveralls.io/github/Edinburgh-Genome-Foundry/BandWitch?branch=master
 
 Bandwitch (full documentation `here <https://edinburgh-genome-foundry.github.io/BandWitch/>`_)
 is a Python library for the planning and analysis of restriction
