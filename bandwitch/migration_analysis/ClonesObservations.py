@@ -440,7 +440,7 @@ class ClonesObservations:
         clones_observations = ClonesObservations(clones, constructs_records)
         return clones_observations
 
-    def partial_digests_analysis(self):
+    def partial_digests_analysis(self, relative_tolerance=0.05):
         """Compute good clones under different partial digest assumptions.
 
         Returns a dictionnary ``{partial: {'valid_clones': 60, 'label': 'x'}}``
@@ -469,12 +469,17 @@ class ClonesObservations:
                 partial_cutters=partial_cutters
             )
             validations = clones_observations.validate_all_clones(
-                relative_tolerance=0.1
+                relative_tolerance=relative_tolerance
             )
             label = " + ".join(sorted(good_cutters) +
                                sorted(["(%s)" % c for c in partial_cutters]))
-            valid = sum([v.passes for name, v in validations.items()])
-            results[partial_cutters] = {'valid_clones': valid, 'label': label}
+            valid_clones = sum([v.passes for name, v in validations.items()])
+
+            results[partial_cutters] = {
+                'label': label,
+                'validations': validations,
+                'valid_clones': valid_clones
+            }
         return results
 
     @staticmethod
