@@ -42,9 +42,16 @@ class ClonesObservations:
     def __init__(self, clones, constructs_records, partial_cutters=()):
         """Initialize"""
         if isinstance(clones, (list, tuple)):
-            clones = {clone.name: clone for clone in clones}
+            clones = OrderedDict([(clone.name, clone) for clone in clones])
         self.clones = clones
-        self.constructs_records = constructs_records
+        clones_constructs = []
+        for clone in list(clones.values()):
+            if clone.construct_id not in clones_constructs:
+                clones_constructs.append(clone.construct_id)
+        self.constructs_records = OrderedDict(
+            sorted(constructs_records.items(),
+                   key=lambda cst: clones_constructs.index(cst[0]))
+        )
         self.constructs_digestions = {ct: {} for ct in constructs_records}
         self.partial_cutters = partial_cutters
 
@@ -227,12 +234,14 @@ class ClonesObservations:
                 for digestion in validation.discrepancies:
                     if digestion not in digestions_by_construct[construct]:
                         digestions_by_construct[construct].append(digestion)
+
         ladder = list(validations[0].clone.digestions.values())[0].ladder
         pdf_io = BytesIO()
         with PdfPages(pdf_io) as pdf:
             for construct_id, validations in summary.items():
                 digestions = digestions_by_construct[construct_id]
                 band_patterns = OrderedDict()
+                seen_clones = set()
                 for i, digestion in enumerate(digestions):
                     reference_bands = self.get_digestion_bands_for_construct(
                         construct_id, digestion)
@@ -248,14 +257,18 @@ class ClonesObservations:
                                           key=lambda b: -b.dna_size)
                     for band_name, band in zip("abcdefghijklm", sorted_bands):
                         band.label = band_name
-                    patterns = [
-                        validation.to_bandwagon_bandpattern(
-                            digestion=digestion,
+
+                    patterns = []
+                    for validation in validations:
+                        clone_name = validation.clone.name
+                        label = None if clone_name in seen_clones else "auto"
+                        pattern = validation.to_bandwagon_bandpattern(
+                            digestion=digestion, label=label,
                             per_digestion_discrepancy=per_digestion_discrepancy,
-                            label='auto' if (i == 0) else None
                         )
-                        for validation in validations
-                    ]
+                        if pattern is not None:
+                            seen_clones.add(clone_name)
+                        patterns.append(pattern)
                     band_patterns[digestion] = BandsPatternsSet(
                         [reference] + patterns, ladder=ladder,
                         label=" + ".join(digestion),
@@ -401,7 +414,8 @@ class ClonesObservations:
         ], target=target, figsize=figsize)
 
     def from_files(records_path, constructs_map_path, aati_zip_path,
-                   digestions_map_path=None, digestion=None):
+                   digestions_map_path=None, digestion=None,
+                   direction="column"):
         constructs_records = {
             f._name_no_extension: load_genbank(
                 f.open('r'), linear=False, name=f._name_no_extension)
@@ -413,7 +427,7 @@ class ClonesObservations:
             constructs_map_path, data_field='construct', headers=True)
         constructs_map = OrderedDict([
             (well.name, well.data.construct)
-            for well in constructs_plate.iter_wells(direction='row')
+            for well in constructs_plate.iter_wells(direction=direction)
             if 'construct' in well.data
             and str(well.data.construct) != 'nan'
         ])
@@ -429,12 +443,13 @@ class ClonesObservations:
                 digestions_map_path, data_field='digestion', headers=True)
             digestions_map = OrderedDict([
                 (well.name, tuple(well.data.digestion.split(', ')))
-                for well in digestions_plate.iter_wells(direction='row')
+                for well in digestions_plate.iter_wells(direction=direction)
                 if 'digestion' in well.data
                 and str(well.data.digestion) != 'nan'
             ])
 
-        observations = BandsObservation.from_aati_fa_archive(aati_zip_path)
+        observations = BandsObservation.from_aati_fa_archive(
+            aati_zip_path, direction=direction)
         clones = Clone.from_bands_observations(observations, constructs_map,
                                                digestions_map)
         clones_observations = ClonesObservations(clones, constructs_records)

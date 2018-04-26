@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from bandwagon.ladders import ladder_from_aati_fa_calibration_table
 from bandwagon import BandsPattern
 from ..tools import band_patterns_discrepancy
@@ -35,7 +36,8 @@ class BandsObservation:
         self.migration_image = migration_image
 
     @staticmethod
-    def from_aati_fa_archive(archive_path, min_rfu_size_ratio=0.3):
+    def from_aati_fa_archive(archive_path, min_rfu_size_ratio=0.3,
+                             direction='column'):
         """Return a dictionnary of all band observations in AATI output files.
 
         Parameters
@@ -66,8 +68,8 @@ class BandsObservation:
             """Return True iff the band's intensity is above the set level."""
             return (1.0 * band["RFU"] / band["Size (bp)"] > min_rfu_size_ratio)
 
-        return {
-            well.name: BandsObservation(
+        return OrderedDict([
+            (well.name, BandsObservation(
                 name=well.name,
                 ladder=ladder,
                 bands=[
@@ -76,9 +78,9 @@ class BandsObservation:
                     if band_is_strong_enough(band)
                 ],
                 migration_image=well.data.migration_image
-            )
-            for well in plate.iter_wells()
-        }
+            ))
+            for well in plate.iter_wells(direction=direction)
+        ])
 
     def patterns_discrepancy(self, other_bands, relative_tolerance=0.1,
                              min_band_cutoff=None, max_band_cutoff=None):

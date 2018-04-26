@@ -25,6 +25,6 @@ score, selected_digestions = problem.select_digestions(max_digestions=1)
 
 problem.plot_digestions(
   digestions=selected_digestions,
-  patterns_props={'label_fontdict': {'rotation': 35}}
+  patterns_props={'label_fontdict': {'rotation': 35}},
   target_file="ideal_digestions.png"
 )
