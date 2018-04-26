@@ -15,6 +15,11 @@ try:
 except:
     PLATEO_AVAILABLE = False
 
+try:
+    import saboteurs
+    SABOTEURS_AVAILABLE = True
+except:
+    SABOTEURS_AVAILABLE = False
 
 from ..bands_predictions import predict_digestion_bands
 from ..plots import plot_cuts_map, plot_all_constructs_cuts_maps
@@ -303,6 +308,63 @@ class ClonesObservations:
         else:
             with open(target, 'wb') as f:
                 f.write(pdf_data)
+
+    def indentify_bad_parts(self, validations, constructs_parts,
+                            report_target=None):
+        """Identifies parts associated with failure in the validations.
+
+        Uses the Saboteurs library:
+        https://github.com/Edinburgh-Genome-Foundry/saboteurs
+
+        Parameters
+        ----------
+        validations
+          validations results
+
+        constructs_parts
+          Either a dict {construct_id: [list, of, part, names]} or a function
+          (biopython_record => [list, of, part, names])
+
+        report_target
+          Can be a path to file or file-like object where to write a PDF
+          report. Can also be "@memory", at which case the raw binary PDF
+          data is returned
+
+        Returns
+        -------
+
+        analysis, pdf_data
+          Where ``analysis`` is the result of sabotage analysis (see the
+          saboteurs library), and pdf_data is None unless report_target is
+          set to "@memory" (see above).
+        """
+        if not SABOTEURS_AVAILABLE:
+            raise ImportError("You must install the saboteurs library to"
+                              "be able to identify bad parts. Try:\n\n"
+                              "(sudo) pip install saboteurs")
+        if hasattr(constructs_parts, '__call__'):
+            constructs_parts = {
+                record_id: constructs_parts(record)
+                for record_id, record in self.constructs_records
+            }
+        constructs_stats = OrderedDict()
+        for clone_name, validation in validations.items():
+            construct_id = validation.clone.construct_id
+            if construct_id not in constructs_stats:
+                constructs_stats[construct_id] = dict(
+                    exp_id=construct_id,
+                    attempts=0,
+                    failures=0,
+                    members=constructs_parts[construct_id]
+                )
+            stats = constructs_stats[construct_id]
+            stats["attempts"] += 1
+            stats["failures"] += not validation.passes
+        analysis = saboteurs.find_saboteurs(constructs_stats)
+        report_data = None
+        if report_target is not None:
+            report_data = saboteurs.analysis_report(analysis, report_target)
+        return analysis, report_data
 
     def write_identification_report(self, target_file=None,
                                     relative_tolerance=0.1,
