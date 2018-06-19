@@ -37,7 +37,7 @@ def create_cuts_map_graphic_record(record, enzymes):
         bands, key=lambda start_end: start_end[0] - start_end[1])
     gr_cuts = GraphicRecord(len(record), [
         GraphicFeature(_start, _end,  strand=1, label=name,
-                       color="#ede15c", thickness=5)
+                       color="#ede15c", thickness=5, fontdict={'size': 4})
         for name, (_start, _end) in zip("abcdefghijklmn", sorted_bands)
     ])
     gr_cuts.split_overflowing_features_circularly()
@@ -61,13 +61,13 @@ def plot_cuts_map(record, enzymes, ax):
 
     gr_cuts, all_cuts = create_cuts_map_graphic_record(
         record, enzymes)
-    gr_cuts.plot(ax, fontsize=7, with_ruler=False)
+    gr_cuts.plot(ax, with_ruler=False)
     for cut in all_cuts:
         ax.axvline(cut, ls=":", color="k", lw=0.5)
 
     def features_prop(f):
         return dict(label=f.qualifiers.get("source", [False])[0],
-                    color="#93a8ea",
+                    color="#93a8ea", fontdict={'size': 4},
                     thickness=5)
 
     def features_filter(f):
@@ -75,7 +75,7 @@ def plot_cuts_map(record, enzymes, ax):
 
     translator = BiopythonTranslator([features_filter], features_prop)
     gr_record = translator.translate_record(record)
-    gr_record.plot(ax, fontsize=4, level_offset=7)
+    gr_record.plot(ax, level_offset=7)
 
 def plot_all_constructs_cuts_maps(record_digestion_pairs, target=None,
                                   figsize=(12, 4)):
