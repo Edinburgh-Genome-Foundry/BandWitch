@@ -53,10 +53,11 @@ class ClonesObservations:
         for clone in list(clones.values()):
             if clone.construct_id not in clones_constructs:
                 clones_constructs.append(clone.construct_id)
-        self.constructs_records = OrderedDict(
-            sorted(constructs_records.items(),
-                   key=lambda cst: clones_constructs.index(cst[0]))
-        )
+        self.constructs_records = OrderedDict(sorted([
+            (construct_name, record)
+            for construct_name, record in constructs_records.items()
+        ], key=lambda cst: +100000 if cst[0] not in clones_constructs
+                           else clones_constructs.index(cst[0])))
         self.constructs_digestions = {ct: {} for ct in constructs_records}
         self.partial_cutters = partial_cutters
 
@@ -100,7 +101,7 @@ class ClonesObservations:
             for digestion in clone.digestions
         }
 
-    def validate_all_clones(self, relative_tolerance=0.1,
+    def validate_all_clones(self, relative_tolerance=0.05,
                             min_band_cutoff=None, max_band_cutoff=None):
         """Return ``{clone: CloneValidation}`` for all clones."""
         return OrderedDict([
@@ -113,7 +114,7 @@ class ClonesObservations:
             for clone_name, clone in self.clones.items()
         ])
 
-    def identify_all_clones(self, relative_tolerance=0.1,
+    def identify_all_clones(self, relative_tolerance=0.05,
                             min_band_cutoff=None, max_band_cutoff=None):
         """Return ``{clone: {construct_id: CloneValidation}}`` for all clones.
 
@@ -240,10 +241,11 @@ class ClonesObservations:
                     if digestion not in digestions_by_construct[construct]:
                         digestions_by_construct[construct].append(digestion)
 
-        ladder = list(validations[0].clone.digestions.values())[0].ladder
+        # ladder = list(validations[0].clone.digestions.values())[0].ladder
         pdf_io = BytesIO()
         with PdfPages(pdf_io) as pdf:
             for construct_id, validations in summary.items():
+                ladder = list(validations[0].clone.digestions.values())[0].ladder
                 digestions = digestions_by_construct[construct_id]
                 band_patterns = OrderedDict()
                 seen_clones = set()
@@ -309,8 +311,10 @@ class ClonesObservations:
             with open(target, 'wb') as f:
                 f.write(pdf_data)
 
-    def indentify_bad_parts(self, validations, constructs_parts,
-                            report_target=None):
+    @staticmethod
+    def identify_bad_parts(validations, constructs_parts,
+                           constructs_records=None, report_target=None,
+                           extra_failures=None):
         """Identifies parts associated with failure in the validations.
 
         Uses the Saboteurs library:
@@ -345,8 +349,9 @@ class ClonesObservations:
         if hasattr(constructs_parts, '__call__'):
             constructs_parts = {
                 record_id: constructs_parts(record)
-                for record_id, record in self.constructs_records
+                for record_id, record in constructs_records.items()
             }
+        extra_failures = extra_failures or {}
         constructs_stats = OrderedDict()
         for clone_name, validation in validations.items():
             construct_id = validation.clone.construct_id
@@ -360,6 +365,15 @@ class ClonesObservations:
             stats = constructs_stats[construct_id]
             stats["attempts"] += 1
             stats["failures"] += not validation.passes
+        for construct_id, weight in extra_failures.items():
+            constructs_stats[construct_id] = dict(
+                exp_id=construct_id,
+                attempts=weight,
+                failures=weight,
+                members=constructs_parts[construct_id]
+            )
+        # import json
+        # print (json.dumps(constructs_stats, indent=2))
         analysis = saboteurs.find_saboteurs(constructs_stats)
         report_data = None
         if report_target is not None:
@@ -367,7 +381,7 @@ class ClonesObservations:
         return analysis, report_data
 
     def write_identification_report(self, target_file=None,
-                                    relative_tolerance=0.1,
+                                    relative_tolerance=0.05,
                                     min_band_cutoff=None,
                                     max_band_cutoff=None,
                                     plot_constructs_cuts=False):
@@ -477,7 +491,7 @@ class ClonesObservations:
 
     def from_files(records_path, constructs_map_path, aati_zip_path,
                    digestions_map_path=None, digestion=None,
-                   direction="column"):
+                   direction="column", ignore_bands_under=None):
         constructs_records = {
             f._name_no_extension: load_genbank(
                 f.open('r'), linear=False, name=f._name_no_extension)
@@ -511,9 +525,10 @@ class ClonesObservations:
             ])
 
         observations = BandsObservation.from_aati_fa_archive(
-            aati_zip_path, direction=direction)
-        clones = Clone.from_bands_observations(observations, constructs_map,
-                                               digestions_map)
+            aati_zip_path, direction=direction,
+            ignore_bands_under=ignore_bands_under)
+        clones = Clone.from_bands_observations(
+            observations, constructs_map, digestions_map)
         clones_observations = ClonesObservations(clones, constructs_records)
         return clones_observations
 
@@ -588,3 +603,22 @@ class ClonesObservations:
         ax.set_ylim(-0.5, len(values)-0.5)
         ax.set_title("Number of good clones, by scenario")
         return ax
+
+    @staticmethod
+    def merge_observations(observations_list, prefixes=None):
+        prefixes = prefixes or (len(observations_list) * [''])
+
+        clones = OrderedDict([
+            (pref + k, v)
+            for pref, obs in zip(prefixes, observations_list)
+            for k, v in obs.clones.items()
+        ])
+        constructs_records = {
+            name: record
+            for obs in observations_list
+            for name, record in obs.constructs_records.items()
+        }
+        partial_cutters = tuple(enzyme for obs in observations_list
+                                       for enzyme in obs.partial_cutters)
+
+        return ClonesObservations(clones, constructs_records, partial_cutters)

@@ -37,7 +37,7 @@ class BandsObservation:
 
     @staticmethod
     def from_aati_fa_archive(archive_path, min_rfu_size_ratio=0.3,
-                             direction='column'):
+                             ignore_bands_under=None, direction='column'):
         """Return a dictionnary of all band observations in AATI output files.
 
         Parameters
@@ -59,6 +59,8 @@ class BandsObservation:
         if not PLATEO_AVAILABLE:
             raise ImportError("Plateo must be installed to parse AATI zips.")
 
+        ignore_bands_under = ignore_bands_under or 0
+
         plate = plate_from_aati_fragment_analyzer_zip(archive_path)
         ladder_data = plate.data.ladder
         ladder = ladder_from_aati_fa_calibration_table(dataframe=ladder_data)
@@ -76,6 +78,7 @@ class BandsObservation:
                     band["Size (bp)"]
                     for band in well.data.bands.values()
                     if band_is_strong_enough(band)
+                    and (band["Size (bp)"] > ignore_bands_under)
                 ],
                 migration_image=well.data.migration_image
             ))
@@ -112,6 +115,7 @@ class BandsObservation:
 
         """
         ladder_min, ladder_max = self.ladder.dna_size_span
+        # print (min_band_cutoff)
         if min_band_cutoff is None:
             min_band_cutoff = ladder_min
         if max_band_cutoff is None:
