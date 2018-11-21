@@ -300,6 +300,8 @@ class ClonesObservations:
                                     fontdict=dict(size=14, weight='bold'),
                                     ha='left', position=(0.0, 0.1))
                 pdf.attach_note(construct_id)
+                
+                # Temporary fix because of Matplotlib bug #12634
                 pdf.savefig(fig, bbox_inches="tight")
                 plt.close(fig)
         pdf_data = pdf_io.getvalue()
