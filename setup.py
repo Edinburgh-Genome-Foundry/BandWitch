@@ -16,5 +16,6 @@ setup(
     packages= find_packages(exclude='docs'),
     include_package_data=True,
     install_requires=('tqdm', 'biopython', 'scipy', 'matplotlib',
-                      'bandwagon', 'dna_features_viewer', 'flametree')
+                      'bandwagon', 'dna_features_viewer', 'flametree',
+                      'pandas')
 )

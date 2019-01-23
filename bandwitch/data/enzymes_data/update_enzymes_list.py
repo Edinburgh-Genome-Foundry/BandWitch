@@ -1,41 +1,52 @@
-from lxml import html
+import time
+import tqdm
+import pandas
 import requests
-from collections import OrderedDict, Counter
 
 if __name__ == "__main__":
     website_url = "http://rebase.neb.com"
+    methylations = ['Dam', 'Dcm', 'CpG', 'EcoBI', 'EcoKI']
+    columns = ['enzyme', 'req_seq', 'suppliers'] + methylations
 
-    # GET THE CONTENT FROM ALL PROVIDER PAGES
-    all_providers_page = requests.get(website_url + "/cgi-bin/lapsupplist")
-    parsed_providers_page = html.fromstring(all_providers_page.text)
-    providers_pages = OrderedDict(sorted([
-        (e.text, requests.get((website_url + e.values()[0])))
-        for e in parsed_providers_page.xpath('//a')
-        if e.values()[0].startswith("/cgi-bin/laplist")
-    ]))
+    print("Getting enzyme list and suppliers...")
 
-    # CREATE A TABLE WITH ALL ENZYMES FROM ALL PAGES
-    full_table = []
-    for provider, page in providers_pages.items():
-        parsed_page = html.fromstring(page.text)
-        tables = parsed_page.xpath('//table[@border=2]')
-        for table in tables:
-            parsed_table = [
-                [v.text_content() for v in row]
-                for row in table[2:]
-            ]
-            if (len(parsed_table) == 0) or (parsed_table[0][0] != 'overlaps:'):
-                continue
-            header, parsed_table = parsed_table[0], parsed_table[1:]
-            full_table += [tuple(row) for row in parsed_table]
+    html = requests.get(website_url + '/cgi-bin/azlist?re2+cy').text
+    tables = pandas.read_html(html, header=0)
+    table = [t for t in tables if (t.values.shape[1] == 4)][0]
+    suppliers_dict = {
+        enzyme: len(suppliers)
+        for enzyme, suppliers in zip(table.Enzymes, table.Suppliers)
+    }
 
-    # REMOVE (AND COUNT) DUPLICATES BETWEEN PROVIDERS. WRITE TO A CSV
-    counter = Counter(full_table)
-    enzymes = [k[0] for k in counter.keys()]
-    assert len(enzymes) == len(set(enzymes))
-    with open("enzymes_data.csv", "w+") as f:
-        f.write("\n".join(
-            [";".join(header + ['suppliers'])] + sorted([
-                ";".join(line + (str(n),))
-                for line, n in counter.items()
-            ])))
+    print("Getting enzymes methylation data...")
+
+    def get_enzyme_data(enzyme_name):
+        url = website_url + "/cgi-bin/damlist?e" + enzyme_name
+        html = requests.get(url).text
+        table = [
+            t for t in pandas.read_html(html)
+            if t.values.shape == (3, 6)
+        ][0]
+        rec_seq = table.values[0, 0].replace(enzyme_name, '')
+        suppliers = suppliers_dict[enzyme_name]
+        return dict([('enzyme', enzyme_name),
+                    ('req_seq', rec_seq),
+                    ('suppliers', suppliers)] +
+                    list(zip(methylations, table.values[2, 1:6])))
+    data = []
+    errored = []
+    for enzyme_name in tqdm.tqdm(list(suppliers_dict)):
+        time.sleep(0.5)
+        try:
+            data.append(get_enzyme_data(enzyme_name))
+        except Exception as e:
+            errored.append(enzyme_name)
+    if len(errored):
+        print ("%d errors:" % len(errored), " ".join(errored))
+    
+    print("Generating the spreadsheet...")
+
+    dataframe = pandas.DataFrame(data, columns=columns)
+    dataframe.to_csv("./enzymes_infos.csv", index=False)
+
+    print ('Done !')

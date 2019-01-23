@@ -8,7 +8,7 @@ matplotlib.use("Agg")
 import os
 from collections import OrderedDict
 from bandwitch import (SeparatingDigestionsProblem, IdealDigestionsProblem,
-                       LADDERS)
+                       LADDERS, list_common_enzymes)
 from Bio import SeqIO, Restriction
 import pytest
 
@@ -71,3 +71,11 @@ def test_ideal_digestions(sequences):
     score, selected_digestions = problem.select_digestions(max_digestions=1)
     assert score > 0.09
     assert selected_digestions == [('BamHI', 'SacI')]
+
+def test_list_common_enzymes():
+    l = list_common_enzymes(min_suppliers=4,
+                            avoided_methylations=('Dam', 'Dcm'))
+    assert len(l) == 38
+    l = list_common_enzymes(min_suppliers=4, avoided_methylations=())
+    assert len(l) == 45
+    

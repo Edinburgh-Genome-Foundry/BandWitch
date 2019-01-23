@@ -291,7 +291,7 @@ class ClonesObservations:
                 )
                 if len(digestions) == 1:
                     axes = [axes]
-                axes[-1].set_xlim(xmax=max_x)
+                axes[-1].set_xlim(right=max_x)
 
                 for ax, (dig, pattern_set) in zip(axes, band_patterns.items()):
                     pattern_set.plot(ax)
