@@ -124,7 +124,6 @@ def maximizing_bisection(f, x_min, x_max, precision=0.001, score=None):
 def minimal_cover(elements_set, subsets, max_subsets=None, heuristic='default',
                   selected=(), depth=0):
     """
-
     Parameters
     ----------
     elements_set

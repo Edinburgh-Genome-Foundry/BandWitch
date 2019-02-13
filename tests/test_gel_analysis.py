@@ -26,7 +26,6 @@ def test_complex_validation(tmpdir):
     )
     validations = clones.validate_all_clones(relative_tolerance=0.03)
     clones.plot_validations_plate_map(validations)
-    clones.plot_all_constructs_cuts_maps()
     clones.plot_all_validations_patterns(validations)
     partial_digest_analysis = clones.partial_digests_analysis()
     clones.plot_partial_digests_analysis(partial_digest_analysis)

@@ -22,7 +22,6 @@ except:
     SABOTEURS_AVAILABLE = False
 
 from ..bands_predictions import predict_digestion_bands
-from ..plots import plot_cuts_map, plot_all_constructs_cuts_maps
 from ..tools import load_genbank, all_subsets
 from .Clone import Clone
 from .BandsObservation import BandsObservation
@@ -385,8 +384,7 @@ class ClonesObservations:
     def write_identification_report(self, target_file=None,
                                     relative_tolerance=0.05,
                                     min_band_cutoff=None,
-                                    max_band_cutoff=None,
-                                    plot_constructs_cuts=False):
+                                    max_band_cutoff=None):
         """Plot a Graphic report of the gel validation.
 
         The report displays the patterns, with green and red backgrounds
@@ -420,9 +418,9 @@ class ClonesObservations:
             len(measures)
             for measures in self.observed_bands.values()
         ) + 1
-        fig, axes = plt.subplots(L, 2, figsize=(2.2 * max_x, 3 * L))
+        fig, axes = plt.subplots(L, 1, figsize=(2.2 * max_x, 3 * L))
         axes_validities = zip(axes, bands_validities.items())
-        for (ax1, ax2), (construct_id, validities) in axes_validities:
+        for ax, (construct_id, validities) in axes_validities:
             reference = BandsPattern(
                 self.expected_bands[construct_id], ladder=self.ladder,
                 label="exp.", background_color="#c6dcff",
@@ -430,7 +428,7 @@ class ClonesObservations:
                     self.expected_bands[construct_id]),
                 global_bands_props={"label_fontdict": {"size": 5}}
             )
-            sorted_bands = sorted(reference.bands, key=lambda b: -b.dna_size)
+            sorted_bands = sorted(reference.bands, key=lambda b: - b.dna_size)
             for band_name, band in zip("abcdefghijklm", sorted_bands):
                 band.label = band_name
             patterns = [
@@ -453,43 +451,14 @@ class ClonesObservations:
                 label=construct_id, ladder_ticks=5,
                 global_patterns_props={"label_fontdict": {"rotation": 60}}
             )
-            ax1.set_xlim(0.5, max_x + 2)
-            record = self.constructs_records[construct_id]
-            plot_cuts_map(record, enzymes=self.digestions[construct_id],
-                          ax=ax2)
-            patterns_set.plot(ax1)
+            ax.set_xlim(0.5, max_x + 2)
+            patterns_set.plot(ax)
         fig.subplots_adjust(hspace=0.3)
         if target_file is not None:
             fig.savefig(target_file, bbox_inches="tight")
             plt.close(fig)
         else:
             return axes
-
-    def plot_all_constructs_cuts_maps(self, target=None, figsize=(12, 4)):
-        """Plot schemas of all constructs with cuts, in a multipage PDF.
-
-        Parameters
-        ----------
-        target
-          Either None (at which case the function returns raw data of the PDF)
-          or 'base64' (the function returns base64-encoded data, e.g. for
-          web transfer), or a file path to be written to
-        figsize
-          The size in inches of each figure (=page of the pdf).
-
-        """
-        constructs_digestions = OrderedDict([
-            (construct_id, set())
-            for construct_id in self.constructs_records
-        ])
-        for clone in self.clones.values():
-            for digestion in clone.digestions:
-                constructs_digestions[clone.construct_id].add(digestion)
-        return plot_all_constructs_cuts_maps([
-            (self.constructs_records[construct_id], digestion)
-            for construct_id, digestions in constructs_digestions.items()
-            for digestion in sorted(digestions)
-        ], target=target, figsize=figsize)
 
     def from_files(records_path, constructs_map_path, aati_zip_path,
                    digestions_map_path=None, digestion=None,
