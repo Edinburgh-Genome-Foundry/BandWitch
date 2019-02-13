@@ -61,7 +61,10 @@ can propose 2 or 3 digestions which collectively solve the problem.
 **Important:** when providing BandWitch with a record, make sure to set the linearity/circularity with ``record.linear=True/False``.
 
 
-Here is the code to select enzymes that will **produce nice patterns for all constructs, for validation:**
+Finding enzymes that "work well" for many constructs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Here is the code to select enzymes that will produce nice patterns for all constructs, for validation:
 
 .. code:: python
 
@@ -94,6 +97,9 @@ Result:
 .. image:: https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/examples/ideal_digestions.png
    :alt: [logo]
    :align: center
+
+Finding enzymes that will differentiate many constructs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To select enzymes that will produce **different patterns for each construct, for identification:**
 
