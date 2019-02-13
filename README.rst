@@ -140,6 +140,11 @@ Result:
    :alt: [logo]
    :align: center
 
+In the result above, each construct has a unique "fingerprint". Assuming that you
+have an unlabelled DNA sample which could be any of these assemblies, then simply
+digesting the sample with MspA1I and BsmI will give you 2 pattern which collectively
+will correspond to a unique assembly.  
+
 Usage: Construct validation or identification from experimental data
 ---------------------------------------------------------------------
 
