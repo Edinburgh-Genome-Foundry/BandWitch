@@ -2,6 +2,7 @@
 from collections import OrderedDict, Counter
 import matplotlib.pyplot as plt
 from io import BytesIO
+import pandas
 from matplotlib.backends.backend_pdf import PdfPages
 
 from bandwagon import BandsPattern, BandsPatternsSet
@@ -200,6 +201,31 @@ class ClonesObservations:
             plt.close(ax.figure)
         else:
             return ax
+    
+    def validations_summary_table(self, validations, target=None):
+        validations_summary = self.validations_summary(validations)
+        records = []
+        for construct, data in validations_summary.items():
+            best_clone = None
+            valid_clones = [clone for clone in data if clone.passes]
+            if len(valid_clones):
+                best_clone = min(valid_clones, key=lambda c: c.max_discrepancy)
+                best_clone_name = best_clone.clone.name
+            other_valid_clones = ", ".join([
+                clone.clone.name for clone in valid_clones
+                if clone.clone.name != best_clone_name
+            ])
+            records.append(dict(construct=construct,
+                                n_clones=len(data),
+                                valid_clones=len(valid_clones),
+                                best_clone=best_clone_name,
+                                other_valid_clones=other_valid_clones))
+        dataframe = pandas.DataFrame.from_records(records,
+            columns=['construct', 'n_clones', 'valid_clones',
+                     'best_clone', 'other_valid_clones'])
+        if target is not None:
+            dataframe.to_csv(target, index=False)
+        return dataframe
 
     def plot_all_validations_patterns(self, validations, target=None,
                                       per_digestion_discrepancy=False):
@@ -375,10 +401,10 @@ class ClonesObservations:
             )
         # import json
         # print (json.dumps(constructs_stats, indent=2))
-        analysis = saboteurs.find_saboteurs(constructs_stats)
+        analysis = saboteurs.find_statistical_saboteurs(constructs_stats)
         report_data = None
         if report_target is not None:
-            report_data = saboteurs.analysis_report(analysis, report_target)
+            report_data = saboteurs.statistics_report(analysis, report_target)
         return analysis, report_data
 
     def write_identification_report(self, target_file=None,
@@ -459,7 +485,7 @@ class ClonesObservations:
             plt.close(fig)
         else:
             return axes
-
+    @staticmethod
     def from_files(records_path, constructs_map_path, aati_zip_path,
                    digestions_map_path=None, digestion=None,
                    direction="column", ignore_bands_under=None):

@@ -29,3 +29,5 @@ def test_complex_validation(tmpdir):
     clones.plot_all_validations_patterns(validations)
     partial_digest_analysis = clones.partial_digests_analysis()
     clones.plot_partial_digests_analysis(partial_digest_analysis)
+    summary_table = clones.validations_summary_table(
+        validations, target=os.path.join(str(tmpdir), 'table.csv'))
