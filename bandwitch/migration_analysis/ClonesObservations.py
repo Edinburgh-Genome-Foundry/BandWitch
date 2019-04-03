@@ -208,6 +208,7 @@ class ClonesObservations:
         for construct, data in validations_summary.items():
             best_clone = None
             valid_clones = [clone for clone in data if clone.passes]
+            best_clone_name = None
             if len(valid_clones):
                 best_clone = min(valid_clones, key=lambda c: c.max_discrepancy)
                 best_clone_name = best_clone.clone.name
