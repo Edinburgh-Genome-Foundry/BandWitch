@@ -68,13 +68,13 @@ Here is the code to select enzymes that will produce nice patterns for all const
 
 .. code:: python
 
-  from bandwitch import IdealDigestionsProblem, LADDERS, load_genbank
+  from bandwitch import IdealDigestionsProblem, LADDERS, load_record
 
   # DEFINE THE SEQUENCES AND THE ENZYME SET
   enzymes = ["EcoRI", "BamHI", "XhoI", "EcoRV", "SpeI", "XbaI",
              "NotI", "SacI", "SmaI", "HindIII", "PstI"]
   sequences = [
-      load_genbank(genbank_file_path, name=f, linear=False)
+      load_record(genbank_file_paidname=f, topology='circular')
       for genbank_file_path in some_list_of_files)
   ]
 
@@ -106,13 +106,13 @@ To select enzymes that will produce **different patterns for each construct, for
 .. code:: python
 
     from bandwitch import (SeparatingDigestionsProblem, list_common_enzymes,
-                           LADDERS, load_genbank)
+                           LADDERS, load_record)
 
 
     # DEFINE SEQUENCES AND ENZYME SET (6-CUTTERS WITH >3 COMMERCIAL PROVIDERS)
     enzymes = list_common_enzymes(site_length=(6,), min_suppliers=3)
     sequences = [
-        load_genbank(genbank_file_path, name=f)
+        load_record(genbank_file_path, id=f)
         for genbank_file_path in some_list_of_files)
     ]
 

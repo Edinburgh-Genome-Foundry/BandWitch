@@ -60,29 +60,29 @@ Here is the code to select enzymes that will **produce nice patterns for all con
 
 .. code:: python
 
-  from bandwitch import IdealDigestionsProblem, LADDERS, load_genbank
+    from bandwitch import IdealDigestionsProblem, LADDERS, load_record
 
-  # DEFINE THE SEQUENCES AND THE ENZYME SET
-  enzymes = ["EcoRI", "BamHI", "XhoI", "EcoRV", "SpeI", "XbaI",
-             "NotI", "SacI", "SmaI", "HindIII", "PstI"]
-  sequences = [
-      load_genbank(genbank_file_path, name=f)
-      for genbank_file_path in some_list_of_files)
-  ]
+    # DEFINE THE SEQUENCES AND THE ENZYME SET
+    enzymes = ["EcoRI", "BamHI", "XhoI", "EcoRV", "SpeI", "XbaI",
+                "NotI", "SacI", "SmaI", "HindIII", "PstI"]
+    sequences = [
+        load_record(genbank_file_path, id=f)
+        for genbank_file_path in some_list_of_files
+    ]
 
-  # SELECT THE BEST SINGLE DIGESTION WITH AT MOST ENZYMES
-  problem = IdealDigestionsProblem(enzymes=enzymes,
-                                   ladder=LADDERS['100_to_4k'],
-                                   sequences=sequences,
-                                   max_enzymes_per_digestion=2)
-  score, selected_digestions = problem.select_digestions(max_digestions=1)
+    # SELECT THE BEST SINGLE DIGESTION WITH AT MOST ENZYMES
+    problem = IdealDigestionsProblem(enzymes=enzymes,
+                                    ladder=LADDERS['100_to_4k'],
+                                    sequences=sequences,
+                                    max_enzymes_per_digestion=2)
+    score, selected_digestions = problem.select_digestions(max_digestions=1)
 
-  # PLOT THE BAND PATTERNS PRODUCED BY THE SELECTED DIGESTION
-  problem.plot_digestions(
-      digestions=selected_digestions,
-      patterns_props={'label_fontdict': {'rotation': 35}}
-      target_file="ideal_digestions.png"
-  )
+    # PLOT THE BAND PATTERNS PRODUCED BY THE SELECTED DIGESTION
+    problem.plot_digestions(
+        digestions=selected_digestions,
+        patterns_props={'label_fontdict': {'rotation': 35}}
+        target_file="ideal_digestions.png"
+    )
 
 Result:
 
@@ -95,13 +95,13 @@ To select enzymes that will produce **different patterns for each construct, for
 .. code:: python
 
     from bandwitch import (SeparatingDigestionsProblem, list_common_enzymes,
-                           LADDERS, load_genbank)
+                           LADDERS, load_record)
 
 
     # DEFINE SEQUENCES AND ENZYME SET (6-CUTTERS WITH >3 COMMERCIAL PROVIDERS)
     enzymes = list_common_enzymes(site_length=(6,), min_suppliers=3)
     sequences = [
-        load_genbank(genbank_file_path, name=f)
+        load_record(genbank_file_path, id=f)
         for genbank_file_path in some_list_of_files)
     ]
 

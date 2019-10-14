@@ -1,5 +1,5 @@
 from plateo.parsers import plate_from_platemap_spreadsheet
-from bandwitch import BandsObservation, ClonesObservations, Clone, load_genbank
+from bandwitch import BandsObservation, ClonesObservations, Clone, load_record
 import flametree
 
 # LOAD ALL THE DATA (constructs records, clones maps, fragment analysis)
@@ -7,8 +7,8 @@ import flametree
 data_dir = flametree.file_tree('.').example_data.band_validation_data
 
 constructs_dict = {
-    f._name_no_extension: load_genbank(
-        f._path, linear=False, name=f._name_no_extension)
+    f._name_no_extension: load_record(
+        f._path, topology='circular', id=f._name_no_extension)
     for f in data_dir.constructs._all_files
 }
 

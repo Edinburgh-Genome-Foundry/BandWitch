@@ -1,7 +1,7 @@
 
 import os
 from bandwitch import (SeparatingDigestionsProblem, list_common_enzymes,
-                       LADDERS, load_genbank)
+                       LADDERS, load_record)
 
 
 # DEFINE THE SEQUENCES AND THE ENZYME SET
@@ -11,7 +11,7 @@ enzymes = list_common_enzymes(site_length=(6,), min_suppliers=3)
 
 records_folder = os.path.join('example_data', 'digestion_selection_data')
 sequences = [
-    load_genbank(os.path.join(records_folder, f), name=f)
+    load_record(os.path.join(records_folder, f), id=f)
     for f in sorted(os.listdir(records_folder))
 ]
 

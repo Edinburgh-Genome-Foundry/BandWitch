@@ -4,14 +4,22 @@
 from collections import OrderedDict
 
 import numpy as np
-from ..tools import (digestions_list_to_string, updated_dict)
+from ..tools import (
+    digestions_list_to_string,
+    updated_dict,
+    sequence_to_biopython_record,
+    record_is_linear
+)
 from .SetCoverProblem import SetCoverProblem
-from ..bands_predictions import (predict_sequence_digestions,
-                                 compute_sequence_digestions_migrations)
+from ..bands_predictions import (
+    predict_sequence_digestions,
+    compute_sequence_digestions_migrations,
+)
 
 try:
     import bandwagon
     import matplotlib.pyplot as plt
+
     PLOTS_AVAILABLE = True
 except ImportError:
     PLOTS_AVAILABLE = False
@@ -53,15 +61,33 @@ class DigestionProblem(SetCoverProblem):
 
     """
 
-    def __init__(self, enzymes, ladder, sequences, linear=False,
-                 max_enzymes_per_digestion=1,
-                 relative_migration_precision=0.1,
-                 progress_logger=None):
+    def __init__(
+        self,
+        enzymes,
+        ladder,
+        sequences,
+        topology="auto",
+        default_topology="linear",
+        max_enzymes_per_digestion=1,
+        relative_migration_precision=0.1,
+        progress_logger=None,
+    ):
         """Initialize."""
-        if isinstance(sequences, (list, tuple)):
-            sequences = OrderedDict([(r.id, str(r.seq)) for r in sequences])
-        self.sequences = sequences
-        self.linear = linear
+        if hasattr(sequences, "items"):
+            if hasattr(list(sequences.values())[0], "seq"):
+                self.records = dict(**sequences)
+            else:
+                self.sequences = sequences
+                self.records = {
+                    name: sequence_to_biopython_record(seq)
+                    for name, seq in sequences.items()
+                }
+        else:
+            self.records = OrderedDict([(r.id, r) for r in sequences])
+            self.sequences = OrderedDict(
+                [(r.id, str(r.seq)) for r in sequences]
+            )
+        self.topology = topology
         self.relative_migration_precision = relative_migration_precision
         self.max_enzymes_per_digestion = max_enzymes_per_digestion
 
@@ -70,10 +96,20 @@ class DigestionProblem(SetCoverProblem):
 
         self.enzymes = enzymes
 
+        def part_is_linear(name):
+            if topology == "auto":
+                default = (default_topology == "linear")
+                return record_is_linear(self.records[name], default=default)
+            else:
+                return topology == "linear"
+
         self.sequences_digestions = {
             name: predict_sequence_digestions(
-                sequence=sequence, enzymes=self.enzymes, linear=self.linear,
-                max_enzymes_per_digestion=self.max_enzymes_per_digestion)
+                sequence=sequence,
+                enzymes=self.enzymes,
+                linear=part_is_linear(name),
+                max_enzymes_per_digestion=self.max_enzymes_per_digestion,
+            )
             for name, sequence in self.sequences.items()
         }
         digestions = self.sequences_digestions[self.sequences_names[0]]
@@ -85,11 +121,15 @@ class DigestionProblem(SetCoverProblem):
         mini, maxi = self.ladder.migration_distances_span
         self.migration_min, self.migration_max = mini, maxi
         self.migration_span = maxi - mini
-        compute_sequence_digestions_migrations(self.sequences_digestions,
-                                               self.ladder)
-        SetCoverProblem.__init__(self, elements=self._compute_elements(),
-                                 parameters=self.digestions,
-                                 progress_logger=self.progress_logger)
+        compute_sequence_digestions_migrations(
+            self.sequences_digestions, self.ladder
+        )
+        SetCoverProblem.__init__(
+            self,
+            elements=self._compute_elements(),
+            parameters=self.digestions,
+            progress_logger=self.progress_logger,
+        )
 
     @staticmethod
     def _default_heuristic(named_subset, selected):
@@ -106,9 +146,16 @@ class DigestionProblem(SetCoverProblem):
         """Return the distance migrations from several bands sizes."""
         return self.ladder.dna_size_to_migration(np.array(bands_sizes))
 
-    def plot_digestions(self, digestions, axes=None, bands_props=None,
-                        patterns_props=None, patternset_props=None,
-                        target_file=None, close_figure=False):
+    def plot_digestions(
+        self,
+        digestions,
+        axes=None,
+        bands_props=None,
+        patterns_props=None,
+        patternset_props=None,
+        target_file=None,
+        close_figure=False,
+    ):
         """Plot the patterns for each sequence, for each digestion in the list.
 
         Requires Bandwagon.
@@ -157,13 +204,15 @@ class DigestionProblem(SetCoverProblem):
             bandwagon.BandsPatternsSet(
                 patterns=[
                     ladder if ax == axes[0] else ladder.modified(label=None)
-                ] + [
+                ]
+                + [
                     bandwagon.BandsPattern(
-                        bands=self.sequences_digestions[seq_name]
-                                                       [digestion]['bands'],
+                        bands=self.sequences_digestions[seq_name][digestion][
+                            "bands"
+                        ],
                         label=seq_name if (ax == axes[0]) else None,
                         ladder=ladder,
-                        global_bands_props=bands_props
+                        global_bands_props=bands_props,
                     )
                     for seq_name in self.sequences
                 ],
@@ -173,13 +222,18 @@ class DigestionProblem(SetCoverProblem):
                 **patternset_props
             ).plot(ax)
         if target_file is not None:
-            axes[0].figure.savefig(target_file, bbox_inches='tight')
+            axes[0].figure.savefig(target_file, bbox_inches="tight")
         if close_figure:
             plt.close(axes[0].figure)
         return axes
 
-    def select_digestions(self, minimal_score=None, max_digestions=None,
-                          search='greedy', min_score_precision=0.001):
+    def select_digestions(
+        self,
+        minimal_score=None,
+        max_digestions=None,
+        search="greedy",
+        min_score_precision=0.001,
+    ):
         """Select one or more digestions which collectively solve the problem.
 
         This lets you either find the highest-score solution of less than N
@@ -222,6 +276,8 @@ class DigestionProblem(SetCoverProblem):
             threshold=minimal_score,
             covering_algorithm=search,
             max_set_size=max_digestions,
-            heuristic='default',
+            heuristic="default",
             threshold_tolerance=min_score_precision,
-            bisection=True)
+            bisection=True,
+        )
+

@@ -1,4 +1,4 @@
-from bandwitch import IdealDigestionsProblem, LADDERS, load_genbank
+from bandwitch import IdealDigestionsProblem, LADDERS, load_record
 import os
 
 # DEFINE THE SEQUENCES AND THE ENZYME SET
@@ -8,7 +8,7 @@ enzymes = ["EcoRI", "BamHI", "XhoI", "EcoRV", "SpeI", "XbaI",
 
 records_folder = os.path.join('example_data', 'digestion_selection_data')
 sequences = [
-    load_genbank(os.path.join(records_folder, f), name=f)
+    load_record(os.path.join(records_folder, f), id=f)
     for f in sorted(os.listdir(records_folder))
 ]
 

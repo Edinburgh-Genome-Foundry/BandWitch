@@ -1,6 +1,7 @@
 from .DigestionProblem import DigestionProblem
 import numpy as np
 
+
 class IdealDigestionsProblem(DigestionProblem):
     """Find ideal digestion(s) to validate constructs.
 
@@ -34,26 +35,41 @@ class IdealDigestionsProblem(DigestionProblem):
 
     """
 
-    def __init__(self, enzymes, ladder, sequences, min_bands=3, max_bands=7,
-                 border_tolerance=0.1, linear=False,
-                 max_enzymes_per_digestion=1,
-                 relative_migration_precision=0.1):
+    def __init__(
+        self,
+        enzymes,
+        ladder,
+        sequences,
+        min_bands=3,
+        max_bands=7,
+        border_tolerance=0.1,
+        topology="auto",
+        default_topology="linear",
+        max_enzymes_per_digestion=1,
+        relative_migration_precision=0.1,
+    ):
         """Initialize."""
         self.min_bands = min_bands
         self.max_bands = max_bands
         self.border_tolerance = border_tolerance
 
         DigestionProblem.__init__(
-            self, sequences=sequences, enzymes=enzymes, ladder=ladder,
-            linear=linear, max_enzymes_per_digestion=max_enzymes_per_digestion,
-            relative_migration_precision=relative_migration_precision)
+            self,
+            sequences=sequences,
+            enzymes=enzymes,
+            ladder=ladder,
+            topology=topology,
+            default_topology=default_topology,
+            max_enzymes_per_digestion=max_enzymes_per_digestion,
+            relative_migration_precision=relative_migration_precision,
+        )
 
     def _parameter_element_score(self, digestion, sequence):
         """Compute the sequence's ``.migration_score`` for each digestion."""
         digestion = self.sequences_digestions[sequence][digestion]
-        if digestion['same_as'] in self.scores[sequence]:
-            return self.scores[sequence][digestion['same_as']]
-        migration = digestion['migration']
+        if digestion["same_as"] in self.scores[sequence]:
+            return self.scores[sequence][digestion["same_as"]]
+        migration = digestion["migration"]
         return self.migration_score(migration)
 
     def migration_score(self, band_migrations):
