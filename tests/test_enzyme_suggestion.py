@@ -14,7 +14,6 @@ from bandwitch import (
     LADDERS,
     list_common_enzymes,
 )
-from dnacauldron.tools import record_is_linear
 from Bio import SeqIO, Restriction
 import pytest
 
