@@ -5,6 +5,9 @@
     <br /><br />
     </p>
 
+Bandwitch
+=========
+
 .. image:: https://travis-ci.org/Edinburgh-Genome-Foundry/BandWitch.svg?branch=master
    :target: https://travis-ci.org/Edinburgh-Genome-Foundry/BandWitch
    :alt: Travis CI build status
@@ -156,7 +159,7 @@ informative reports as illustrated below:
 .. image:: https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/docs/_static/images/bands_validation.png
    :alt: [logo]
    :align: center
-   :width: 600px
+   :width: 750px
 
 
 License = MIT
@@ -172,6 +175,5 @@ More biology software
 
 BandWitch is part of the `EGF Codons <https://edinburgh-genome-foundry.github.io/>`_ synthetic biology software suite for DNA design, manufacturing and validation.
 
-.. _Zulko: https://github.com/Zulko/
 .. _Github: https://github.com/EdinburghGenomeFoundry/BandWitch
 .. _PYPI: https://pypi.python.org/pypi/bandwitch

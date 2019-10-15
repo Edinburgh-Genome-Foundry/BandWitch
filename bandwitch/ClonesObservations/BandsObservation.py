@@ -2,11 +2,14 @@ from collections import OrderedDict
 from bandwagon.ladders import ladder_from_aati_fa_calibration_table
 from bandwagon import BandsPattern
 from .band_patterns_discrepancy import band_patterns_discrepancy
+
 try:
     from plateo.parsers import plate_from_aati_fragment_analyzer_zip
+
     PLATEO_AVAILABLE = True
-except:
+except ImportError:
     PLATEO_AVAILABLE = False
+
 
 class BandsObservation:
     """One observation of a bands pattern.
@@ -36,8 +39,12 @@ class BandsObservation:
         self.migration_image = migration_image
 
     @staticmethod
-    def from_aati_fa_archive(archive_path, min_rfu_size_ratio=0.3,
-                             ignore_bands_under=None, direction='column'):
+    def from_aati_fa_archive(
+        archive_path,
+        min_rfu_size_ratio=0.3,
+        ignore_bands_under=None,
+        direction="column",
+    ):
         """Return a dictionnary of all band observations in AATI output files.
 
         Parameters
@@ -68,25 +75,35 @@ class BandsObservation:
 
         def band_is_strong_enough(band):
             """Return True iff the band's intensity is above the set level."""
-            return (1.0 * band["RFU"] / band["Size (bp)"] > min_rfu_size_ratio)
+            return 1.0 * band["RFU"] / band["Size (bp)"] > min_rfu_size_ratio
 
-        return OrderedDict([
-            (well.name, BandsObservation(
-                name=well.name,
-                ladder=ladder,
-                bands=[
-                    band["Size (bp)"]
-                    for band in well.data.bands.values()
-                    if band_is_strong_enough(band)
-                    and (band["Size (bp)"] > ignore_bands_under)
-                ],
-                migration_image=well.data.migration_image
-            ))
-            for well in plate.iter_wells(direction=direction)
-        ])
+        return OrderedDict(
+            [
+                (
+                    well.name,
+                    BandsObservation(
+                        name=well.name,
+                        ladder=ladder,
+                        bands=[
+                            band["Size (bp)"]
+                            for band in well.data.bands.values()
+                            if band_is_strong_enough(band)
+                            and (band["Size (bp)"] > ignore_bands_under)
+                        ],
+                        migration_image=well.data.migration_image,
+                    ),
+                )
+                for well in plate.iter_wells(direction=direction)
+            ]
+        )
 
-    def patterns_discrepancy(self, other_bands, relative_tolerance=0.1,
-                             min_band_cutoff=None, max_band_cutoff=None):
+    def patterns_discrepancy(
+        self,
+        other_bands,
+        relative_tolerance=0.1,
+        min_band_cutoff=None,
+        max_band_cutoff=None,
+    ):
         """Return the maximal discrepancy between two band patterns.
 
         The discrepancy is defined as the largest distance between a band in
@@ -121,18 +138,20 @@ class BandsObservation:
         if max_band_cutoff is None:
             max_band_cutoff = ladder_max
         return band_patterns_discrepancy(
-            other_bands, self.bands, ladder=self.ladder,
+            other_bands,
+            self.bands,
+            ladder=self.ladder,
             relative_tolerance=relative_tolerance,
             zone=[min_band_cutoff, max_band_cutoff],
-            reference_and_gel=True
+            reference_and_gel=True,
         )
 
-    def to_bandwagon_bandpattern(self, background_color=None, label='auto'):
+    def to_bandwagon_bandpattern(self, background_color=None, label="auto"):
         """Return a pattern version for the plotting library Bandwagon.
 
         If label is left to 'auto', it will be the pattern's name.
         """
-        if label == 'auto':
+        if label == "auto":
             label = self.name
         return BandsPattern(
             self.bands,
@@ -140,5 +159,5 @@ class BandsObservation:
             ladder=self.ladder,
             label=label,
             gel_image=self.migration_image,
-            background_color=background_color
+            background_color=background_color,
         )

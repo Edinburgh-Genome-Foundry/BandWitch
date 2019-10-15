@@ -130,6 +130,7 @@ def all_subsets(mylist):
         itertools.combinations(mylist, k) for k in range(len(mylist) + 1)
     )
 
+
 def max_min_distance(values_1, values_2, zone=None):
     """Return the maximum distance between one value in one set and its
     nearest neighbor in the other set.
