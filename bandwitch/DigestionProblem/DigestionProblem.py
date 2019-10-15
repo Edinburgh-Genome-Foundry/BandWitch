@@ -7,7 +7,6 @@ from copy import deepcopy
 import numpy as np
 
 from ..tools import (
-    digestions_list_to_string,
     updated_dict,
     sequence_to_biopython_record,
     record_is_linear,
@@ -236,7 +235,9 @@ class DigestionProblem(SetCoverProblem):
                     for seq_name in self.sequences
                 ],
                 ladder=ladder,
-                label=digestions_list_to_string([digestion]),
+                label=", ".join(
+                    [" + ".join([e for e in d]) for d in [digestion]]
+                ),
                 global_patterns_props=patterns_props,
                 **patternset_props
             ).plot(ax)

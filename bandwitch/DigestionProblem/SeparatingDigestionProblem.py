@@ -118,12 +118,10 @@ class SeparatingDigestionsProblem(DigestionProblem):
             self.sequences_digestions[s][digestion]
             for s in (sequence1, sequence2)
         ]
-        if (digestion1["same_as"] == digestion2["same_as"]) and digestion1[
-            "same_as"
-        ] in self.scores[sequences_pair]:
-            return self.scores[sequences_pair][digestion1["same_as"]]
-        #     () and
-        # same_as = tuple(sorted(digestion1['same_as'], digestion2['same_as']))
+        # If similar pair already computed, return the previous result.
+        if digestion1["same_as"] == digestion2["same_as"]:
+            if digestion1["same_as"] in self.scores[sequences_pair]:
+                return self.scores[sequences_pair][digestion1["same_as"]]
 
         mini, maxi = self.migration_min, self.migration_max
         margin = self.relative_migration_precision * self.migration_span / 2.0

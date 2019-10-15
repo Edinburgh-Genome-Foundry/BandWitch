@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from bandwagon.ladders import ladder_from_aati_fa_calibration_table
 from bandwagon import BandsPattern
-from ..tools import band_patterns_discrepancy
+from .band_patterns_discrepancy import band_patterns_discrepancy
 try:
     from plateo.parsers import plate_from_aati_fragment_analyzer_zip
     PLATEO_AVAILABLE = True

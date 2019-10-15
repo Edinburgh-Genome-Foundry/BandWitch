@@ -30,11 +30,6 @@ class Ladder:
         """Return the migration distances for the given dna sizes"""
         return self._dna_size_to_migration_interpolator(dna_sizes)
 
-    def from_csv_file(csv_path):
-        """"""
-        with open('r', csv_path) as f:
-            f.read().split('\n')
-
 
 
     @property

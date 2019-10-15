@@ -1,19 +1,79 @@
-LOCUS       .                       6651 bp    DNA              UNK 01-JAN-1980
+LOCUS       Exported                6651 bp ds-DNA     circular UNK 15-OCT-2019
 DEFINITION  ..
-ACCESSION   <unknown id>
-VERSION     <unknown id>
+ACCESSION   <unknown
+VERSION     .
 KEYWORDS    .
-SOURCE      .
-  ORGANISM  .
-            .
+SOURCE      natural DNA sequence
+  ORGANISM  unspecified
+REFERENCE   1  (bases 1 to 6651)
+  AUTHORS   .
+  TITLE     Direct Submission
+  JOURNAL   Exported Tuesday, Oct 15, 2019 from SnapGene Viewer 4.3.11
+            https://www.snapgene.com
 FEATURES             Location/Qualifiers
+     source          1..6651
+                     /organism="unspecified"
+                     /mol_type="genomic DNA"
+     source          1938..2627
+                     /label=From p3_cagp
+                     /note="From p3_cagp"
+                     /note="/source=p3_cagp"
+     source          2632..2673
+                     /label=From Exported
+                     /note="From Exported"
+                     /note="/source=Exported"
+     source          2678..2720
+                     /label=From p6_kozak-atg
+                     /note="From p6_kozak-atg"
+                     /note="/source=p6_kozak-atg"
+     source          3448..3483
+                     /label=From p8_linker2
+                     /note="From p8_linker2"
+                     /note="/source=p8_linker2"
+     source          4925..4966
+                     /label=From Exported
+                     /note="From Exported"
+                     /note="/source=Exported"
+     source          4971..5101
+                     /label=From p11_sv40polya
+                     /note="From p11_sv40polya"
+                     /note="/source=p11_sv40polya"
+     source          5106..5197
+                     /label=From Exported
+                     /note="From Exported"
+                     /note="/source=Exported"
+     source          5202..5581
+                     /label=From p14_sv40p
+                     /note="From p14_sv40p"
+                     /note="/source=p14_sv40p"
+     source          5586..6196
+                     /label=From p15_puror
+                     /note="From p15_puror"
+                     /note="/source=p15_puror"
+     source          6201..6457
+                     /label=From p16_bghpolya
+                     /note="From p16_bghpolya"
+                     /note="/source=p16_bghpolya"
+     source          6516..6555
+                     /label=From Exported
+                     /note="From Exported"
+                     /note="/source=Exported"
+     source          6560..6651
+                     /label=From Exported
+                     /note="From Exported"
+                     /note="/source=Exported"
+     misc_feature    5..1839
+                     /label=From hc_amp_ccdb(1_2
+                     /note="From hc_amp_ccdb(1_2"
+                     /note="/source=hc_amp_ccdb(1_2"
      terminator      78..107
                      /note="T3Te terminator"
                      /note="phage T3 early transcription terminator"
      rep_origin      129..716
                      /direction=RIGHT
+                     /label=ori
                      /note="ori"
-                     /note="high-copy-number ColE1/pMB1/pBR322/pUC origin of
+                     /note="high-copy-number ColE1/pMB1/pBR322/pUC origin of 
                      replication"
      terminator      728..755
                      /note="T7Te terminator"
@@ -22,6 +82,7 @@ FEATURES             Location/Qualifiers
                      /codon_start=1
                      /gene="bla"
                      /product="beta-lactamase"
+                     /label=bla
                      /note="AmpR"
                      /note="confers resistance to ampicillin, carbenicillin, and
                      related antibiotics"
@@ -34,210 +95,170 @@ FEATURES             Location/Qualifiers
      promoter        complement(1640..1742)
                      /note="cat promoter"
                      /note="promoter of the E. coli cat gene"
-     terminator      1743..-947
+     terminator      join(1743..6651,1)
                      /note="tonB terminator"
-                     /note="bidirectional E. coli tonB-P14 transcription
+                     /note="bidirectional E. coli tonB-P14 transcription 
                      terminator"
-     terminator      4464..1774
-                     /note="tonB terminator"
-                     /note="bidirectional E. coli tonB-P14 transcription
-                     terminator"
-     misc_feature    5..1839
-                     /source="hc_amp_ccdb(1_2"
-                     /note="From hc_amp_ccdb(1_2"
      misc_feature    1844..1883
+                     /label=conn A-B
                      /note="conn A-B"
      misc_feature    1844..1883
-                     /source="conn_a_b"
+                     /label=From conn_a_b
                      /note="From conn_a_b"
+                     /note="/source=conn_a_b"
      misc_feature    complement(1888..1933)
-                     /label="attP_TC"
-                     /ApEinfo_revcolor="#faac61"
-                     /ApEinfo_fwdcolor="#faac61"
-     misc_feature    1910..1911
-                     /label="TC dinucleotide"
-                     /ApEinfo_revcolor="#b1ff67"
-                     /ApEinfo_fwdcolor="#b1ff67"
+                     /label=attP_TC
      misc_feature    1888..1933
-                     /source="p2_attp_tc"
+                     /label=From p2_attp_tc
                      /note="From p2_attp_tc"
+                     /note="/source=p2_attp_tc"
+     misc_feature    1910..1911
+                     /label=TC dinucleotide
+     misc_feature    1938..2627
+                     /label=From p3_cagp
+                     /note="From p3_cagp"
+                     /note="/source=p3_cagp"
      enhancer        1956..2335
                      /note="CMV enhancer"
                      /note="human cytomegalovirus immediate early enhancer"
      promoter        2337..2612
                      /note="chicken beta-actin promoter"
-     source          1938..2627
-                     /note="From p3_cagp"
-                     /source="p3_cagp"
-     misc_feature    1938..2627
-                     /source="p3_cagp"
-                     /note="From p3_cagp"
      misc_feature    2632..2673
+                     /label=conn D-F
                      /note="conn D-F"
-     source          2632..2673
-                     /note="From Exported"
-                     /source="Exported"
      misc_feature    complement(2632..2673)
-                     /source="conn_d_f"
+                     /label=From conn_d_f
                      /note="From conn_d_f"
+                     /note="/source=conn_d_f"
+     misc_feature    2678..2720
+                     /label=From p6_kozak_atg
+                     /note="From p6_kozak_atg"
+                     /note="/source=p6_kozak_atg"
      misc_feature    2708..2719
+                     /label=Kozak
                      /note="Kozak"
      CDS             2716..2718
                      /codon_start=1
+                     /label=ATG
                      /note="ATG"
                      /translation="M"
-     source          2678..2720
-                     /note="From p6_kozak-atg"
-                     /source="p6_kozak-atg"
-     misc_feature    2678..2720
-                     /source="p6_kozak_atg"
-                     /note="From p6_kozak_atg"
-     primer          complement(2770..2791)
-                     /label="EGFP_N_primer"
-                     /ApEinfo_revcolor="#b1ff67"
-                     /ApEinfo_fwdcolor="#b1ff67"
-     rep_origin      complement(4534..2589)
-                     /label="ori"
-                     /ApEinfo_revcolor="#ffef86"
-                     /ApEinfo_fwdcolor="#ffef86"
-     gene            2728..3441
-                     /label="EGFP"
-                     /ApEinfo_revcolor="#b1ff67"
-                     /ApEinfo_fwdcolor="#b1ff67"
-     primer          3378..3399
-                     /label="EGFP_C_primer"
-                     /ApEinfo_revcolor="#85dae9"
-                     /ApEinfo_fwdcolor="#85dae9"
-     feature         2908..2937
-                     /label="Y66 (EGFP)"
-                     /ApEinfo_revcolor="#b1ff67"
-                     /ApEinfo_fwdcolor="#b1ff67"
      misc_feature    2725..3443
-                     /source="p7_egfp"
+                     /label=From p7_egfp
                      /note="From p7_egfp"
+                     /note="/source=p7_egfp"
+     gene            2728..3441
+                     /label=EGFP
+     primer_bind     complement(2770..2791)
+                     /label=EGFP_N_primer
+     misc_feature    2908..2937
+                     /label=Y66 (EGFP)
+                     /label=nonstandard type: feature
+     primer_bind     3378..3399
+                     /label=EGFP_C_primer
      CDS             3448..3483
                      /codon_start=1
+                     /label=Linker 2
                      /note="Linker 2"
                      /translation="GSAGSAAGSGEF"
-     source          3448..3483
-                     /note="From p8_linker2"
-                     /source="p8_linker2"
      misc_feature    3448..3483
-                     /source="p8_linker2"
+                     /label=From p8_linker2
                      /note="From p8_linker2"
-     misc_feature    3488..3489
-                     /label="EMMA reading frame adapter"
-                     /ApEinfo_revcolor="#ff0000"
-                     /ApEinfo_fwdcolor="#ff0000"
-     misc_feature    4546..4902
-                     /label="LC3-Cdel"
-                     /ApEinfo_revcolor="#85dae9"
-                     /ApEinfo_fwdcolor="#85dae9"
-     misc_feature    3853..4522
-                     /label="RFP"
-                     /ApEinfo_revcolor="#f58a5e"
-                     /ApEinfo_fwdcolor="#f58a5e"
-     terminator      5656..2437
-                     /label="T7Te terminator"
-                     /ApEinfo_revcolor="#ff0000"
-                     /ApEinfo_fwdcolor="#ff0000"
-     gene            3490..3852
-                     /label="LC3"
-                     /ApEinfo_revcolor="#85dae9"
-                     /ApEinfo_fwdcolor="#85dae9"
+                     /note="/source=p8_linker2"
      misc_feature    3488..4920
-                     /source="p9_lc3_rfp_lc3t"
+                     /label=From p9_lc3_rfp_lc3t
                      /note="From p9_lc3_rfp_lc3t"
+                     /note="/source=p9_lc3_rfp_lc3t"
+     misc_feature    3488..3489
+                     /label=EMMA reading frame adapter
+     gene            3490..3852
+                     /label=LC3
+     misc_feature    3853..4522
+                     /label=RFP
+     misc_feature    4546..4902
+                     /label=LC3-Cdel
      misc_feature    4925..4966
+                     /label=conn J-K
                      /note="conn J-K"
-     source          4925..4966
-                     /note="From Exported"
-                     /source="Exported"
      misc_feature    complement(4925..4966)
-                     /source="conn_j_k"
+                     /label=From conn_j_k
                      /note="From conn_j_k"
+                     /note="/source=conn_j_k"
      misc_feature    4971..5101
+                     /label=SV40 polyA
                      /note="SV40 polyA"
-     source          4971..5101
-                     /note="From p11_sv40polya"
-                     /source="p11_sv40polya"
      misc_feature    4971..5101
-                     /source="p11_sv40polya"
+                     /label=From p11_sv40polya
                      /note="From p11_sv40polya"
+                     /note="/source=p11_sv40polya"
      misc_feature    5106..5197
+                     /label=conn L-N
                      /note="conn L-N"
-     source          5106..5197
-                     /note="From Exported"
-                     /source="Exported"
      misc_feature    complement(5106..5197)
-                     /source="conn_l_n"
+                     /label=From conn_l_n
                      /note="From conn_l_n"
-     source          5202..5581
+                     /note="/source=conn_l_n"
+     misc_feature    complement(5202..5581)
+                     /label=From p14_sv40p
                      /note="From p14_sv40p"
-                     /source="p14_sv40p"
+                     /note="/source=p14_sv40p"
      promoter        5202..5531
                      /note="SV40 promoter"
                      /note="SV40 enhancer and early promoter"
-     misc_feature    complement(5202..5581)
-                     /source="p14_sv40p"
-                     /note="From p14_sv40p"
      rep_origin      5382..5517
+                     /label=SV40 ori
                      /note="SV40 ori"
                      /note="SV40 origin of replication"
+     misc_feature    5586..6196
+                     /label=From p15_puror
+                     /note="From p15_puror"
+                     /note="/source=p15_puror"
      misc_feature    5586..5593
+                     /label=KozaK
                      /note="KozaK"
      CDS             5594..5596
                      /codon_start=1
+                     /label=ATG
                      /note="ATG"
                      /translation="M"
      CDS             5597..6193
                      /codon_start=1
                      /gene="pac from Streptomyces"
+                     /product="puromycin N-acetyltransferase"
+                     /label=pac from Streptomyces
                      /note="PuroR"
                      /note="confers resistance to puromycin"
-                     /product="puromycin N-acetyltransferase"
                      /translation="TEYKPTVRLATRDDVPRAVRTLAAAFADYPATRHTVDPDRHIERV
                      TELQELFLTRVGLDIGKVWVADDGAAVAVWTTPESVEAGAVFAEIGPRMAELSGSRLAA
                      QQQMEGLLAPHRPKEPAWFLATVGVSPDHQGKGLGSAVVLPGVEAAERAGVPAFLETSA
                      PRNLPFYERLGFTVTADVECPKDRATWCMTRKPGA"
-     source          5586..6196
-                     /note="From p15_puror"
-                     /source="p15_puror"
-     misc_feature    5586..6196
-                     /source="p15_puror"
-                     /note="From p15_puror"
+     misc_feature    6201..6457
+                     /label=From p16_bghpolya
+                     /note="From p16_bghpolya"
+                     /note="/source=p16_bghpolya"
      polyA_signal    6233..6457
+                     /label=bGH poly(A) signal
                      /note="bGH poly(A) signal"
                      /note="bovine growth hormone polyadenylation signal"
-     source          6201..6457
-                     /note="From p16_bghpolya"
-                     /source="p16_bghpolya"
-     misc_feature    6201..6457
-                     /source="p16_bghpolya"
-                     /note="From p16_bghpolya"
      misc_feature    6462..6511
-                     /label="attP TT"
-                     /ApEinfo_revcolor="#f58a5e"
-                     /ApEinfo_fwdcolor="#f58a5e"
+                     /label=attP TT
      misc_feature    6462..6511
-                     /source="p17_attp_tt"
+                     /label=From p17_attp_tt
                      /note="From p17_attp_tt"
+                     /note="/source=p17_attp_tt"
      misc_feature    6516..6555
+                     /label=R-W
                      /note="R-W"
-     source          6516..6555
-                     /note="From Exported"
-                     /source="Exported"
      misc_feature    complement(6516..6555)
-                     /source="conn_r_w"
+                     /label=From conn_r_w
                      /note="From conn_r_w"
+                     /note="/source=conn_r_w"
      misc_feature    6560..6651
+                     /label=conn W-Z
                      /note="conn W-Z"
-     source          6560..6651
-                     /note="From Exported"
-                     /source="Exported"
      misc_feature    complement(6560..6651)
-                     /source="conn_w_z"
+                     /label=From conn_w_z
                      /note="From conn_w_z"
+                     /note="/source=conn_w_z"
 ORIGIN
         1 acgataacga attcaagctt gatatcattc aggacgagcc tcagactcca gcgtaactgg
        61 actgcaatca actcactggc tcaccttcac gggtgggcct ttcttcggta gaaaatcaaa

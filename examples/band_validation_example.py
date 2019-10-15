@@ -41,9 +41,6 @@ report_root = flametree.file_tree('.').examples_output._dir('band_validation')
 report_root._file('validations.pdf').write(
     clones_observations.plot_all_validations_patterns(validations)
 )
-report_root._file('digestions.pdf').write(
-    clones_observations.plot_all_constructs_cuts_maps()
-)
 ax = clones_observations.plot_validations_plate_map(validations)
 ax.figure.savefig(report_root._file('success_map.pdf').open('wb'),
                   format='pdf', bbox_inches='tight')

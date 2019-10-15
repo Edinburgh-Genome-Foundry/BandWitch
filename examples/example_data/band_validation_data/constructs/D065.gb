@@ -1,19 +1,79 @@
-LOCUS       .                       7200 bp    DNA              UNK 01-JAN-1980
+LOCUS       Exported                7200 bp ds-DNA     circular UNK 15-OCT-2019
 DEFINITION  ..
-ACCESSION   <unknown id>
-VERSION     <unknown id>
+ACCESSION   <unknown
+VERSION     .
 KEYWORDS    .
-SOURCE      .
-  ORGANISM  .
-            .
+SOURCE      natural DNA sequence
+  ORGANISM  unspecified
+REFERENCE   1  (bases 1 to 7200)
+  AUTHORS   .
+  TITLE     Direct Submission
+  JOURNAL   Exported Tuesday, Oct 15, 2019 from SnapGene Viewer 4.3.11
+            https://www.snapgene.com
 FEATURES             Location/Qualifiers
+     source          1..7200
+                     /organism="unspecified"
+                     /mol_type="genomic DNA"
+     source          1938..3161
+                     /label=From p3_ef1ap
+                     /note="From p3_ef1ap"
+                     /note="/source=p3_ef1ap"
+     source          3166..3207
+                     /label=From Exported
+                     /note="From Exported"
+                     /note="/source=Exported"
+     source          3212..3254
+                     /label=From p6_kozak-atg
+                     /note="From p6_kozak-atg"
+                     /note="/source=p6_kozak-atg"
+     source          3982..4032
+                     /label=From p8_linker1
+                     /note="From p8_linker1"
+                     /note="/source=p8_linker1"
+     source          5474..5515
+                     /label=From Exported
+                     /note="From Exported"
+                     /note="/source=Exported"
+     source          5520..5650
+                     /label=From p11_sv40polya
+                     /note="From p11_sv40polya"
+                     /note="/source=p11_sv40polya"
+     source          5655..5746
+                     /label=From Exported
+                     /note="From Exported"
+                     /note="/source=Exported"
+     source          5751..6130
+                     /label=From p14_sv40p
+                     /note="From p14_sv40p"
+                     /note="/source=p14_sv40p"
+     source          6135..6745
+                     /label=From p15_puror
+                     /note="From p15_puror"
+                     /note="/source=p15_puror"
+     source          6750..7006
+                     /label=From p16_bghpolya
+                     /note="From p16_bghpolya"
+                     /note="/source=p16_bghpolya"
+     source          7065..7104
+                     /label=From Exported
+                     /note="From Exported"
+                     /note="/source=Exported"
+     source          7109..7200
+                     /label=From Exported
+                     /note="From Exported"
+                     /note="/source=Exported"
+     misc_feature    5..1839
+                     /label=From hc_amp_ccdb(1_2
+                     /note="From hc_amp_ccdb(1_2"
+                     /note="/source=hc_amp_ccdb(1_2"
      terminator      78..107
                      /note="T3Te terminator"
                      /note="phage T3 early transcription terminator"
      rep_origin      129..716
                      /direction=RIGHT
+                     /label=ori
                      /note="ori"
-                     /note="high-copy-number ColE1/pMB1/pBR322/pUC origin of
+                     /note="high-copy-number ColE1/pMB1/pBR322/pUC origin of 
                      replication"
      terminator      728..755
                      /note="T7Te terminator"
@@ -22,6 +82,7 @@ FEATURES             Location/Qualifiers
                      /codon_start=1
                      /gene="bla"
                      /product="beta-lactamase"
+                     /label=bla
                      /note="AmpR"
                      /note="confers resistance to ampicillin, carbenicillin, and
                      related antibiotics"
@@ -34,213 +95,173 @@ FEATURES             Location/Qualifiers
      promoter        complement(1640..1742)
                      /note="cat promoter"
                      /note="promoter of the E. coli cat gene"
-     terminator      1743..-947
+     terminator      join(1743..7200,1)
                      /note="tonB terminator"
-                     /note="bidirectional E. coli tonB-P14 transcription
+                     /note="bidirectional E. coli tonB-P14 transcription 
                      terminator"
-     terminator      4464..1774
-                     /note="tonB terminator"
-                     /note="bidirectional E. coli tonB-P14 transcription
-                     terminator"
-     misc_feature    5..1839
-                     /source="hc_amp_ccdb(1_2"
-                     /note="From hc_amp_ccdb(1_2"
      misc_feature    1844..1883
+                     /label=conn A-B
                      /note="conn A-B"
      misc_feature    1844..1883
-                     /source="conn_a_b"
+                     /label=From conn_a_b
                      /note="From conn_a_b"
+                     /note="/source=conn_a_b"
      misc_feature    complement(1888..1933)
-                     /label="attP_TC"
-                     /ApEinfo_revcolor="#faac61"
-                     /ApEinfo_fwdcolor="#faac61"
-     misc_feature    1910..1911
-                     /label="TC dinucleotide"
-                     /ApEinfo_revcolor="#b1ff67"
-                     /ApEinfo_fwdcolor="#b1ff67"
+                     /label=attP_TC
      misc_feature    1888..1933
-                     /source="p2_attp_tc"
+                     /label=From p2_attp_tc
                      /note="From p2_attp_tc"
+                     /note="/source=p2_attp_tc"
+     misc_feature    1910..1911
+                     /label=TC dinucleotide
+     misc_feature    1938..3161
+                     /label=From p3_ef1ap
+                     /note="From p3_ef1ap"
+                     /note="/source=p3_ef1ap"
      promoter        1938..3116
                      /note="EF-1-alpha promoter"
-                     /note="strong constitutive promoter for human elongation
+                     /note="strong constitutive promoter for human elongation 
                      factor EF-1-alpha"
      intron          2169..3107
                      /note="EF-1-alpha intron A"
-                     /note="intron upstream of the start codon of human
+                     /note="intron upstream of the start codon of human 
                      EF-1-alpha"
-     source          1938..3161
-                     /note="From p3_ef1ap"
-                     /source="p3_ef1ap"
-     misc_feature    1938..3161
-                     /source="p3_ef1ap"
-                     /note="From p3_ef1ap"
      misc_feature    3166..3207
+                     /label=conn D-F
                      /note="conn D-F"
-     source          3166..3207
-                     /note="From Exported"
-                     /source="Exported"
      misc_feature    complement(3166..3207)
-                     /source="conn_d_f"
+                     /label=From conn_d_f
                      /note="From conn_d_f"
+                     /note="/source=conn_d_f"
+     misc_feature    3212..3254
+                     /label=From p6_kozak_atg
+                     /note="From p6_kozak_atg"
+                     /note="/source=p6_kozak_atg"
      misc_feature    3242..3253
+                     /label=Kozak
                      /note="Kozak"
      CDS             3250..3252
                      /codon_start=1
+                     /label=ATG
                      /note="ATG"
                      /translation="M"
-     source          3212..3254
-                     /note="From p6_kozak-atg"
-                     /source="p6_kozak-atg"
-     misc_feature    3212..3254
-                     /source="p6_kozak_atg"
-                     /note="From p6_kozak_atg"
-     primer          complement(3304..3325)
-                     /label="EGFP_N_primer"
-                     /ApEinfo_revcolor="#b1ff67"
-                     /ApEinfo_fwdcolor="#b1ff67"
-     rep_origin      complement(5068..3123)
-                     /label="ori"
-                     /ApEinfo_revcolor="#ffef86"
-                     /ApEinfo_fwdcolor="#ffef86"
-     gene            3262..3975
-                     /label="EGFP"
-                     /ApEinfo_revcolor="#b1ff67"
-                     /ApEinfo_fwdcolor="#b1ff67"
-     primer          3912..3933
-                     /label="EGFP_C_primer"
-                     /ApEinfo_revcolor="#85dae9"
-                     /ApEinfo_fwdcolor="#85dae9"
-     feature         3442..3471
-                     /label="Y66 (EGFP)"
-                     /ApEinfo_revcolor="#b1ff67"
-                     /ApEinfo_fwdcolor="#b1ff67"
      misc_feature    3259..3977
-                     /source="p7_egfp"
+                     /label=From p7_egfp
                      /note="From p7_egfp"
+                     /note="/source=p7_egfp"
+     gene            3262..3975
+                     /label=EGFP
+     primer_bind     complement(3304..3325)
+                     /label=EGFP_N_primer
+     misc_feature    3442..3471
+                     /label=Y66 (EGFP)
+                     /label=nonstandard type: feature
+     primer_bind     3912..3933
+                     /label=EGFP_C_primer
      CDS             3982..4032
                      /codon_start=1
+                     /label=Linker 1
                      /note="Linker 1"
                      /translation="SGLRSGSGGGSASGGSG"
-     source          3982..4032
-                     /note="From p8_linker1"
-                     /source="p8_linker1"
      misc_feature    3982..4032
-                     /source="p8_linker1"
+                     /label=From p8_linker1
                      /note="From p8_linker1"
-     misc_feature    4037..4038
-                     /label="EMMA reading frame adapter"
-                     /ApEinfo_revcolor="#ff0000"
-                     /ApEinfo_fwdcolor="#ff0000"
-     misc_feature    5095..5451
-                     /label="LC3-Cdel"
-                     /ApEinfo_revcolor="#85dae9"
-                     /ApEinfo_fwdcolor="#85dae9"
-     misc_feature    4402..5071
-                     /label="RFP"
-                     /ApEinfo_revcolor="#f58a5e"
-                     /ApEinfo_fwdcolor="#f58a5e"
-     terminator      6205..2986
-                     /label="T7Te terminator"
-                     /ApEinfo_revcolor="#ff0000"
-                     /ApEinfo_fwdcolor="#ff0000"
-     gene            4039..4401
-                     /label="LC3"
-                     /ApEinfo_revcolor="#85dae9"
-                     /ApEinfo_fwdcolor="#85dae9"
+                     /note="/source=p8_linker1"
      misc_feature    4037..5469
-                     /source="p9_lc3_rfp_lc3t"
+                     /label=From p9_lc3_rfp_lc3t
                      /note="From p9_lc3_rfp_lc3t"
+                     /note="/source=p9_lc3_rfp_lc3t"
+     misc_feature    4037..4038
+                     /label=EMMA reading frame adapter
+     gene            4039..4401
+                     /label=LC3
+     misc_feature    4402..5071
+                     /label=RFP
+     misc_feature    5095..5451
+                     /label=LC3-Cdel
      misc_feature    5474..5515
+                     /label=conn J-K
                      /note="conn J-K"
-     source          5474..5515
-                     /note="From Exported"
-                     /source="Exported"
      misc_feature    complement(5474..5515)
-                     /source="conn_j_k"
+                     /label=From conn_j_k
                      /note="From conn_j_k"
+                     /note="/source=conn_j_k"
      misc_feature    5520..5650
+                     /label=SV40 polyA
                      /note="SV40 polyA"
-     source          5520..5650
-                     /note="From p11_sv40polya"
-                     /source="p11_sv40polya"
      misc_feature    5520..5650
-                     /source="p11_sv40polya"
+                     /label=From p11_sv40polya
                      /note="From p11_sv40polya"
+                     /note="/source=p11_sv40polya"
      misc_feature    5655..5746
+                     /label=conn L-N
                      /note="conn L-N"
-     source          5655..5746
-                     /note="From Exported"
-                     /source="Exported"
      misc_feature    complement(5655..5746)
-                     /source="conn_l_n"
+                     /label=From conn_l_n
                      /note="From conn_l_n"
-     source          5751..6130
+                     /note="/source=conn_l_n"
+     misc_feature    complement(5751..6130)
+                     /label=From p14_sv40p
                      /note="From p14_sv40p"
-                     /source="p14_sv40p"
+                     /note="/source=p14_sv40p"
      promoter        5751..6080
                      /note="SV40 promoter"
                      /note="SV40 enhancer and early promoter"
-     misc_feature    complement(5751..6130)
-                     /source="p14_sv40p"
-                     /note="From p14_sv40p"
      rep_origin      5931..6066
+                     /label=SV40 ori
                      /note="SV40 ori"
                      /note="SV40 origin of replication"
+     misc_feature    6135..6745
+                     /label=From p15_puror
+                     /note="From p15_puror"
+                     /note="/source=p15_puror"
      misc_feature    6135..6142
+                     /label=KozaK
                      /note="KozaK"
      CDS             6143..6145
                      /codon_start=1
+                     /label=ATG
                      /note="ATG"
                      /translation="M"
      CDS             6146..6742
                      /codon_start=1
                      /gene="pac from Streptomyces"
+                     /product="puromycin N-acetyltransferase"
+                     /label=pac from Streptomyces
                      /note="PuroR"
                      /note="confers resistance to puromycin"
-                     /product="puromycin N-acetyltransferase"
                      /translation="TEYKPTVRLATRDDVPRAVRTLAAAFADYPATRHTVDPDRHIERV
                      TELQELFLTRVGLDIGKVWVADDGAAVAVWTTPESVEAGAVFAEIGPRMAELSGSRLAA
                      QQQMEGLLAPHRPKEPAWFLATVGVSPDHQGKGLGSAVVLPGVEAAERAGVPAFLETSA
                      PRNLPFYERLGFTVTADVECPKDRATWCMTRKPGA"
-     source          6135..6745
-                     /note="From p15_puror"
-                     /source="p15_puror"
-     misc_feature    6135..6745
-                     /source="p15_puror"
-                     /note="From p15_puror"
+     misc_feature    6750..7006
+                     /label=From p16_bghpolya
+                     /note="From p16_bghpolya"
+                     /note="/source=p16_bghpolya"
      polyA_signal    6782..7006
+                     /label=bGH poly(A) signal
                      /note="bGH poly(A) signal"
                      /note="bovine growth hormone polyadenylation signal"
-     source          6750..7006
-                     /note="From p16_bghpolya"
-                     /source="p16_bghpolya"
-     misc_feature    6750..7006
-                     /source="p16_bghpolya"
-                     /note="From p16_bghpolya"
      misc_feature    7011..7060
-                     /label="attP TT"
-                     /ApEinfo_revcolor="#f58a5e"
-                     /ApEinfo_fwdcolor="#f58a5e"
+                     /label=attP TT
      misc_feature    7011..7060
-                     /source="p17_attp_tt"
+                     /label=From p17_attp_tt
                      /note="From p17_attp_tt"
+                     /note="/source=p17_attp_tt"
      misc_feature    7065..7104
+                     /label=R-W
                      /note="R-W"
-     source          7065..7104
-                     /note="From Exported"
-                     /source="Exported"
      misc_feature    complement(7065..7104)
-                     /source="conn_r_w"
+                     /label=From conn_r_w
                      /note="From conn_r_w"
+                     /note="/source=conn_r_w"
      misc_feature    7109..7200
+                     /label=conn W-Z
                      /note="conn W-Z"
-     source          7109..7200
-                     /note="From Exported"
-                     /source="Exported"
      misc_feature    complement(7109..7200)
-                     /source="conn_w_z"
+                     /label=From conn_w_z
                      /note="From conn_w_z"
+                     /note="/source=conn_w_z"
 ORIGIN
         1 acgataacga attcaagctt gatatcattc aggacgagcc tcagactcca gcgtaactgg
        61 actgcaatca actcactggc tcaccttcac gggtgggcct ttcttcggta gaaaatcaaa
