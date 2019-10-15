@@ -5,7 +5,6 @@ from collections import OrderedDict
 from copy import deepcopy
 
 import numpy as np
-from Bio import Restriction
 
 from ..tools import (
     digestions_list_to_string,
@@ -300,4 +299,3 @@ class DigestionProblem(SetCoverProblem):
             threshold_tolerance=min_score_precision,
             bisection=True,
         )
-

@@ -31,6 +31,7 @@ def _compute_bands_from_cuts(cuts, sequence_length, linear=True):
         bands[0] += bands.pop()
     return bands
 
+
 def find_cuts(sequence, enzymes, linear=True):
     batch = Restriction.RestrictionBatch(enzymes)
     return [
@@ -39,8 +40,10 @@ def find_cuts(sequence, enzymes, linear=True):
         for cut in cuts
     ]
 
-def predict_digestion_bands(sequence, enzymes, linear=True,
-                            partial_cutters=()):
+
+def predict_digestion_bands(
+    sequence, enzymes, linear=True, partial_cutters=()
+):
     """Return the band sizes from digestion by all enzymes at once.
 
     Returns a list of bands sizes sorted from smallest to largest
@@ -71,13 +74,13 @@ def predict_digestion_bands(sequence, enzymes, linear=True,
     else:
         propartial_cuts = find_cuts(sequence, partial_cutters, linear=linear)
         bands = set(
-             band
-             for partial_cuts in all_subsets(propartial_cuts)
-             for band in _compute_bands_from_cuts(
-                 cuts + list(partial_cuts), len(sequence), linear)
+            band
+            for partial_cuts in all_subsets(propartial_cuts)
+            for band in _compute_bands_from_cuts(
+                cuts + list(partial_cuts), len(sequence), linear
+            )
         )
     return sorted(bands)
-
 
 
 def compute_sequence_digestions_migrations(sequences_digestions, ladder):
@@ -90,22 +93,22 @@ def compute_sequence_digestions_migrations(sequences_digestions, ladder):
     all_bands = set()
     for seq, digestions_data in sequences_digestions.items():
         for digestion, data in digestions_data.items():
-            all_bands.update(data['bands'])
+            all_bands.update(data["bands"])
     all_bands = sorted(all_bands)
     all_migrations = ladder.dna_size_to_migration(list(all_bands))
     band_to_migration = {
-        band: migration
-        for band, migration in zip(all_bands, all_migrations)
+        band: migration for band, migration in zip(all_bands, all_migrations)
     }
     for seq, digestions_data in sequences_digestions.items():
         for digestion, data in digestions_data.items():
-            data['migration'] = np.array([
-                band_to_migration[b]
-                for b in data['bands']
-            ])
+            data["migration"] = np.array(
+                [band_to_migration[b] for b in data["bands"]]
+            )
 
-def predict_sequence_digestions(sequence, enzymes, linear=True,
-                                max_enzymes_per_digestion=1):
+
+def predict_sequence_digestions(
+    sequence, enzymes, linear=True, max_enzymes_per_digestion=1
+):
     """Return a dict giving bands sizes pattern for all possible digestions.
 
     The digestions, double-digestions, etc. are listed and for each the
@@ -144,47 +147,50 @@ def predict_sequence_digestions(sequence, enzymes, linear=True,
         return {
             "cuts": all_cuts,
             "bands": _compute_bands_from_cuts(
-                cuts=all_cuts,
-                sequence_length=sequence_length,
-                linear=linear
-            )
+                cuts=all_cuts, sequence_length=sequence_length, linear=linear
+            ),
         }
+
     empty_digestion = ((), {"cuts": [], "bands": [len(sequence)]})
     digestions_dict = OrderedDict([empty_digestion])
     for n_enzymes in range(max_enzymes_per_digestion):
-        sub_enzymes = [enzs for enzs in digestions_dict.keys()
-                       if len(enzs) == n_enzymes]
+        sub_enzymes = [
+            enzs for enzs in digestions_dict.keys() if len(enzs) == n_enzymes
+        ]
         for enzyme in enzymes:
-            sub_sub_enzymes = [enzs for enzs in sub_enzymes
-                               if enzyme not in enzs]
+            sub_sub_enzymes = [
+                enzs for enzs in sub_enzymes if enzyme not in enzs
+            ]
             for enzs in sub_sub_enzymes:
                 digestion = tuple(sorted(enzs + (enzyme,)))
                 if digestion not in digestions_dict:
-                    no_enzyme_band = len(get_cuts(enzyme)['cuts']) == 0
-                    no_enzs_band = len(digestions_dict[enzs]['cuts']) == 0
+                    no_enzyme_band = len(get_cuts(enzyme)["cuts"]) == 0
+                    no_enzs_band = len(digestions_dict[enzs]["cuts"]) == 0
                     one_no_bands = no_enzs_band or no_enzyme_band
                     if ((enzyme,) in digestions_dict) and one_no_bands:
                         if no_enzyme_band:
                             digestions_dict[digestion] = digestions_dict[enzs]
-                            digestions_dict[digestion]['same_as'] = enzs
+                            digestions_dict[digestion]["same_as"] = enzs
                         elif no_enzs_band:
                             dig = (enzyme,)
                             digestions_dict[digestion] = digestions_dict[dig]
-                            digestions_dict[digestion]['same_as'] = dig
+                            digestions_dict[digestion]["same_as"] = dig
                     else:
                         digestions_dict[digestion] = _merge_digestions(
                             digestion1=get_cuts(enzyme),
                             digestion2=digestions_dict[enzs],
                             sequence_length=len(sequence),
-                            linear=linear
+                            linear=linear,
                         )
-                        digestions_dict[digestion]['same_as'] = digestion
+                        digestions_dict[digestion]["same_as"] = digestion
     digestions_dict.pop(())
 
     # Reordering the dictionnary makes the computation of scores faster
     # using 'same_as' to avoid recomputing scores involving similar patterns
     digestions_dict = OrderedDict(
-        sorted(digestions_dict.items(),
-               key=lambda item: (len(item[0]), len(item[1]['cuts'])))
+        sorted(
+            digestions_dict.items(),
+            key=lambda item: (len(item[0]), len(item[1]["cuts"])),
+        )
     )
     return digestions_dict

@@ -27,36 +27,36 @@ def list_common_enzymes(
     accepted_methylation_effects=("-", "cut"),
 ):
     """List enzymes with many suppliers, no star activity, etc.
-    
+
     site_length
       Tuple of the accepted lengths of enzymes sites, e.g. (6, 4) for 6bp and
       4bp.
-    
+
     opt_temp
       Tuple of the accepted optimal temperatures. You would better keep it
       to a single value though, to ensure that all enzymes returned can
       co-digest.
-      
+
     min_suppliers
       Minimal number of suppliers. Set to 3 or 4 to get enzymes that should
       be largely commercially available.
-    
+
     uniquify_sites
       If True and two enzymes in the list have the same recognition site,
       only one will be kept. this speeds up computations in bandwitch in
       practice.
-    
+
     avoided_methylations
       Tuple of the methylation types to avoid, of Dam, Dcm, CpG... see the
       next parameter for the tolerance level
-    
+
     accepted_methylation_effects
       Accepted effects of the methylations specified by "avoided_methylations".
       This data comes from the REBASE online database.
       The effects are among "-" (no overlap, no effect), "cut" (overlap with
       a methylation site, but the enzyme still cuts), "variable" (whatever
       that means), "impaired", "some blocked", "some impaired", and "blocked".
-    
+
     """
     result = [
         str(e)
@@ -82,6 +82,8 @@ def list_common_enzymes(
 
 
 def set_record_topology(record, topology, pass_if_already_set=False):
+    """Set record.annotations['topology'], optionally passing if already set.
+    """
     record_topology = record.annotations.get("topology", None)
     do_nothing = pass_if_already_set and (record_topology is not None)
     if not do_nothing:
@@ -89,6 +91,7 @@ def set_record_topology(record, topology, pass_if_already_set=False):
 
 
 def record_is_linear(record, default=True):
+    """Return true if record.annotations['topology'] == 'linear'"""
     if "topology" not in record.annotations:
         return default
     else:
@@ -137,7 +140,7 @@ def load_record(
     file_format
       Indicates the file format for the parser, when record_file is a filelike
       object.
-  
+
     """
     if file_format is not None:
         record = SeqIO.read(record_file, file_format)

@@ -14,14 +14,14 @@ try:
     from plateo.containers import Plate96
 
     PLATEO_AVAILABLE = True
-except:
+except ImportError:
     PLATEO_AVAILABLE = False
 
 try:
     import saboteurs
 
     SABOTEURS_AVAILABLE = True
-except:
+except ImportError:
     SABOTEURS_AVAILABLE = False
 
 from ..bands_predictions import predict_digestion_bands
