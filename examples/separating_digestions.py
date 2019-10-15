@@ -7,11 +7,11 @@ from bandwitch import (SeparatingDigestionsProblem, list_common_enzymes,
 # DEFINE THE SEQUENCES AND THE ENZYME SET
 
 # all common enzymes with a site of 6bp and at least 3 known providers
-enzymes = list_common_enzymes(site_length=(6,), min_suppliers=3)
+enzymes = list_common_enzymes(site_length=(6, ), min_suppliers=3)
 
 records_folder = os.path.join('example_data', 'digestion_selection_data')
 sequences = [
-    load_record(os.path.join(records_folder, f), id=f)
+    load_record(os.path.join(records_folder, f), topology="circular", id=f)
     for f in sorted(os.listdir(records_folder))
 ]
 
@@ -22,6 +22,7 @@ problem = SeparatingDigestionsProblem(enzymes=enzymes,
                                       sequences=sequences,
                                       max_enzymes_per_digestion=1)
 score, selected_digestions = problem.select_digestions(max_digestions=2)
+print("Score: %.03f" % score)
 
 # GENERATE A FIGURE OF THE BAND PATTERNS
 

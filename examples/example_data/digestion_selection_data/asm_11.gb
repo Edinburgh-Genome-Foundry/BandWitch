@@ -1,21 +1,29 @@
-LOCUS       .                       3440 bp    DNA              UNK 01-JAN-1980
-DEFINITION  .
-ACCESSION   <unknown id>
-VERSION     <unknown id>
+LOCUS       Exported                3440 bp ds-DNA     circular UNK 01-JAN-1980
+DEFINITION  natural circular DNA
+ACCESSION   <unknown
+VERSION     .
 KEYWORDS    .
-SOURCE      .
-  ORGANISM  .
-            .
+SOURCE      natural DNA sequence
+  ORGANISM  unspecified
+REFERENCE   1  (bases 1 to 3440)
+  AUTHORS   .
+  TITLE     Direct Submission
+  JOURNAL   Exported Tuesday, Oct 15, 2019 from SnapGene Viewer 4.3.11
+            https://www.snapgene.com
 FEATURES             Location/Qualifiers
-     Rep_Origin      601..1600
-                     /label="rep. origin"
-     Resistance      201..500
-     Promoter        2221..2380
-                     /label="promoter C"
+     source          1..3440
+                     /organism="unspecified"
+                     /mol_type="genomic DNA"
+     misc_feature    201..500
+                     /label=nonstandard type: Resistance
+     rep_origin      601..1600
+                     /label=rep. origin
+     promoter        2221..2380
+                     /label=promoter C
      CDS             2421..3320
-                     /label="CDS 2"
-     Terminator      3361..3420
-                     /label="terminator tb"
+                     /label=CDS 2
+     terminator      3361..3420
+                     /label=terminator tb
 ORIGIN
         1 gtaagtggat ctgtatgcta gcagtggggc tccggtgtcg gagggtctac gcggcctagc
        61 cccatagcag ggttctcata tcttcgaagg gtcagtcgat caaaagttgt accccccttc

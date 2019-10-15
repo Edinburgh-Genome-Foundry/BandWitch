@@ -15,7 +15,7 @@ class MyIdealDigestionsProblem(IdealDigestionsProblem):
 # DEFINE THE SEQUENCES AND THE ENZYME SET
 
 enzymes = ["EcoRI", "BamHI", "XhoI", "EcoRV", "SpeI", "XbaI", "NotI",
-           "SacI", "SmaI", "HindIII", "PstI"]
+           "SacI", "SmaI", "HindIII", "PstI", "NheI", "AfeI"]
 
 records_folder = os.path.join('example_data', 'digestion_selection_data')
 sequences = [
@@ -29,7 +29,8 @@ problem = MyIdealDigestionsProblem(enzymes=enzymes,
                                    ladder=LADDERS['100_to_4k'],
                                    sequences=sequences,
                                    max_enzymes_per_digestion=2)
-score, selected_digestions = problem.select_digestions(max_digestions=1)
+score, selected_digestions = problem.select_digestions(max_digestions=2)
+print ("Score:", score)
 
 # GENERATE A FIGURE OF THE BAND PATTERNS
 

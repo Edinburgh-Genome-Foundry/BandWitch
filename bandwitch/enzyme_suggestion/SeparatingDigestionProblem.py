@@ -72,7 +72,7 @@ class SeparatingDigestionsProblem(DigestionProblem):
     ):
         """Initialize."""
         if isinstance(sequences, (list, tuple)):
-            sequences = OrderedDict([(r.id, str(r.seq)) for r in sequences])
+            sequences = OrderedDict([(r.id, r) for r in sequences])
 
         if categories is None:
             categories = OrderedDict(

@@ -2,13 +2,17 @@
 
 
 from collections import OrderedDict
+from copy import deepcopy
 
 import numpy as np
+from Bio import Restriction
+
 from ..tools import (
     digestions_list_to_string,
     updated_dict,
     sequence_to_biopython_record,
-    record_is_linear
+    record_is_linear,
+    set_record_topology,
 )
 from .SetCoverProblem import SetCoverProblem
 from ..bands_predictions import (
@@ -75,7 +79,13 @@ class DigestionProblem(SetCoverProblem):
         """Initialize."""
         if hasattr(sequences, "items"):
             if hasattr(list(sequences.values())[0], "seq"):
-                self.records = dict(**sequences)
+                self.records = {
+                    name: deepcopy(record)
+                    for name, record in sequences.items()
+                }
+                self.sequences = {
+                    name: str(record.seq) for name, record in sequences.items()
+                }
             else:
                 self.sequences = sequences
                 self.records = {
@@ -83,22 +93,29 @@ class DigestionProblem(SetCoverProblem):
                     for name, seq in sequences.items()
                 }
         else:
-            self.records = OrderedDict([(r.id, r) for r in sequences])
+            self.records = OrderedDict(
+                [(r.id, deepcopy(r)) for r in sequences]
+            )
             self.sequences = OrderedDict(
                 [(r.id, str(r.seq)) for r in sequences]
             )
-        self.topology = topology
+        for record in self.records.values():
+            if topology == "auto":
+                set_record_topology(
+                    record, default_topology, pass_if_already_set=True
+                )
+            else:
+                set_record_topology(record, topology)
         self.relative_migration_precision = relative_migration_precision
         self.max_enzymes_per_digestion = max_enzymes_per_digestion
 
-        self.sequences_names = list(sequences.keys())
+        self.sequences_names = list(self.sequences.keys())
         self.progress_logger = progress_logger
-
         self.enzymes = enzymes
 
         def part_is_linear(name):
             if topology == "auto":
-                default = (default_topology == "linear")
+                default = default_topology == "linear"
                 return record_is_linear(self.records[name], default=default)
             else:
                 return topology == "linear"
@@ -107,7 +124,7 @@ class DigestionProblem(SetCoverProblem):
             name: predict_sequence_digestions(
                 sequence=sequence,
                 enzymes=self.enzymes,
-                linear=part_is_linear(name),
+                linear=record_is_linear(self.records[name]),
                 max_enzymes_per_digestion=self.max_enzymes_per_digestion,
             )
             for name, sequence in self.sequences.items()
@@ -212,6 +229,9 @@ class DigestionProblem(SetCoverProblem):
                         ],
                         label=seq_name if (ax == axes[0]) else None,
                         ladder=ladder,
+                        circularity=self.records[seq_name].annotations[
+                            "topology"
+                        ],
                         global_bands_props=bands_props,
                     )
                     for seq_name in self.sequences
