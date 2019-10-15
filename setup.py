@@ -9,6 +9,7 @@ setup(
     name='bandwitch',
     version=__version__,
     author='Zulko',
+    url='https://github.com/Edinburgh-Genome-Foundry/BandWitch',
     description='Enzyme selection for DNA verification and identification',
     long_description=open('pypi-readme.rst').read(),
     license='MIT',
