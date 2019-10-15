@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>bandwitch.DigestionProblem.SeparatingDigestionProblem</title>
+    
+      <link rel="stylesheet" href="../../../_static/pygments.css">
+      <link rel="stylesheet" href="../../../_static/theme.css">
+      <link rel="stylesheet" href="../../../_static/sphinx_press_theme.css">
+          <link rel="stylesheet" href="../../../_static/css/press_main.css" type="text/css" />
+          <link rel="stylesheet" href="../../../_static/css/press_main.css" type="text/css" />
+      
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+
+      <!-- sphinx script_files -->
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
+
+      
+      <script src="../../../_static/theme-vendors.js"></script>
+      <script src="../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app" class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../index.html" class="home-link">
+    
+      <img class="logo" src="../../../_static/title.png" alt="doit logo"/>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+  
+    <div class="nav-item">
+      <a href="https://github.com/Edinburgh-Genome-Foundry/bandwitch"
+        class="nav-link external">
+          Github <outboundlink/>
+      </a>
+    </div>
+  
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+  
+    <div class="nav-item">
+      <a href="https://github.com/Edinburgh-Genome-Foundry/bandwitch"
+        class="nav-link external">
+          Github <outboundlink/>
+      </a>
+    </div>
+  
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../index.html#more-biology-software">Reference</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 "><a href="../../../ref.html" class="reference internal ">BandWitch Reference manual</a>
+
+            
+          </li>
+
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../index.html">Module code</a> &raquo;</li>
+    
+    <li>bandwitch.DigestionProblem.SeparatingDigestionProblem</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main">
+            
+  <h1>Source code for bandwitch.DigestionProblem.SeparatingDigestionProblem</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.DigestionProblem</span> <span class="k">import</span> <span class="n">DigestionProblem</span>
+<span class="kn">from</span> <span class="nn">..tools</span> <span class="k">import</span> <span class="n">max_min_distance</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+    <span class="n">PLOTS_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">PLOTS_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="SeparatingDigestionsProblem"><a class="viewcode-back" href="../../../ref.html#bandwitch.DigestionProblem.SeparatingDigestionsProblem">[docs]</a><span class="k">class</span> <span class="nc">SeparatingDigestionsProblem</span><span class="p">(</span><span class="n">DigestionProblem</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Problem: find best digestion(s) to identify constructs.</span>
+
+<span class="sd">    Provided a set of constructs (possibly from a combinatorial assembly),</span>
+<span class="sd">    find a list of digestions such that all pair of constructs have different</span>
+<span class="sd">    migration patterns for at least one digestion of the list.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="sd">&quot;&quot;&quot;General class for solving digestions problems.</span>
+
+<span class="sd">    By digestion problem we mean *enzymatic* digestion problems. For other</span>
+<span class="sd">    kinds of digestion problems, consult your proctologist.</span>
+
+<span class="sd">    Other digestion problems subclass this problem and implement a computation</span>
+<span class="sd">    of coverages which depends on the problem.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    sequences</span>
+<span class="sd">      An (ordered) dictionary of the form {sequence_name: sequence} where the</span>
+<span class="sd">      sequence is an ATGC string</span>
+
+<span class="sd">    enzymes</span>
+<span class="sd">      List of the names of the enzymes to consider, e.g. ``[&#39;EcoRI&#39;, &#39;XbaI&#39;]``.</span>
+
+<span class="sd">    ladder</span>
+<span class="sd">      A Ladder object representing the ladder used for migrations.</span>
+
+<span class="sd">    linear</span>
+<span class="sd">      True for linear sequences, false for circular sequences</span>
+
+<span class="sd">    max_enzymes_per_digestion</span>
+<span class="sd">      Maximal number of enzymes that can go in a single digestion.</span>
+<span class="sd">      Experimentally the best is 1, but you can try 2, or 3 in desperate</span>
+<span class="sd">      situations. Not sure if more enzymes will work.</span>
+
+<span class="sd">    relative_error</span>
+<span class="sd">      Variance of the bands measured during the migration, given as a</span>
+<span class="sd">      proportion of the total migration span (difference between the migration</span>
+<span class="sd">      of the ladder&#39;s smallest and largest bands).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">enzymes</span><span class="p">,</span>
+        <span class="n">ladder</span><span class="p">,</span>
+        <span class="n">sequences</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">categories</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">topology</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="n">default_topology</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+        <span class="n">max_enzymes_per_digestion</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">min_discrepancy</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="n">relative_migration_precision</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sequences</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">sequences</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="n">r</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">sequences</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">categories</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">categories</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="p">(</span><span class="n">seq_name</span><span class="p">,</span> <span class="p">{</span><span class="n">seq_name</span><span class="p">:</span> <span class="n">sequence</span><span class="p">})</span>
+                    <span class="k">for</span> <span class="n">seq_name</span><span class="p">,</span> <span class="n">sequence</span> <span class="ow">in</span> <span class="n">sequences</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sequences</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="p">(</span><span class="n">seq_name</span><span class="p">,</span> <span class="n">sequence</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">category</span><span class="p">,</span> <span class="n">seqs</span> <span class="ow">in</span> <span class="n">categories</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                    <span class="k">for</span> <span class="n">seq_name</span><span class="p">,</span> <span class="n">sequence</span> <span class="ow">in</span> <span class="n">seqs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">categories</span> <span class="o">=</span> <span class="n">categories</span>
+
+        <span class="n">DigestionProblem</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">sequences</span><span class="o">=</span><span class="n">sequences</span><span class="p">,</span>
+            <span class="n">enzymes</span><span class="o">=</span><span class="n">enzymes</span><span class="p">,</span>
+            <span class="n">ladder</span><span class="o">=</span><span class="n">ladder</span><span class="p">,</span>
+            <span class="n">topology</span><span class="o">=</span><span class="n">topology</span><span class="p">,</span>
+            <span class="n">default_topology</span><span class="o">=</span><span class="n">default_topology</span><span class="p">,</span>
+            <span class="n">max_enzymes_per_digestion</span><span class="o">=</span><span class="n">max_enzymes_per_digestion</span><span class="p">,</span>
+            <span class="n">relative_migration_precision</span><span class="o">=</span><span class="n">relative_migration_precision</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_compute_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">category_pairs</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">category1</span><span class="p">,</span> <span class="n">category2</span> <span class="ow">in</span> <span class="n">category_pairs</span>
+            <span class="k">for</span> <span class="n">seq1</span> <span class="ow">in</span> <span class="n">category1</span>
+            <span class="k">for</span> <span class="n">seq2</span> <span class="ow">in</span> <span class="n">category2</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_parameter_element_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digestion</span><span class="p">,</span> <span class="n">sequences_pair</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See max_patterns_difference.&quot;&quot;&quot;</span>
+        <span class="n">sequence1</span><span class="p">,</span> <span class="n">sequence2</span> <span class="o">=</span> <span class="n">sequences_pair</span>
+        <span class="n">digestion1</span><span class="p">,</span> <span class="n">digestion2</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sequences_digestions</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">digestion</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">(</span><span class="n">sequence1</span><span class="p">,</span> <span class="n">sequence2</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="c1"># If similar pair already computed, return the previous result.</span>
+        <span class="k">if</span> <span class="n">digestion1</span><span class="p">[</span><span class="s2">&quot;same_as&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">digestion2</span><span class="p">[</span><span class="s2">&quot;same_as&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">digestion1</span><span class="p">[</span><span class="s2">&quot;same_as&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="n">sequences_pair</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="n">sequences_pair</span><span class="p">][</span><span class="n">digestion1</span><span class="p">[</span><span class="s2">&quot;same_as&quot;</span><span class="p">]]</span>
+
+        <span class="n">mini</span><span class="p">,</span> <span class="n">maxi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">migration_min</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">migration_max</span>
+        <span class="n">margin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relative_migration_precision</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">migration_span</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">max_min_distance</span><span class="p">(</span>
+            <span class="n">digestion1</span><span class="p">[</span><span class="s2">&quot;migration&quot;</span><span class="p">],</span>
+            <span class="n">digestion2</span><span class="p">[</span><span class="s2">&quot;migration&quot;</span><span class="p">],</span>
+            <span class="n">zone</span><span class="o">=</span><span class="p">[</span><span class="n">mini</span> <span class="o">+</span> <span class="n">margin</span><span class="p">,</span> <span class="n">maxi</span> <span class="o">-</span> <span class="n">margin</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">distance</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">migration_span</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_score_to_color</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">maxi</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform a similarity score to a green/red color.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        score</span>
+<span class="sd">          Value between 0 (perfect similarity, green) and 1 (red)</span>
+
+<span class="sd">        maxi</span>
+<span class="sd">          Value of the score above which everything appears completely red.</span>
+<span class="sd">          Below this value the color goes progressively from red to green in 0.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">score</span> <span class="o">/</span> <span class="n">maxi</span><span class="p">)),</span>
+            <span class="nb">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">score</span> <span class="o">/</span> <span class="n">maxi</span><span class="p">)),</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mf">0.5</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="SeparatingDigestionsProblem.plot_distances_map"><a class="viewcode-back" href="../../../ref.html#bandwitch.DigestionProblem.SeparatingDigestionsProblem.plot_distances_map">[docs]</a>    <span class="k">def</span> <span class="nf">plot_distances_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digestions</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Plot how well the digestions separate each construct pair.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        digestions</span>
+<span class="sd">          A list of digestions, eg ``[(&#39;EcoRV&#39;), (&#39;XbaI&#39;, &#39;MfeI&#39;)]``.</span>
+
+<span class="sd">        ax</span>
+<span class="sd">          A matplotlib ax on which to plot, if none is provided, one is created</span>
+<span class="sd">          and returned at the end.</span>
+
+<span class="sd">        target_file</span>
+<span class="sd">          The name of the (PNG, SVG, JPEG...) file in which to write the plot.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        axes</span>
+<span class="sd">          The axes of the generated figure (if a target file is written to,</span>
+<span class="sd">          the figure is closed and None is returned instead)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">PLOTS_AVAILABLE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;Plots require Matplotlib/Bandwagon installed.&quot;</span><span class="p">)</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">),))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">s2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">j</span><span class="p">:</span>
+                    <span class="n">grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">scores</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_element_score</span><span class="p">(</span><span class="n">digestion</span><span class="p">,</span> <span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">))</span>
+                        <span class="k">for</span> <span class="n">digestion</span> <span class="ow">in</span> <span class="n">digestions</span>
+                    <span class="p">]</span>
+                    <span class="n">grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.8</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">),))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
+            <span class="n">grid</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;OrRd_r&quot;</span><span class="p">,</span>
+            <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">vmax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">relative_migration_precision</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">j</span><span class="p">:</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">j</span><span class="p">,</span>
+                        <span class="s2">&quot;</span><span class="si">%d%%</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">grid</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]),</span>
+                        <span class="n">fontdict</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">),</span>
+                        <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+                        <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="s2">&quot;bold&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s2">&quot;top&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">)[</span><span class="mi">1</span><span class="p">:][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+            <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
+            <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="s2">&quot;bold&quot;</span><span class="p">},</span>
+        <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.5</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">target_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">target_file</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ax</span></div></div>
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2017, Edinburgh Genome Foundry.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
+</div>
+            </div>
+          </div>
+      </page>
+    </div>
+    
+    
+  </body>
+</html>

@@ -10,7 +10,16 @@ DigestionProblem
     DP --> SDP[SeparatingDigestionProblem]
     DP --> IDP[IdealDigestionProblem]
 
-.. automodule:: bandwitch.DigestionProblem
+.. autoclass:: bandwitch.DigestionProblem.DigestionProblem
+   :members:
+
+.. autoclass:: bandwitch.DigestionProblem.IdealDigestionsProblem
+   :members:
+
+.. autoclass:: bandwitch.DigestionProblem.SeparatingDigestionsProblem
+   :members:
+  
+.. autoclass:: bandwitch.DigestionProblem.SetCoverProblem
    :members:
 
 Clone Observations
@@ -37,7 +46,30 @@ Note: the classes in this module have a complicated organization, mostly due
 to the history of this module and the heterogeneity of the sources of data
 necessary for clone validation. It may get better in the future.
 
-.. automodule:: bandwitch.ClonesObservations
+
+
+Bands Observations
+~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: bandwitch.ClonesObservations.BandsObservation
+   :members:
+
+Clone
+~~~~~
+
+.. autoclass:: bandwitch.ClonesObservations.Clone
+   :members:
+
+CloneValidation
+~~~~~~~~~~~~~~~
+
+.. autoclass:: bandwitch.ClonesObservations.CloneValidation
+   :members:
+
+Clone Observations
+~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: bandwitch.ClonesObservations.ClonesObservations
    :members:
 
 Ladder
@@ -55,10 +87,4 @@ Bands Predictions
     pcomp --> pds[predict_sequences_digestions]
 
 .. automodule:: bandwitch.bands_predictions
-   :members:
-
-SetCoverProblem
----------------
-
-.. automodule:: bandwitch.SetCoverProblem
    :members:

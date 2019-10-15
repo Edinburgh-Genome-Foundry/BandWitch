@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>bandwitch.ClonesObservations.Clone</title>
+    
+      <link rel="stylesheet" href="../../../_static/pygments.css">
+      <link rel="stylesheet" href="../../../_static/theme.css">
+      <link rel="stylesheet" href="../../../_static/sphinx_press_theme.css">
+          <link rel="stylesheet" href="../../../_static/css/press_main.css" type="text/css" />
+          <link rel="stylesheet" href="../../../_static/css/press_main.css" type="text/css" />
+      
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+
+      <!-- sphinx script_files -->
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
+
+      
+      <script src="../../../_static/theme-vendors.js"></script>
+      <script src="../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app" class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../index.html" class="home-link">
+    
+      <img class="logo" src="../../../_static/title.png" alt="doit logo"/>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+  
+    <div class="nav-item">
+      <a href="https://github.com/Edinburgh-Genome-Foundry/bandwitch"
+        class="nav-link external">
+          Github <outboundlink/>
+      </a>
+    </div>
+  
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+  
+    <div class="nav-item">
+      <a href="https://github.com/Edinburgh-Genome-Foundry/bandwitch"
+        class="nav-link external">
+          Github <outboundlink/>
+      </a>
+    </div>
+  
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../index.html#more-biology-software">Reference</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 "><a href="../../../ref.html" class="reference internal ">BandWitch Reference manual</a>
+
+            
+          </li>
+
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../index.html">Module code</a> &raquo;</li>
+    
+    <li>bandwitch.ClonesObservations.Clone</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main">
+            
+  <h1>Source code for bandwitch.ClonesObservations.Clone</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">.CloneValidation</span> <span class="k">import</span> <span class="n">CloneValidation</span>
+
+
+<div class="viewcode-block" id="Clone"><a class="viewcode-back" href="../../../ref.html#bandwitch.ClonesObservations.Clone">[docs]</a><span class="k">class</span> <span class="nc">Clone</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Gather all informations necessary to validate a clone.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name</span>
+<span class="sd">      Name of the clone. Could be for instance a microplate well.</span>
+
+<span class="sd">    digestions</span>
+<span class="sd">      A dictionnary ``{digestion: CloneObservation}`` where ``digestion`` is</span>
+<span class="sd">      of the form ``(&#39;EcoRI&#39;, &#39;BamHI&#39;)``.</span>
+
+<span class="sd">    construct_id</span>
+<span class="sd">      ID of the construct to be validated. This is used to group clones</span>
+<span class="sd">      by construct in the validation reports.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">digestions</span><span class="p">,</span> <span class="n">construct_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">digestions</span> <span class="o">=</span> <span class="n">digestions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">construct_id</span> <span class="o">=</span> <span class="n">construct_id</span>
+
+<div class="viewcode-block" id="Clone.validate_bands"><a class="viewcode-back" href="../../../ref.html#bandwitch.ClonesObservations.Clone.validate_bands">[docs]</a>    <span class="k">def</span> <span class="nf">validate_bands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bands_by_digestion</span><span class="p">,</span> <span class="n">relative_tolerance</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                       <span class="n">min_band_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_band_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a validation results (comparison of observed and expected).</span>
+
+<span class="sd">        The result is a CloneValidation object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bands_by_digestion</span>
+<span class="sd">          A dictionnary ``{digestion: [bands]}`` where ``digestion`` is</span>
+<span class="sd">          of the form ``(&#39;EcoRI&#39;, &#39;BamHI&#39;)``, and bands is a list of band sizes</span>
+
+<span class="sd">        relative_tolerance</span>
+<span class="sd">          Tolerance, as a ratio of the full ladder span. If =0.1, then the</span>
+<span class="sd">          discrepancy will have a value of 1 when a band&#39;s nearest</span>
+<span class="sd">          correspondent in the other pattern is more that 10% of the ladder</span>
+<span class="sd">          span apart.</span>
+
+<span class="sd">        min_band_cutoff</span>
+<span class="sd">          Discrepancies involving at least one band below this minimal band</span>
+<span class="sd">          size will be ignored. By default, it will be set to the smallest</span>
+<span class="sd">          band size in the ladder.</span>
+
+<span class="sd">        max_band_cutoff</span>
+<span class="sd">          Discrepancies involving at least one band above this minimal band</span>
+<span class="sd">          size will be ignored. By default, it will be set to the smallest</span>
+<span class="sd">          band size in the ladder.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">digestion</span><span class="p">,</span> <span class="n">observation</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">digestions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">discrepancies</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">digestion</span><span class="p">:</span> <span class="n">observation</span><span class="o">.</span><span class="n">patterns_discrepancy</span><span class="p">(</span>
+                    <span class="n">other_bands</span><span class="o">=</span><span class="n">bands_by_digestion</span><span class="p">[</span><span class="n">digestion</span><span class="p">],</span>
+                    <span class="n">relative_tolerance</span><span class="o">=</span><span class="n">relative_tolerance</span><span class="p">,</span>
+                    <span class="n">min_band_cutoff</span><span class="o">=</span><span class="n">min_band_cutoff</span><span class="p">,</span>
+                    <span class="n">max_band_cutoff</span><span class="o">=</span><span class="n">max_band_cutoff</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">digestion</span><span class="p">,</span> <span class="n">observation</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">digestions</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+        <span class="k">return</span> <span class="n">CloneValidation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bands_by_digestion</span><span class="p">,</span>
+                               <span class="n">discrepancies</span><span class="o">=</span><span class="n">discrepancies</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_bands_observations</span><span class="p">(</span><span class="n">observations</span><span class="p">,</span> <span class="n">constructs_map</span><span class="p">,</span> <span class="n">digestions_map</span><span class="p">,</span>
+                                <span class="n">clones_map</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observations</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">OrderedDict</span><span class="p">)):</span>
+            <span class="n">observations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">observations</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">clones_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">clones_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">constructs_map</span><span class="p">}</span>
+        <span class="n">clones</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="n">observations</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">obs</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">clones_map</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">clone_name</span> <span class="o">=</span> <span class="n">clones_map</span><span class="p">[</span><span class="n">obs</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">clone_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">clones</span><span class="p">:</span>
+                <span class="n">clones</span><span class="p">[</span><span class="n">clone_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Clone</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">clone_name</span><span class="p">,</span>
+                    <span class="n">construct_id</span><span class="o">=</span><span class="n">constructs_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">clone_name</span><span class="p">,</span> <span class="s1">&#39;no_clone&#39;</span><span class="p">),</span>
+                    <span class="n">digestions</span><span class="o">=</span><span class="p">{}</span>
+                <span class="p">)</span>
+            <span class="n">digestion</span> <span class="o">=</span> <span class="n">digestions_map</span><span class="p">[</span><span class="n">obs</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">clones</span><span class="p">[</span><span class="n">clone_name</span><span class="p">]</span><span class="o">.</span><span class="n">digestions</span><span class="p">[</span><span class="n">digestion</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs</span>
+
+        <span class="k">return</span> <span class="n">clones</span></div>
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2017, Edinburgh Genome Foundry.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
+</div>
+            </div>
+          </div>
+      </page>
+    </div>
+    
+    
+  </body>
+</html>
