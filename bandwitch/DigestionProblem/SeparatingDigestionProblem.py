@@ -64,8 +64,7 @@ class SeparatingDigestionsProblem(DigestionProblem):
         ladder,
         sequences=None,
         categories=None,
-        topology="auto",
-        default_topology="linear",
+        topology="default_to_linear",
         max_enzymes_per_digestion=1,
         min_discrepancy="auto",
         relative_migration_precision=0.1,
@@ -97,7 +96,6 @@ class SeparatingDigestionsProblem(DigestionProblem):
             enzymes=enzymes,
             ladder=ladder,
             topology=topology,
-            default_topology=default_topology,
             max_enzymes_per_digestion=max_enzymes_per_digestion,
             relative_migration_precision=relative_migration_precision,
         )

@@ -10,13 +10,33 @@ from Bio.Alphabet import DNAAlphabet
 from snapgene_reader import snapgene_file_to_seqrecord
 
 
-def set_record_topology(record, topology, pass_if_already_set=False):
-    """Set record.annotations['topology'], optionally passing if already set.
+def set_record_topology(record, topology):
+    """Set the Biopython record's topology, possibly passing if already set.
+
+    This actually sets the ``record.annotations['topology']``.The ``topology``
+    parameter can be "circular", "linear", "default_to_circular" (will default
+    to circular if ``annotations['topology']`` is not already set) or
+    "default_to_linear".
     """
-    record_topology = record.annotations.get("topology", None)
-    do_nothing = pass_if_already_set and (record_topology is not None)
-    if not do_nothing:
-        record.annotations["topology"] = topology
+    valid_topologies = [
+        "circular",
+        "linear",
+        "default_to_circular",
+        "default_to_linear",
+    ]
+    if topology not in valid_topologies:
+        raise ValueError(
+            "topology should be one of %s (was %s)." % (
+                ", ".join(valid_topologies), topology
+            )
+        )
+    annotations = record.annotations
+    default_prefix = "default_to_"
+    if topology.startswith(default_prefix):
+        if "topology" not in annotations:
+            annotations["topology"] = topology[len(default_prefix) :]
+    else:
+        annotations["topology"] = topology
 
 
 def record_is_linear(record, default=True):
@@ -29,8 +49,7 @@ def record_is_linear(record, default=True):
 
 def load_record(
     record_file,
-    topology="auto",
-    default_topology="linear",
+    topology="default_linear",
     id="auto",
     upperize=True,
     max_name_length=20,
@@ -47,12 +66,8 @@ def load_record(
       ``file_format``)
 
     topology
-      Either circular or linear or auto. If auto, then will attempt to read
-      record.annotations['topology], and default to ``default_topology``.
-
-    default_topology
-      Default topology to use when topology is set to "auto" and a record
-      has no designated topology.
+      Either "circular" or "linear" or "default_to_circular" (will default
+    to circular if ``annotations['topology']`` is not already set) or
 
     id
       Will be used for the record ID and name. If auto, the record id will
@@ -83,10 +98,7 @@ def load_record(
         raise ValueError("Unknown format for file: %s" % record_file)
     if upperize:
         record = record.upper()
-    if topology == "auto":
-        set_record_topology(record, default_topology, pass_if_already_set=True)
-    else:
-        set_record_topology(record, topology)
+    set_record_topology(record, topology)
     if id == "auto":
         id = record.id
         if id in [None, "", "<unknown id>", ".", " "]:

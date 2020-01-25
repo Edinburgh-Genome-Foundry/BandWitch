@@ -43,8 +43,7 @@ class IdealDigestionsProblem(DigestionProblem):
         min_bands=3,
         max_bands=7,
         border_tolerance=0.1,
-        topology="auto",
-        default_topology="linear",
+        topology="default_to_linear",
         max_enzymes_per_digestion=1,
         relative_migration_precision=0.1,
     ):
@@ -59,7 +58,6 @@ class IdealDigestionsProblem(DigestionProblem):
             enzymes=enzymes,
             ladder=ladder,
             topology=topology,
-            default_topology=default_topology,
             max_enzymes_per_digestion=max_enzymes_per_digestion,
             relative_migration_precision=relative_migration_precision,
         )

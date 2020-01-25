@@ -48,8 +48,9 @@ class DigestionProblem(SetCoverProblem):
       An (ordered) dictionary of the form {sequence_name: sequence} where the
       sequence is an ATGC string
 
-    linear
-      True for linear sequences, false for circular sequences
+    The records opology. Either "circular", "linear", "default_to_circular"
+    (will default to circular if ``record.annotations['topology']`` is not
+    already set) or "default_to_linear"
 
     max_enzymes_per_digestion
       Maximal number of enzymes that can go in a single digestion.
@@ -68,8 +69,7 @@ class DigestionProblem(SetCoverProblem):
         enzymes,
         ladder,
         sequences,
-        topology="auto",
-        default_topology="linear",
+        topology="default_to_linear",
         max_enzymes_per_digestion=1,
         relative_migration_precision=0.1,
         progress_logger=None,
@@ -98,25 +98,13 @@ class DigestionProblem(SetCoverProblem):
                 [(r.id, str(r.seq)) for r in sequences]
             )
         for record in self.records.values():
-            if topology == "auto":
-                set_record_topology(
-                    record, default_topology, pass_if_already_set=True
-                )
-            else:
-                set_record_topology(record, topology)
+            set_record_topology(record, topology)
         self.relative_migration_precision = relative_migration_precision
         self.max_enzymes_per_digestion = max_enzymes_per_digestion
 
         self.sequences_names = list(self.sequences.keys())
         self.progress_logger = progress_logger
         self.enzymes = enzymes
-
-        def part_is_linear(name):
-            if topology == "auto":
-                default = default_topology == "linear"
-                return record_is_linear(self.records[name], default=default)
-            else:
-                return topology == "linear"
 
         self.sequences_digestions = {
             name: predict_sequence_digestions(
