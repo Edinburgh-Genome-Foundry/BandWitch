@@ -215,10 +215,10 @@ class DigestionProblem(SetCoverProblem):
                         ],
                         label=seq_name if (ax == axes[0]) else None,
                         ladder=ladder,
-                        circularity=self.records[seq_name].annotations[
+                        global_bands_props=bands_props,
+                        topology=self.records[seq_name].annotations[
                             "topology"
                         ],
-                        global_bands_props=bands_props,
                     )
                     for seq_name in self.sequences
                 ],

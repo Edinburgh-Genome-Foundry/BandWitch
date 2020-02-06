@@ -61,7 +61,8 @@ candidates.
 Every time when the problem cannot be solved with a single digestion, BandWitch
 can propose 2 or 3 digestions which collectively solve the problem.
 
-**Important:** when providing BandWitch with a record, make sure to set the linearity/circularity with ``record.linear=True/False``.
+**Important:** when providing BandWitch with a record, make sure to set the
+topology, defined by ``record.annotations['topology'] = 'linear'|'circular'``.
 
 
 Finding enzymes that "work well" for many constructs
