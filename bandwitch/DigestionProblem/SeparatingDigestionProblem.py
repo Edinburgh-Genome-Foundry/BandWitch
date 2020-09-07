@@ -207,9 +207,7 @@ class SeparatingDigestionsProblem(DigestionProblem):
                     )
 
         ax.set_yticks(range(len(grid)))
-        ax.set_yticklabels(
-            list(self.sequences)[:-1], size=14, fontdict={"weight": "bold"}
-        )
+        ax.set_yticklabels(list(self.sequences), size=14, fontdict={"weight": "bold"})
         ax.set_xticks(range(len(grid)))
         ax.xaxis.set_ticks_position("top")
         ax.spines["right"].set_visible(False)
@@ -217,7 +215,7 @@ class SeparatingDigestionsProblem(DigestionProblem):
         ax.spines["left"].set_visible(False)
         ax.spines["bottom"].set_visible(False)
         ax.set_xticklabels(
-            [" " + s for s in list(self.sequences)[1:][::-1]],
+            [" " + s for s in list(self.sequences)[::-1]],
             rotation=90,
             size=14,
             fontdict={"weight": "bold"},
