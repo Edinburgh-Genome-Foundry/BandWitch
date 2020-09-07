@@ -36,7 +36,7 @@ class SeparatingDigestionsProblem(DigestionProblem):
 
     sequences
       An (ordered) dictionary of the form {sequence_name: sequence} where the
-      sequence is an ATGC string
+      sequence is an ATGC string.
 
     enzymes
       List of the names of the enzymes to consider, e.g. ``['EcoRI', 'XbaI']``.
@@ -45,7 +45,7 @@ class SeparatingDigestionsProblem(DigestionProblem):
       A Ladder object representing the ladder used for migrations.
 
     linear
-      True for linear sequences, false for circular sequences
+      True for linear sequences, false for circular sequences.
 
     max_enzymes_per_digestion
       Maximal number of enzymes that can go in a single digestion.
@@ -113,8 +113,7 @@ class SeparatingDigestionsProblem(DigestionProblem):
         """See max_patterns_difference."""
         sequence1, sequence2 = sequences_pair
         digestion1, digestion2 = [
-            self.sequences_digestions[s][digestion]
-            for s in (sequence1, sequence2)
+            self.sequences_digestions[s][digestion] for s in (sequence1, sequence2)
         ]
         # If similar pair already computed, return the previous result.
         if digestion1["same_as"] == digestion2["same_as"]:
@@ -137,12 +136,11 @@ class SeparatingDigestionsProblem(DigestionProblem):
         Parameters
         ----------
         score
-          Value between 0 (perfect similarity, green) and 1 (red)
+          Value between 0 (perfect similarity, green) and 1 (red).
 
         maxi
           Value of the score above which everything appears completely red.
           Below this value the color goes progressively from red to green in 0.
-
         """
         return (
             max(0, min(1, score / maxi)),
@@ -171,8 +169,7 @@ class SeparatingDigestionsProblem(DigestionProblem):
 
         axes
           The axes of the generated figure (if a target file is written to,
-          the figure is closed and None is returned instead)
-
+          the figure is closed and None is returned instead).
         """
 
         if not PLOTS_AVAILABLE:
