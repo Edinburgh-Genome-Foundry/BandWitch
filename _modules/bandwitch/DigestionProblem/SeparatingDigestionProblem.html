@@ -14,11 +14,11 @@
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
 
       <!-- sphinx script_files -->
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="https://unpkg.com/mermaid@8.4.8/dist/mermaid.min.js"></script>
 
       
       <script src="../../../_static/theme-vendors.js"></script>
@@ -125,13 +125,13 @@
           <div class="content" role="main">
             
   <h1>Source code for bandwitch.DigestionProblem.SeparatingDigestionProblem</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.DigestionProblem</span> <span class="k">import</span> <span class="n">DigestionProblem</span>
-<span class="kn">from</span> <span class="nn">..tools</span> <span class="k">import</span> <span class="n">max_min_distance</span>
+<span class="kn">from</span> <span class="nn">.DigestionProblem</span> <span class="kn">import</span> <span class="n">DigestionProblem</span>
+<span class="kn">from</span> <span class="nn">..tools</span> <span class="kn">import</span> <span class="n">max_min_distance</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -163,7 +163,7 @@
 
 <span class="sd">    sequences</span>
 <span class="sd">      An (ordered) dictionary of the form {sequence_name: sequence} where the</span>
-<span class="sd">      sequence is an ATGC string</span>
+<span class="sd">      sequence is an ATGC string.</span>
 
 <span class="sd">    enzymes</span>
 <span class="sd">      List of the names of the enzymes to consider, e.g. ``[&#39;EcoRI&#39;, &#39;XbaI&#39;]``.</span>
@@ -172,7 +172,7 @@
 <span class="sd">      A Ladder object representing the ladder used for migrations.</span>
 
 <span class="sd">    linear</span>
-<span class="sd">      True for linear sequences, false for circular sequences</span>
+<span class="sd">      True for linear sequences, false for circular sequences.</span>
 
 <span class="sd">    max_enzymes_per_digestion</span>
 <span class="sd">      Maximal number of enzymes that can go in a single digestion.</span>
@@ -185,14 +185,13 @@
 <span class="sd">      of the ladder&#39;s smallest and largest bands).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">enzymes</span><span class="p">,</span>
         <span class="n">ladder</span><span class="p">,</span>
         <span class="n">sequences</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">categories</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">topology</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
-        <span class="n">default_topology</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+        <span class="n">topology</span><span class="o">=</span><span class="s2">&quot;default_to_linear&quot;</span><span class="p">,</span>
         <span class="n">max_enzymes_per_digestion</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">min_discrepancy</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
         <span class="n">relative_migration_precision</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
@@ -224,7 +223,6 @@
             <span class="n">enzymes</span><span class="o">=</span><span class="n">enzymes</span><span class="p">,</span>
             <span class="n">ladder</span><span class="o">=</span><span class="n">ladder</span><span class="p">,</span>
             <span class="n">topology</span><span class="o">=</span><span class="n">topology</span><span class="p">,</span>
-            <span class="n">default_topology</span><span class="o">=</span><span class="n">default_topology</span><span class="p">,</span>
             <span class="n">max_enzymes_per_digestion</span><span class="o">=</span><span class="n">max_enzymes_per_digestion</span><span class="p">,</span>
             <span class="n">relative_migration_precision</span><span class="o">=</span><span class="n">relative_migration_precision</span><span class="p">,</span>
         <span class="p">)</span>
@@ -242,8 +240,7 @@
         <span class="sd">&quot;&quot;&quot;See max_patterns_difference.&quot;&quot;&quot;</span>
         <span class="n">sequence1</span><span class="p">,</span> <span class="n">sequence2</span> <span class="o">=</span> <span class="n">sequences_pair</span>
         <span class="n">digestion1</span><span class="p">,</span> <span class="n">digestion2</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sequences_digestions</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">digestion</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">(</span><span class="n">sequence1</span><span class="p">,</span> <span class="n">sequence2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sequences_digestions</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">digestion</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">(</span><span class="n">sequence1</span><span class="p">,</span> <span class="n">sequence2</span><span class="p">)</span>
         <span class="p">]</span>
         <span class="c1"># If similar pair already computed, return the previous result.</span>
         <span class="k">if</span> <span class="n">digestion1</span><span class="p">[</span><span class="s2">&quot;same_as&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">digestion2</span><span class="p">[</span><span class="s2">&quot;same_as&quot;</span><span class="p">]:</span>
@@ -266,12 +263,11 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        score</span>
-<span class="sd">          Value between 0 (perfect similarity, green) and 1 (red)</span>
+<span class="sd">          Value between 0 (perfect similarity, green) and 1 (red).</span>
 
 <span class="sd">        maxi</span>
 <span class="sd">          Value of the score above which everything appears completely red.</span>
 <span class="sd">          Below this value the color goes progressively from red to green in 0.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">score</span> <span class="o">/</span> <span class="n">maxi</span><span class="p">)),</span>
@@ -300,8 +296,7 @@
 
 <span class="sd">        axes</span>
 <span class="sd">          The axes of the generated figure (if a target file is written to,</span>
-<span class="sd">          the figure is closed and None is returned instead)</span>
-
+<span class="sd">          the figure is closed and None is returned instead).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">PLOTS_AVAILABLE</span><span class="p">:</span>
@@ -339,9 +334,7 @@
                     <span class="p">)</span>
 
         <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)))</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span>
-            <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="s2">&quot;bold&quot;</span><span class="p">}</span>
-        <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="s2">&quot;bold&quot;</span><span class="p">})</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)))</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s2">&quot;top&quot;</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -349,7 +342,7 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">)[</span><span class="mi">1</span><span class="p">:][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+            <span class="p">[</span><span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
             <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
             <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
             <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="s2">&quot;bold&quot;</span><span class="p">},</span>
@@ -369,7 +362,7 @@
 </ul><div class="footer" role="contentinfo">
       &#169; Copyright 2019, Edinburgh Genome Foundry.
     <br>
-    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.2.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
 </div>
             </div>
           </div>

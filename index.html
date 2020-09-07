@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-      <title>Bandwitch</title>
+      <title>BandVitch</title>
     
       <link rel="stylesheet" href="_static/pygments.css">
       <link rel="stylesheet" href="_static/theme.css">
@@ -14,10 +14,10 @@
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
 
       <!-- sphinx script_files -->
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
 
       
       <script src="_static/theme-vendors.js"></script>
@@ -111,7 +111,7 @@
   <ul class="breadcrumbs">
     <li><a href="#">Docs</a> &raquo;</li>
     
-    <li>Bandwitch</li>
+    <li>BandVitch</li>
   </ul>
   
 
@@ -129,25 +129,25 @@
   <p align="center">
 <img alt="BandWitch Logo" title="BandWitch Logo" src="https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/docs/_static/images/title.png" width="400">
 <br /><br />
-</p><div class="section" id="bandwitch">
-<h1>Bandwitch<a class="headerlink" href="#bandwitch" title="Permalink to this headline">¶</a></h1>
+</p><div class="section" id="bandvitch">
+<h1>BandVitch<a class="headerlink" href="#bandvitch" title="Permalink to this headline">¶</a></h1>
 <a class="reference external image-reference" href="https://travis-ci.org/Edinburgh-Genome-Foundry/BandWitch"><img alt="Travis CI build status" src="https://travis-ci.org/Edinburgh-Genome-Foundry/BandWitch.svg?branch=master" /></a>
 <a class="reference external image-reference" href="https://coveralls.io/github/Edinburgh-Genome-Foundry/BandWitch?branch=master"><img alt="https://coveralls.io/repos/github/Edinburgh-Genome-Foundry/BandWitch/badge.svg?branch=master" src="https://coveralls.io/repos/github/Edinburgh-Genome-Foundry/BandWitch/badge.svg?branch=master" /></a>
-<p>Bandwitch (full documentation <a class="reference external" href="https://edinburgh-genome-foundry.github.io/BandWitch/">here</a>)
+<p>BandWitch (full documentation <a class="reference external" href="https://edinburgh-genome-foundry.github.io/BandWitch/">here</a>)
 is a Python library for the planning and analysis of restriction
-experiments in DNA assembly operations. Bandwitch implements method to select the best enzyme(s) to validate or identify DNA assemblies. It also provides report generation methods to automatically validate/identify assemblies from experimental data.</p>
-<p>You can try BandWitch’s enzyme suggestion feature in <a class="reference external" href="https://cuba.genomefoundry.org/select_digestions">this web demo</a>, and the sequence validation (from AATI fragment analyzer files) in <a class="reference external" href="http://cuba.genomefoundry.org/analyze-digests">this other demo</a></p>
+experiments in DNA assembly operations. BandWitch implements methods for selecting the best enzyme(s) to validate or identify DNA assemblies. It also provides report generation methods to automatically validate/identify assemblies from experimental data.</p>
+<p>You can try BandWitch’s enzyme suggestion feature in <a class="reference external" href="https://cuba.genomefoundry.org/select_digestions">this web demo</a>, and the sequence validation (from AATI fragment analyzer files) in <a class="reference external" href="http://cuba.genomefoundry.org/analyze-digests">this other demo</a>.</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>You can install DnaCauldron through PIP</p>
+<p>You can install BandWitch through PIP:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo pip install bandwitch
 </pre></div>
 </div>
-<p>On Ubuntu at least, you may need to install libblas first:</p>
+<p>On Ubuntu, you may need to install libblas first:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">libblas</span><span class="o">-</span><span class="n">dev</span> <span class="n">liblapack</span><span class="o">-</span><span class="n">dev</span>
 </pre></div>
 </div>
-<p>Alternatively, you can unzip the sources in a folder and type</p>
+<p>Alternatively, you can unzip the source files in a folder and type:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo python setup.py install
 </pre></div>
 </div>
@@ -157,7 +157,7 @@ experiments in DNA assembly operations. Bandwitch implements method to select th
 <p>In the following examples, we assume that we have a set of 12 constructs which we will
 need to either validate (i.e. we digest these constructs and compare each pattern
 with the expected pattern for that construct) or identify (i.e. we will digest an
-a-priori unknown construct and use the migration patterns to un-ambiguously
+<em>a priori</em> unknown construct and use the migration patterns to unambiguously
 identify each construct among the 12 possible candidates).</p>
 <p>For validation purposes, the difficulty is to find a digestion that will produce
 harmonious patterns for all the constructs at once: well-spaced bands, and not
@@ -166,7 +166,8 @@ find a digestion giving very distant patterns for each construct in the set of
 candidates.</p>
 <p>Every time when the problem cannot be solved with a single digestion, BandWitch
 can propose 2 or 3 digestions which collectively solve the problem.</p>
-<p><strong>Important:</strong> when providing BandWitch with a record, make sure to set the linearity/circularity with <code class="docutils literal notranslate"><span class="pre">record.linear=True/False</span></code>.</p>
+<p><strong>Important:</strong> when providing BandWitch with a Biopython record, make sure to set the
+topology, defined by: <code class="docutils literal notranslate"><span class="pre">record.annotations['topology']</span> <span class="pre">=</span> <span class="pre">'linear'|'circular'</span></code></p>
 <div class="section" id="finding-enzymes-that-work-well-for-many-constructs">
 <h3>Finding enzymes that “work well” for many constructs<a class="headerlink" href="#finding-enzymes-that-work-well-for-many-constructs" title="Permalink to this headline">¶</a></h3>
 <p>Here is the code to select enzymes that will produce nice patterns for all constructs, for validation:</p>
@@ -176,8 +177,8 @@ can propose 2 or 3 digestions which collectively solve the problem.</p>
 <span class="n">enzymes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;EcoRI&quot;</span><span class="p">,</span> <span class="s2">&quot;BamHI&quot;</span><span class="p">,</span> <span class="s2">&quot;XhoI&quot;</span><span class="p">,</span> <span class="s2">&quot;EcoRV&quot;</span><span class="p">,</span> <span class="s2">&quot;SpeI&quot;</span><span class="p">,</span> <span class="s2">&quot;XbaI&quot;</span><span class="p">,</span>
            <span class="s2">&quot;NotI&quot;</span><span class="p">,</span> <span class="s2">&quot;SacI&quot;</span><span class="p">,</span> <span class="s2">&quot;SmaI&quot;</span><span class="p">,</span> <span class="s2">&quot;HindIII&quot;</span><span class="p">,</span> <span class="s2">&quot;PstI&quot;</span><span class="p">]</span>
 <span class="n">sequences</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">load_record</span><span class="p">(</span><span class="n">genbank_file_paidname</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">topology</span><span class="o">=</span><span class="s1">&#39;circular&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">genbank_file_path</span> <span class="ow">in</span> <span class="n">some_list_of_files</span><span class="p">)</span>
+    <span class="n">load_record</span><span class="p">(</span><span class="n">record_file</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">topology</span><span class="o">=</span><span class="s1">&#39;circular&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">some_list_of_genbank_files</span>
 <span class="p">]</span>
 
 <span class="c1"># SELECT THE BEST SINGLE DIGESTION WITH AT MOST ENZYMES</span>
@@ -208,8 +209,8 @@ can propose 2 or 3 digestions which collectively solve the problem.</p>
 <span class="c1"># DEFINE SEQUENCES AND ENZYME SET (6-CUTTERS WITH &gt;3 COMMERCIAL PROVIDERS)</span>
 <span class="n">enzymes</span> <span class="o">=</span> <span class="n">list_common_enzymes</span><span class="p">(</span><span class="n">site_length</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,),</span> <span class="n">min_suppliers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">sequences</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">load_record</span><span class="p">(</span><span class="n">genbank_file_path</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">genbank_file_path</span> <span class="ow">in</span> <span class="n">some_list_of_files</span><span class="p">)</span>
+    <span class="n">load_record</span><span class="p">(</span><span class="n">genbank_file_path</span><span class="p">,</span> <span class="n">topology</span><span class="o">=</span><span class="s1">&#39;circular&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">genbank_file_path</span> <span class="ow">in</span> <span class="n">some_list_of_genbank_files</span>
 <span class="p">]</span>
 
 <span class="c1"># SELECT THE BEST DIGESTION PAIRS (AT MOST 1 ENZYME PER DIGESTION)</span>
@@ -235,20 +236,20 @@ can propose 2 or 3 digestions which collectively solve the problem.</p>
 <img alt="[logo]" class="align-center" src="https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/examples/separating_digestions.png" />
 <p>In the result above, each construct has a unique “fingerprint”. Assuming that you
 have an unlabelled DNA sample which could be any of these assemblies, then simply
-digesting the sample with MspA1I and BsmI will give you 2 pattern which collectively
+digesting the sample with MspA1I and BsmI will give you 2 patterns which collectively
 will correspond to a unique assembly.</p>
 </div>
 </div>
 <div class="section" id="usage-construct-validation-or-identification-from-experimental-data">
 <h2>Usage: Construct validation or identification from experimental data<a class="headerlink" href="#usage-construct-validation-or-identification-from-experimental-data" title="Permalink to this headline">¶</a></h2>
-<p>This part is still under construction.</p>
-<p>Bandwitch can process output files from an automated fragment analyzer and produce
+<p><em>This part is still under construction.</em></p>
+<p>BandWitch can process output files from an automated fragment analyzer and produce
 informative reports as illustrated below:</p>
 <a class="reference internal image-reference" href="https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/docs/_static/images/bands_validation.png"><img alt="[logo]" class="align-center" src="https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/docs/_static/images/bands_validation.png" style="width: 750px;" /></a>
 </div>
 <div class="section" id="license-mit">
 <h2>License = MIT<a class="headerlink" href="#license-mit" title="Permalink to this headline">¶</a></h2>
-<p>BandWitch is an open-source software originally written at the <a class="reference external" href="http://edinburgh-genome-foundry.github.io/home.html">Edinburgh Genome Foundry</a> by <a class="reference external" href="https://github.com/Zulko">Zulko</a> and <a class="reference external" href="https://github.com/Edinburgh-Genome-Foundry/Primavera">released on Github</a> under the MIT licence (¢ Edinburg Genome Foundry). Everyone is welcome to contribute !</p>
+<p>BandWitch is an open-source software originally written at the <a class="reference external" href="http://edinburgh-genome-foundry.github.io/home.html">Edinburgh Genome Foundry</a> by <a class="reference external" href="https://github.com/Zulko">Zulko</a> and <a class="reference external" href="https://github.com/Edinburgh-Genome-Foundry/BandWitch">released on Github</a> under the MIT license (Copyright 2017 Edinburgh Genome Foundry). Everyone is welcome to contribute!</p>
 </div>
 <div class="section" id="more-biology-software">
 <h2>More biology software<a class="headerlink" href="#more-biology-software" title="Permalink to this headline">¶</a></h2>
@@ -278,7 +279,7 @@ allowtransparency="true" frameborder="0" scrolling="0" width="152px" height="30p
 </ul><div class="footer" role="contentinfo">
       &#169; Copyright 2019, Edinburgh Genome Foundry.
     <br>
-    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.2.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
 </div>
             </div>
           </div>

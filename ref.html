@@ -14,11 +14,11 @@
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
 
       <!-- sphinx script_files -->
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="https://unpkg.com/mermaid@8.4.8/dist/mermaid.min.js"></script>
 
       
       <script src="_static/theme-vendors.js"></script>
@@ -26,7 +26,7 @@
     
   <link rel="index" title="Index" href="genindex.html" />
   <link rel="search" title="Search" href="search.html" />
-  <link rel="prev" title="Bandwitch" href="index.html" /> 
+  <link rel="prev" title="BandVitch" href="index.html" /> 
   </head>
 
   <body>
@@ -131,7 +131,7 @@
   <ul class="page-nav">
   <li class="prev">
     <a href="index.html"
-       title="previous chapter">← Bandwitch</a>
+       title="previous chapter">← BandVitch</a>
   </li>
 </ul>
   
@@ -143,66 +143,49 @@
 <h1>BandWitch Reference manual<a class="headerlink" href="#bandwitch-reference-manual" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="digestionproblem">
 <h2>DigestionProblem<a class="headerlink" href="#digestionproblem" title="Permalink to this headline">¶</a></h2>
-
-            <style>
-            /* mermaid issue 527 workaround */
-            .section {
-                opacity: 1.0 !important;
-            }
-            </style>
-            <script>mermaid.initialize({startOnLoad:true});</script><div class="mermaid">
+<script>mermaid.initialize({startOnLoad:true});</script><div class="mermaid">
             graph TD
   SC[SetCoverProblem] --&gt; DP[DigestionProblem]
   DP --&gt; SDP[SeparatingDigestionProblem]
   DP --&gt; IDP[IdealDigestionProblem]
-        </div><dl class="attribute">
+        </div><dl class="py attribute">
 <dt id="bandwitch.DigestionProblem.DigestionProblem">
 <code class="sig-prename descclassname">bandwitch.DigestionProblem.</code><code class="sig-name descname">DigestionProblem</code><a class="headerlink" href="#bandwitch.DigestionProblem.DigestionProblem" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="#bandwitch.DigestionProblem.DigestionProblem" title="bandwitch.DigestionProblem.DigestionProblem"><code class="xref py py-class docutils literal notranslate"><span class="pre">bandwitch.DigestionProblem.DigestionProblem</span></code></a></p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="bandwitch.DigestionProblem.IdealDigestionsProblem">
-<em class="property">class </em><code class="sig-prename descclassname">bandwitch.DigestionProblem.</code><code class="sig-name descname">IdealDigestionsProblem</code><span class="sig-paren">(</span><em class="sig-param">enzymes</em>, <em class="sig-param">ladder</em>, <em class="sig-param">sequences</em>, <em class="sig-param">min_bands=3</em>, <em class="sig-param">max_bands=7</em>, <em class="sig-param">border_tolerance=0.1</em>, <em class="sig-param">topology='auto'</em>, <em class="sig-param">default_topology='linear'</em>, <em class="sig-param">max_enzymes_per_digestion=1</em>, <em class="sig-param">relative_migration_precision=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem/IdealDigestionsProblem.html#IdealDigestionsProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.IdealDigestionsProblem" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">bandwitch.DigestionProblem.</code><code class="sig-name descname">IdealDigestionsProblem</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">enzymes</span></em>, <em class="sig-param"><span class="n">ladder</span></em>, <em class="sig-param"><span class="n">sequences</span></em>, <em class="sig-param"><span class="n">min_bands</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">max_bands</span><span class="o">=</span><span class="default_value">7</span></em>, <em class="sig-param"><span class="n">border_tolerance</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">topology</span><span class="o">=</span><span class="default_value">'default_to_linear'</span></em>, <em class="sig-param"><span class="n">max_enzymes_per_digestion</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">relative_migration_precision</span><span class="o">=</span><span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem/IdealDigestionsProblem.html#IdealDigestionsProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.IdealDigestionsProblem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find ideal digestion(s) to validate constructs.</p>
 <p>Other digestion problems subclass this problem and implement a computation
 of coverages which depends on the problem.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>sequences</strong></p>
-<blockquote>
-<div><p>An (ordered) dictionary of the form {sequence_name: sequence} where the
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sequences</strong></dt><dd><p>An (ordered) dictionary of the form {sequence_name: sequence} where the
 sequence is an ATGC string</p>
-</div></blockquote>
-<p><strong>enzymes</strong></p>
-<blockquote>
-<div><p>List of the names of the enzymes to consider, e.g. <code class="docutils literal notranslate"><span class="pre">['EcoRI',</span> <span class="pre">'XbaI']</span></code>.</p>
-</div></blockquote>
-<p><strong>ladder</strong></p>
-<blockquote>
-<div><p>A Ladder object representing the ladder used for migrations.</p>
-</div></blockquote>
-<p><strong>linear</strong></p>
-<blockquote>
-<div><p>True for linear sequences, false for circular sequences</p>
-</div></blockquote>
-<p><strong>max_enzymes_per_digestion</strong></p>
-<blockquote>
-<div><p>Maximal number of enzymes that can go in a single digestion.
+</dd>
+<dt><strong>enzymes</strong></dt><dd><p>List of the names of the enzymes to consider, e.g. <code class="docutils literal notranslate"><span class="pre">['EcoRI',</span> <span class="pre">'XbaI']</span></code>.</p>
+</dd>
+<dt><strong>ladder</strong></dt><dd><p>A Ladder object representing the ladder used for migrations.</p>
+</dd>
+<dt><strong>linear</strong></dt><dd><p>True for linear sequences, false for circular sequences</p>
+</dd>
+<dt><strong>max_enzymes_per_digestion</strong></dt><dd><p>Maximal number of enzymes that can go in a single digestion.
 Experimentally the best is 1, but you can try 2, or 3 in desperate
 situations. Not sure if more enzymes will work.</p>
-</div></blockquote>
-<p><strong>relative_migration_error</strong></p>
-<blockquote>
-<div><p>Variance of the bands measured during the migration, given as a
+</dd>
+<dt><strong>relative_migration_error</strong></dt><dd><p>Variance of the bands measured during the migration, given as a
 proportion of the total migration span (difference between the migration
 of the ladder’s smallest and largest bands).</p>
-</div></blockquote>
 </dd>
 </dl>
-<dl class="method">
+</dd>
+</dl>
+<dl class="py method">
 <dt id="bandwitch.DigestionProblem.IdealDigestionsProblem.migration_score">
-<code class="sig-name descname">migration_score</code><span class="sig-paren">(</span><em class="sig-param">band_migrations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem/IdealDigestionsProblem.html#IdealDigestionsProblem.migration_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.IdealDigestionsProblem.migration_score" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">migration_score</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">band_migrations</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem/IdealDigestionsProblem.html#IdealDigestionsProblem.migration_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.IdealDigestionsProblem.migration_score" title="Permalink to this definition">¶</a></dt>
 <dd><p>Score the well-numbering and well-separation of all bands.</p>
 <p>If some bands are too high or too low, or the number of bands is out
 of bounds, return 0. Else, return the minimal distance between two
@@ -211,46 +194,42 @@ consecutive bands.</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="bandwitch.DigestionProblem.SeparatingDigestionsProblem">
-<em class="property">class </em><code class="sig-prename descclassname">bandwitch.DigestionProblem.</code><code class="sig-name descname">SeparatingDigestionsProblem</code><span class="sig-paren">(</span><em class="sig-param">enzymes</em>, <em class="sig-param">ladder</em>, <em class="sig-param">sequences=None</em>, <em class="sig-param">categories=None</em>, <em class="sig-param">topology='auto'</em>, <em class="sig-param">default_topology='linear'</em>, <em class="sig-param">max_enzymes_per_digestion=1</em>, <em class="sig-param">min_discrepancy='auto'</em>, <em class="sig-param">relative_migration_precision=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem/SeparatingDigestionProblem.html#SeparatingDigestionsProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.SeparatingDigestionsProblem" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">bandwitch.DigestionProblem.</code><code class="sig-name descname">SeparatingDigestionsProblem</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">enzymes</span></em>, <em class="sig-param"><span class="n">ladder</span></em>, <em class="sig-param"><span class="n">sequences</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">categories</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">topology</span><span class="o">=</span><span class="default_value">'default_to_linear'</span></em>, <em class="sig-param"><span class="n">max_enzymes_per_digestion</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">min_discrepancy</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">relative_migration_precision</span><span class="o">=</span><span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem/SeparatingDigestionProblem.html#SeparatingDigestionsProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.SeparatingDigestionsProblem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Problem: find best digestion(s) to identify constructs.</p>
 <p>Provided a set of constructs (possibly from a combinatorial assembly),
 find a list of digestions such that all pair of constructs have different
 migration patterns for at least one digestion of the list.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="bandwitch.DigestionProblem.SeparatingDigestionsProblem.plot_distances_map">
-<code class="sig-name descname">plot_distances_map</code><span class="sig-paren">(</span><em class="sig-param">digestions</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">target_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem/SeparatingDigestionProblem.html#SeparatingDigestionsProblem.plot_distances_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.SeparatingDigestionsProblem.plot_distances_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot_distances_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">digestions</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">target_file</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/DigestionProblem/SeparatingDigestionProblem.html#SeparatingDigestionsProblem.plot_distances_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.DigestionProblem.SeparatingDigestionsProblem.plot_distances_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot how well the digestions separate each construct pair.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>digestions</strong></p>
-<blockquote>
-<div><p>A list of digestions, eg <code class="docutils literal notranslate"><span class="pre">[('EcoRV'),</span> <span class="pre">('XbaI',</span> <span class="pre">'MfeI')]</span></code>.</p>
-</div></blockquote>
-<p><strong>ax</strong></p>
-<blockquote>
-<div><p>A matplotlib ax on which to plot, if none is provided, one is created
+<dd class="field-odd"><dl class="simple">
+<dt><strong>digestions</strong></dt><dd><p>A list of digestions, eg <code class="docutils literal notranslate"><span class="pre">[('EcoRV'),</span> <span class="pre">('XbaI',</span> <span class="pre">'MfeI')]</span></code>.</p>
+</dd>
+<dt><strong>ax</strong></dt><dd><p>A matplotlib ax on which to plot, if none is provided, one is created
 and returned at the end.</p>
-</div></blockquote>
-<p><strong>target_file</strong></p>
-<blockquote>
-<div><p>The name of the (PNG, SVG, JPEG…) file in which to write the plot.</p>
-</div></blockquote>
+</dd>
+<dt><strong>target_file</strong></dt><dd><p>The name of the (PNG, SVG, JPEG…) file in which to write the plot.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>axes</p>
-<blockquote>
-<div><p>The axes of the generated figure (if a target file is written to,
-the figure is closed and None is returned instead)</p>
-</div></blockquote>
+<dd class="field-even"><dl class="simple">
+<dt>axes</dt><dd><p>The axes of the generated figure (if a target file is written to,
+the figure is closed and None is returned instead).</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="bandwitch.DigestionProblem.SetCoverProblem">
 <code class="sig-prename descclassname">bandwitch.DigestionProblem.</code><code class="sig-name descname">SetCoverProblem</code><a class="headerlink" href="#bandwitch.DigestionProblem.SetCoverProblem" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="#bandwitch.DigestionProblem.SetCoverProblem" title="bandwitch.DigestionProblem.SetCoverProblem"><code class="xref py py-class docutils literal notranslate"><span class="pre">bandwitch.DigestionProblem.SetCoverProblem</span></code></a></p>
@@ -259,14 +238,7 @@ the figure is closed and None is returned instead)</p>
 </div>
 <div class="section" id="clone-observations">
 <h2>Clone Observations<a class="headerlink" href="#clone-observations" title="Permalink to this headline">¶</a></h2>
-
-            <style>
-            /* mermaid issue 527 workaround */
-            .section {
-                opacity: 1.0 !important;
-            }
-            </style>
-            <div class="mermaid">
+<div class="mermaid">
             graph TD;
   aati[AATI fragment analysis file] -- parser --&gt; bobs[BandsObervation-s];
   bobs --&gt; clone[Clone-s]
@@ -286,93 +258,81 @@ to the history of this module and the heterogeneity of the sources of data
 necessary for clone validation. It may get better in the future.</p>
 <div class="section" id="bands-observations">
 <h3>Bands Observations<a class="headerlink" href="#bands-observations" title="Permalink to this headline">¶</a></h3>
-<dl class="class">
+<dl class="py class">
 <dt id="bandwitch.ClonesObservations.BandsObservation">
-<em class="property">class </em><code class="sig-prename descclassname">bandwitch.ClonesObservations.</code><code class="sig-name descname">BandsObservation</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">bands</em>, <em class="sig-param">ladder</em>, <em class="sig-param">migration_image=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/BandsObservation.html#BandsObservation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.BandsObservation" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">bandwitch.ClonesObservations.</code><code class="sig-name descname">BandsObservation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">bands</span></em>, <em class="sig-param"><span class="n">ladder</span></em>, <em class="sig-param"><span class="n">migration_image</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/BandsObservation.html#BandsObservation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.BandsObservation" title="Permalink to this definition">¶</a></dt>
 <dd><p>One observation of a bands pattern.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong></p>
-<blockquote>
-<div><p>Name of the observation (used for the top label in plots)</p>
-</div></blockquote>
-<p><strong>bands</strong></p>
-<blockquote>
-<div><p>A BandPattern object</p>
-</div></blockquote>
-<p><strong>ladder</strong></p>
-<blockquote>
-<div><p>A BandPattern object representing a ladder.</p>
-</div></blockquote>
-<p><strong>migration_image</strong></p>
-<blockquote>
-<div><p>Optional RGB array (HxWx3) representing the gel “image” (which will be
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong></dt><dd><p>Name of the observation (used for the top label in plots)</p>
+</dd>
+<dt><strong>bands</strong></dt><dd><p>A BandPattern object</p>
+</dd>
+<dt><strong>ladder</strong></dt><dd><p>A BandPattern object representing a ladder.</p>
+</dd>
+<dt><strong>migration_image</strong></dt><dd><p>Optional RGB array (HxWx3) representing the gel “image” (which will be
 displayed on the side of the plot).</p>
-</div></blockquote>
 </dd>
 </dl>
-<dl class="method">
+</dd>
+</dl>
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.BandsObservation.from_aati_fa_archive">
-<em class="property">static </em><code class="sig-name descname">from_aati_fa_archive</code><span class="sig-paren">(</span><em class="sig-param">archive_path</em>, <em class="sig-param">min_rfu_size_ratio=0.3</em>, <em class="sig-param">ignore_bands_under=None</em>, <em class="sig-param">direction='column'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/BandsObservation.html#BandsObservation.from_aati_fa_archive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.BandsObservation.from_aati_fa_archive" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">from_aati_fa_archive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">archive_path</span></em>, <em class="sig-param"><span class="n">min_rfu_size_ratio</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">ignore_bands_under</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">direction</span><span class="o">=</span><span class="default_value">'column'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/BandsObservation.html#BandsObservation.from_aati_fa_archive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.BandsObservation.from_aati_fa_archive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dictionnary of all band observations in AATI output files.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>archive_path</strong></p>
-<blockquote>
-<div><p>A path to a ZIP file containing all files output by the AATI fragment
+<dd class="field-odd"><dl class="simple">
+<dt><strong>archive_path</strong></dt><dd><p>A path to a ZIP file containing all files output by the AATI fragment
 analyzer.</p>
-</div></blockquote>
-<p><strong>min_rfu_size_ratio</strong></p>
-<blockquote>
-<div><p>Cut-off ratio to filter-out bands whose intensity is below some
+</dd>
+<dt><strong>min_rfu_size_ratio</strong></dt><dd><p>Cut-off ratio to filter-out bands whose intensity is below some
 threshold. The higher the value, the more bands will be filtered out.</p>
-</div></blockquote>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A dictionary <code class="docutils literal notranslate"><span class="pre">{'A1':</span> <span class="pre">BandsObservation(),</span> <span class="pre">'A2':</span> <span class="pre">...}</span></code> containing the</p>
-<p>measured pattern information for a whole 96-well microplate.</p>
+<dd class="field-even"><dl class="simple">
+<dt>A dictionary <code class="docutils literal notranslate"><span class="pre">{'A1':</span> <span class="pre">BandsObservation(),</span> <span class="pre">'A2':</span> <span class="pre">...}</span></code> containing the</dt><dd></dd>
+<dt>measured pattern information for a whole 96-well microplate.</dt><dd></dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.BandsObservation.patterns_discrepancy">
-<code class="sig-name descname">patterns_discrepancy</code><span class="sig-paren">(</span><em class="sig-param">other_bands</em>, <em class="sig-param">relative_tolerance=0.1</em>, <em class="sig-param">min_band_cutoff=None</em>, <em class="sig-param">max_band_cutoff=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/BandsObservation.html#BandsObservation.patterns_discrepancy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.BandsObservation.patterns_discrepancy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">patterns_discrepancy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other_bands</span></em>, <em class="sig-param"><span class="n">relative_tolerance</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">min_band_cutoff</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_band_cutoff</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/BandsObservation.html#BandsObservation.patterns_discrepancy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.BandsObservation.patterns_discrepancy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the maximal discrepancy between two band patterns.</p>
 <p>The discrepancy is defined as the largest distance between a band in
 one pattern and the closest band in the other pattern.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>other_bands</strong></p>
-<blockquote>
-<div><p>A list of bands (integers) to be compared with the current bands</p>
-</div></blockquote>
-<p><strong>relative_tolerance</strong></p>
-<blockquote>
-<div><p>Tolerance, as a ratio of the full ladder span. If =0.1, then the
+<dd class="field-odd"><dl class="simple">
+<dt><strong>other_bands</strong></dt><dd><p>A list of bands (integers) to be compared with the current bands</p>
+</dd>
+<dt><strong>relative_tolerance</strong></dt><dd><p>Tolerance, as a ratio of the full ladder span. If =0.1, then the
 discrepancy will have a value of 1 when a band’s nearest
 correspondent in the other pattern is more that 10% of the ladder
 span apart.</p>
-</div></blockquote>
-<p><strong>min_band_cutoff</strong></p>
-<blockquote>
-<div><p>Discrepancies involving at least one band below this minimal band
+</dd>
+<dt><strong>min_band_cutoff</strong></dt><dd><p>Discrepancies involving at least one band below this minimal band
 size will be ignored. By default, it will be set to the smallest
 band size in the ladder.</p>
-</div></blockquote>
-<p><strong>max_band_cutoff</strong></p>
-<blockquote>
-<div><p>Discrepancies involving at least one band above this minimal band
+</dd>
+<dt><strong>max_band_cutoff</strong></dt><dd><p>Discrepancies involving at least one band above this minimal band
 size will be ignored. By default, it will be set to the smallest
 band size in the ladder.</p>
-</div></blockquote>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.BandsObservation.to_bandwagon_bandpattern">
-<code class="sig-name descname">to_bandwagon_bandpattern</code><span class="sig-paren">(</span><em class="sig-param">background_color=None</em>, <em class="sig-param">label='auto'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/BandsObservation.html#BandsObservation.to_bandwagon_bandpattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.BandsObservation.to_bandwagon_bandpattern" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to_bandwagon_bandpattern</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">background_color</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">label</span><span class="o">=</span><span class="default_value">'auto'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/BandsObservation.html#BandsObservation.to_bandwagon_bandpattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.BandsObservation.to_bandwagon_bandpattern" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a pattern version for the plotting library Bandwagon.</p>
 <p>If label is left to ‘auto’, it will be the pattern’s name.</p>
 </dd></dl>
@@ -382,59 +342,49 @@ band size in the ladder.</p>
 </div>
 <div class="section" id="clone">
 <h3>Clone<a class="headerlink" href="#clone" title="Permalink to this headline">¶</a></h3>
-<dl class="class">
+<dl class="py class">
 <dt id="bandwitch.ClonesObservations.Clone">
-<em class="property">class </em><code class="sig-prename descclassname">bandwitch.ClonesObservations.</code><code class="sig-name descname">Clone</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">digestions</em>, <em class="sig-param">construct_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/Clone.html#Clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.Clone" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">bandwitch.ClonesObservations.</code><code class="sig-name descname">Clone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">digestions</span></em>, <em class="sig-param"><span class="n">construct_id</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/Clone.html#Clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.Clone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gather all informations necessary to validate a clone.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong></p>
-<blockquote>
-<div><p>Name of the clone. Could be for instance a microplate well.</p>
-</div></blockquote>
-<p><strong>digestions</strong></p>
-<blockquote>
-<div><p>A dictionnary <code class="docutils literal notranslate"><span class="pre">{digestion:</span> <span class="pre">CloneObservation}</span></code> where <code class="docutils literal notranslate"><span class="pre">digestion</span></code> is
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong></dt><dd><p>Name of the clone. Could be for instance a microplate well.</p>
+</dd>
+<dt><strong>digestions</strong></dt><dd><p>A dictionnary <code class="docutils literal notranslate"><span class="pre">{digestion:</span> <span class="pre">CloneObservation}</span></code> where <code class="docutils literal notranslate"><span class="pre">digestion</span></code> is
 of the form <code class="docutils literal notranslate"><span class="pre">('EcoRI',</span> <span class="pre">'BamHI')</span></code>.</p>
-</div></blockquote>
-<p><strong>construct_id</strong></p>
-<blockquote>
-<div><p>ID of the construct to be validated. This is used to group clones
+</dd>
+<dt><strong>construct_id</strong></dt><dd><p>ID of the construct to be validated. This is used to group clones
 by construct in the validation reports.</p>
-</div></blockquote>
 </dd>
 </dl>
-<dl class="method">
+</dd>
+</dl>
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.Clone.validate_bands">
-<code class="sig-name descname">validate_bands</code><span class="sig-paren">(</span><em class="sig-param">bands_by_digestion</em>, <em class="sig-param">relative_tolerance=0.1</em>, <em class="sig-param">min_band_cutoff=None</em>, <em class="sig-param">max_band_cutoff=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/Clone.html#Clone.validate_bands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.Clone.validate_bands" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">validate_bands</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bands_by_digestion</span></em>, <em class="sig-param"><span class="n">relative_tolerance</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">min_band_cutoff</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_band_cutoff</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/Clone.html#Clone.validate_bands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.Clone.validate_bands" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a validation results (comparison of observed and expected).</p>
 <p>The result is a CloneValidation object.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>bands_by_digestion</strong></p>
-<blockquote>
-<div><p>A dictionnary <code class="docutils literal notranslate"><span class="pre">{digestion:</span> <span class="pre">[bands]}</span></code> where <code class="docutils literal notranslate"><span class="pre">digestion</span></code> is
+<dd class="field-odd"><dl class="simple">
+<dt><strong>bands_by_digestion</strong></dt><dd><p>A dictionnary <code class="docutils literal notranslate"><span class="pre">{digestion:</span> <span class="pre">[bands]}</span></code> where <code class="docutils literal notranslate"><span class="pre">digestion</span></code> is
 of the form <code class="docutils literal notranslate"><span class="pre">('EcoRI',</span> <span class="pre">'BamHI')</span></code>, and bands is a list of band sizes</p>
-</div></blockquote>
-<p><strong>relative_tolerance</strong></p>
-<blockquote>
-<div><p>Tolerance, as a ratio of the full ladder span. If =0.1, then the
+</dd>
+<dt><strong>relative_tolerance</strong></dt><dd><p>Tolerance, as a ratio of the full ladder span. If =0.1, then the
 discrepancy will have a value of 1 when a band’s nearest
 correspondent in the other pattern is more that 10% of the ladder
 span apart.</p>
-</div></blockquote>
-<p><strong>min_band_cutoff</strong></p>
-<blockquote>
-<div><p>Discrepancies involving at least one band below this minimal band
+</dd>
+<dt><strong>min_band_cutoff</strong></dt><dd><p>Discrepancies involving at least one band below this minimal band
 size will be ignored. By default, it will be set to the smallest
 band size in the ladder.</p>
-</div></blockquote>
-<p><strong>max_band_cutoff</strong></p>
-<blockquote>
-<div><p>Discrepancies involving at least one band above this minimal band
+</dd>
+<dt><strong>max_band_cutoff</strong></dt><dd><p>Discrepancies involving at least one band above this minimal band
 size will be ignored. By default, it will be set to the smallest
 band size in the ladder.</p>
-</div></blockquote>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -444,7 +394,7 @@ band size in the ladder.</p>
 </div>
 <div class="section" id="clonevalidation">
 <h3>CloneValidation<a class="headerlink" href="#clonevalidation" title="Permalink to this headline">¶</a></h3>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="bandwitch.ClonesObservations.CloneValidation">
 <code class="sig-prename descclassname">bandwitch.ClonesObservations.</code><code class="sig-name descname">CloneValidation</code><a class="headerlink" href="#bandwitch.ClonesObservations.CloneValidation" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="#bandwitch.ClonesObservations.CloneValidation" title="bandwitch.ClonesObservations.CloneValidation"><code class="xref py py-class docutils literal notranslate"><span class="pre">bandwitch.ClonesObservations.CloneValidation</span></code></a></p>
@@ -453,119 +403,107 @@ band size in the ladder.</p>
 </div>
 <div class="section" id="id1">
 <h3>Clone Observations<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<dl class="class">
+<dl class="py class">
 <dt id="bandwitch.ClonesObservations.ClonesObservations">
-<em class="property">class </em><code class="sig-prename descclassname">bandwitch.ClonesObservations.</code><code class="sig-name descname">ClonesObservations</code><span class="sig-paren">(</span><em class="sig-param">clones</em>, <em class="sig-param">constructs_records</em>, <em class="sig-param">partial_cutters=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">bandwitch.ClonesObservations.</code><code class="sig-name descname">ClonesObservations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clones</span></em>, <em class="sig-param"><span class="n">constructs_records</span></em>, <em class="sig-param"><span class="n">partial_cutters</span><span class="o">=</span><span class="default_value">()</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations" title="Permalink to this definition">¶</a></dt>
 <dd><p>All useful informations for a collection of clones to be validated.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>clones</strong></p>
-<blockquote>
-<div><p>Either a list of Clones (each with a unique name) or a dictionnary
+<dd class="field-odd"><dl class="simple">
+<dt><strong>clones</strong></dt><dd><p>Either a list of Clones (each with a unique name) or a dictionnary
 <code class="docutils literal notranslate"><span class="pre">{name:</span> <span class="pre">Clone}</span></code>.</p>
-</div></blockquote>
-<p><strong>constructs_records</strong></p>
-<blockquote>
-<div><p>A dictionnary <code class="docutils literal notranslate"><span class="pre">{construct_name:</span> <span class="pre">biopython_record}</span></code> indicating the
+</dd>
+<dt><strong>constructs_records</strong></dt><dd><p>A dictionnary <code class="docutils literal notranslate"><span class="pre">{construct_name:</span> <span class="pre">biopython_record}</span></code> indicating the
 sequence of the different constructs. For each construct, set the
 attribute <code class="docutils literal notranslate"><span class="pre">construct.linear</span> <span class="pre">=</span> <span class="pre">False</span></code> if the construct is circular.</p>
-</div></blockquote>
 </dd>
 </dl>
-<dl class="method">
+</dd>
+</dl>
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.ClonesObservations.get_clone_digestion_bands">
-<code class="sig-name descname">get_clone_digestion_bands</code><span class="sig-paren">(</span><em class="sig-param">clone</em>, <em class="sig-param">construct_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.get_clone_digestion_bands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.get_clone_digestion_bands" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_clone_digestion_bands</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clone</span></em>, <em class="sig-param"><span class="n">construct_id</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.get_clone_digestion_bands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.get_clone_digestion_bands" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">{digestion:</span> <span class="pre">bands}</span></code> for all digestions of this clone.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.ClonesObservations.get_digestion_bands_for_construct">
-<code class="sig-name descname">get_digestion_bands_for_construct</code><span class="sig-paren">(</span><em class="sig-param">construct_id</em>, <em class="sig-param">digestion</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.get_digestion_bands_for_construct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.get_digestion_bands_for_construct" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_digestion_bands_for_construct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">construct_id</span></em>, <em class="sig-param"><span class="n">digestion</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.get_digestion_bands_for_construct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.get_digestion_bands_for_construct" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bands resulting from the digestion of the construct.</p>
 <p>This function enables some memoization (no digestion is computed
 twice).</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>construct_id</strong></p>
-<blockquote>
-<div><p>ID of the construct as it appears in this object’
+<dd class="field-odd"><dl class="simple">
+<dt><strong>construct_id</strong></dt><dd><p>ID of the construct as it appears in this object’
 <code class="docutils literal notranslate"><span class="pre">constructs_records</span></code>.</p>
-</div></blockquote>
-<p><strong>digestion</strong></p>
-<blockquote>
-<div><p>For instance <code class="docutils literal notranslate"><span class="pre">('BamHI',</span> <span class="pre">'XbaI')</span></code></p>
-</div></blockquote>
+</dd>
+<dt><strong>digestion</strong></dt><dd><p>For instance <code class="docutils literal notranslate"><span class="pre">('BamHI',</span> <span class="pre">'XbaI')</span></code></p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.ClonesObservations.identify_all_clones">
-<code class="sig-name descname">identify_all_clones</code><span class="sig-paren">(</span><em class="sig-param">relative_tolerance=0.05</em>, <em class="sig-param">min_band_cutoff=None</em>, <em class="sig-param">max_band_cutoff=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.identify_all_clones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.identify_all_clones" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">identify_all_clones</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">relative_tolerance</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">min_band_cutoff</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_band_cutoff</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.identify_all_clones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.identify_all_clones" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">{clone:</span> <span class="pre">{construct_id:</span> <span class="pre">CloneValidation}}</span></code> for all clones.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>relative_tolerance</strong></p>
-<blockquote>
-<div><p>Tolerance, as a ratio of the full ladder span. If =0.1, then the
+<dd class="field-odd"><dl class="simple">
+<dt><strong>relative_tolerance</strong></dt><dd><p>Tolerance, as a ratio of the full ladder span. If =0.1, then the
 discrepancy will have a value of 1 when a band’s nearest
 correspondent in the other pattern is more that 10% of the ladder
 span apart.</p>
-</div></blockquote>
-<p><strong>min_band_cutoff</strong></p>
-<blockquote>
-<div><p>Discrepancies involving at least one band below this minimal band
+</dd>
+<dt><strong>min_band_cutoff</strong></dt><dd><p>Discrepancies involving at least one band below this minimal band
 size will be ignored. By default, it will be set to the smallest
 band size in the ladder.</p>
-</div></blockquote>
-<p><strong>max_band_cutoff</strong></p>
-<blockquote>
-<div><p>Discrepancies involving at least one band above this minimal band
+</dd>
+<dt><strong>max_band_cutoff</strong></dt><dd><p>Discrepancies involving at least one band above this minimal band
 size will be ignored. By default, it will be set to the smallest
 band size in the ladder.</p>
-</div></blockquote>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.ClonesObservations.identify_bad_parts">
-<em class="property">static </em><code class="sig-name descname">identify_bad_parts</code><span class="sig-paren">(</span><em class="sig-param">validations</em>, <em class="sig-param">constructs_parts</em>, <em class="sig-param">constructs_records=None</em>, <em class="sig-param">report_target=None</em>, <em class="sig-param">extra_failures=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.identify_bad_parts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.identify_bad_parts" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">identify_bad_parts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">validations</span></em>, <em class="sig-param"><span class="n">constructs_parts</span></em>, <em class="sig-param"><span class="n">constructs_records</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">report_target</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">extra_failures</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.identify_bad_parts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.identify_bad_parts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Identifies parts associated with failure in the validations.</p>
 <p>Uses the Saboteurs library:
 <a class="reference external" href="https://github.com/Edinburgh-Genome-Foundry/saboteurs">https://github.com/Edinburgh-Genome-Foundry/saboteurs</a></p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>validations</strong></p>
-<blockquote>
-<div><p>validations results</p>
-</div></blockquote>
-<p><strong>constructs_parts</strong></p>
-<blockquote>
-<div><p>Either a dict {construct_id: [list, of, part, names]} or a function
+<dd class="field-odd"><dl class="simple">
+<dt><strong>validations</strong></dt><dd><p>validations results</p>
+</dd>
+<dt><strong>constructs_parts</strong></dt><dd><p>Either a dict {construct_id: [list, of, part, names]} or a function
 (biopython_record =&gt; [list, of, part, names])</p>
-</div></blockquote>
-<p><strong>report_target</strong></p>
-<blockquote>
-<div><p>Can be a path to file or file-like object where to write a PDF
+</dd>
+<dt><strong>report_target</strong></dt><dd><p>Can be a path to file or file-like object where to write a PDF
 report. Can also be “&#64;memory”, at which case the raw binary PDF
 data is returned</p>
-</div></blockquote>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>analysis, pdf_data</p>
-<blockquote>
-<div><p>Where <code class="docutils literal notranslate"><span class="pre">analysis</span></code> is the result of sabotage analysis (see the
+<dd class="field-even"><dl class="simple">
+<dt>analysis, pdf_data</dt><dd><p>Where <code class="docutils literal notranslate"><span class="pre">analysis</span></code> is the result of sabotage analysis (see the
 saboteurs library), and pdf_data is None unless report_target is
 set to “&#64;memory” (see above).</p>
-</div></blockquote>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.ClonesObservations.partial_digests_analysis">
-<code class="sig-name descname">partial_digests_analysis</code><span class="sig-paren">(</span><em class="sig-param">relative_tolerance=0.05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.partial_digests_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.partial_digests_analysis" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">partial_digests_analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">relative_tolerance</span><span class="o">=</span><span class="default_value">0.05</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.partial_digests_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.partial_digests_analysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute good clones under different partial digest assumptions.</p>
 <p>Returns a dictionnary <code class="docutils literal notranslate"><span class="pre">{partial:</span> <span class="pre">{'valid_clones':</span> <span class="pre">60,</span> <span class="pre">'label':</span> <span class="pre">'x'}}</span></code>
 where for a given scenario <code class="docutils literal notranslate"><span class="pre">partial</span></code> is a tuple of all enzymes
@@ -577,103 +515,89 @@ involved, with partial activity enzymes in parenthesis.</p>
 <code class="docutils literal notranslate"><span class="pre">.plot_partial_digests_analysis</span></code> method for plotting</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.ClonesObservations.plot_all_validations_patterns">
-<code class="sig-name descname">plot_all_validations_patterns</code><span class="sig-paren">(</span><em class="sig-param">validations</em>, <em class="sig-param">target=None</em>, <em class="sig-param">per_digestion_discrepancy=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.plot_all_validations_patterns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.plot_all_validations_patterns" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot_all_validations_patterns</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">validations</span></em>, <em class="sig-param"><span class="n">target</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">per_digestion_discrepancy</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.plot_all_validations_patterns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.plot_all_validations_patterns" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a Graphic report of the gel validation.</p>
 <p>The report displays the patterns, with green and red backgrounds
 depending on whether they passed the validation test.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>target_file</strong></p>
-<blockquote>
-<div><p>File object or file path where to save the figure. If provided, the
+<dd class="field-odd"><dl class="simple">
+<dt><strong>target_file</strong></dt><dd><p>File object or file path where to save the figure. If provided, the
 function returns none, else the function returns the axes array of
 the final figure</p>
-</div></blockquote>
-<p><strong>relative_tolerance</strong></p>
-<blockquote>
-<div><p>Relative error tolerated on each band for the ovserved patterns to
+</dd>
+<dt><strong>relative_tolerance</strong></dt><dd><p>Relative error tolerated on each band for the ovserved patterns to
 be considered similar to the expected patterns.</p>
-</div></blockquote>
-<p><strong>min_band_cutoff</strong></p>
-<blockquote>
-<div><p>Bands with a size below this value will not be considered</p>
-</div></blockquote>
-<p><strong>max_band_cutoff</strong></p>
-<blockquote>
-<div><p>Bands with a size above this value will not be considered</p>
-</div></blockquote>
+</dd>
+<dt><strong>min_band_cutoff</strong></dt><dd><p>Bands with a size below this value will not be considered</p>
+</dd>
+<dt><strong>max_band_cutoff</strong></dt><dd><p>Bands with a size above this value will not be considered</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.ClonesObservations.plot_partial_digests_analysis">
-<em class="property">static </em><code class="sig-name descname">plot_partial_digests_analysis</code><span class="sig-paren">(</span><em class="sig-param">analysis_results</em>, <em class="sig-param">ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.plot_partial_digests_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.plot_partial_digests_analysis" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">plot_partial_digests_analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">analysis_results</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.plot_partial_digests_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.plot_partial_digests_analysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot partial digests analysis results.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>analysis_results</strong></p>
-<blockquote>
-<div><p>results from <code class="docutils literal notranslate"><span class="pre">ClonesObservations.partial_digest_analysis</span></code></p>
-</div></blockquote>
-<p><strong>ax</strong></p>
-<blockquote>
-<div><p>A Matplotlib ax. If none, one is created and returned at the end.</p>
-</div></blockquote>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>analysis_results</strong></dt><dd><p>results from <code class="docutils literal notranslate"><span class="pre">ClonesObservations.partial_digest_analysis</span></code></p>
+</dd>
+<dt><strong>ax</strong></dt><dd><p>A Matplotlib ax. If none, one is created and returned at the end.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.ClonesObservations.plot_validations_plate_map">
-<code class="sig-name descname">plot_validations_plate_map</code><span class="sig-paren">(</span><em class="sig-param">validations</em>, <em class="sig-param">target=None</em>, <em class="sig-param">ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.plot_validations_plate_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.plot_validations_plate_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot_validations_plate_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">validations</span></em>, <em class="sig-param"><span class="n">target</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.plot_validations_plate_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.plot_validations_plate_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a map of the plate with passing/failing wells in green/red.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.ClonesObservations.validate_all_clones">
-<code class="sig-name descname">validate_all_clones</code><span class="sig-paren">(</span><em class="sig-param">relative_tolerance=0.05</em>, <em class="sig-param">min_band_cutoff=None</em>, <em class="sig-param">max_band_cutoff=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.validate_all_clones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.validate_all_clones" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">validate_all_clones</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">relative_tolerance</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">min_band_cutoff</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_band_cutoff</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.validate_all_clones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.validate_all_clones" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">{clone:</span> <span class="pre">CloneValidation}</span></code> for all clones.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.ClonesObservations.validations_summary">
-<code class="sig-name descname">validations_summary</code><span class="sig-paren">(</span><em class="sig-param">validations</em>, <em class="sig-param">sort_clones_by_score=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.validations_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.validations_summary" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">validations_summary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">validations</span></em>, <em class="sig-param"><span class="n">sort_clones_by_score</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.validations_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.validations_summary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">{construct_id:</span> <span class="pre">[CloneValidation,</span> <span class="pre">...]}</span></code>.</p>
 <p>To each construct corresponds a list of the validation of all clones
 associated with that construct, from the best-scoring to the
 least-scoring.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bandwitch.ClonesObservations.ClonesObservations.write_identification_report">
-<code class="sig-name descname">write_identification_report</code><span class="sig-paren">(</span><em class="sig-param">target_file=None</em>, <em class="sig-param">relative_tolerance=0.05</em>, <em class="sig-param">min_band_cutoff=None</em>, <em class="sig-param">max_band_cutoff=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.write_identification_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.write_identification_report" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_identification_report</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">relative_tolerance</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">min_band_cutoff</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_band_cutoff</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/ClonesObservations/ClonesObservations.html#ClonesObservations.write_identification_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.ClonesObservations.ClonesObservations.write_identification_report" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a Graphic report of the gel validation.</p>
 <p>The report displays the patterns, with green and red backgrounds
 depending on whether they passed the validation test.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>target_file</strong></p>
-<blockquote>
-<div><p>File object or file path where to save the figure. If provided, the
+<dd class="field-odd"><dl class="simple">
+<dt><strong>target_file</strong></dt><dd><p>File object or file path where to save the figure. If provided, the
 function returns none, else the function returns the axes array of
 the final figure</p>
-</div></blockquote>
-<p><strong>relative_tolerance</strong></p>
-<blockquote>
-<div><p>Relative error tolerated on each band for the ovserved patterns to
+</dd>
+<dt><strong>relative_tolerance</strong></dt><dd><p>Relative error tolerated on each band for the ovserved patterns to
 be considered similar to the expected patterns.</p>
-</div></blockquote>
-<p><strong>min_band_cutoff</strong></p>
-<blockquote>
-<div><p>Bands with a size below this value will not be considered</p>
-</div></blockquote>
-<p><strong>max_band_cutoff</strong></p>
-<blockquote>
-<div><p>Bands with a size above this value will not be considered</p>
-</div></blockquote>
+</dd>
+<dt><strong>min_band_cutoff</strong></dt><dd><p>Bands with a size below this value will not be considered</p>
+</dd>
+<dt><strong>max_band_cutoff</strong></dt><dd><p>Bands with a size above this value will not be considered</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -684,22 +608,22 @@ be considered similar to the expected patterns.</p>
 </div>
 <div class="section" id="module-bandwitch.Ladder">
 <span id="ladder"></span><h2>Ladder<a class="headerlink" href="#module-bandwitch.Ladder" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="bandwitch.Ladder.Ladder">
-<em class="property">class </em><code class="sig-prename descclassname">bandwitch.Ladder.</code><code class="sig-name descname">Ladder</code><span class="sig-paren">(</span><em class="sig-param">bands</em>, <em class="sig-param">name=None</em>, <em class="sig-param">infos=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/Ladder/Ladder.html#Ladder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.Ladder.Ladder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">bandwitch.Ladder.</code><code class="sig-name descname">Ladder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bands</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">infos</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/Ladder/Ladder.html#Ladder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.Ladder.Ladder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to represent gel ladders. These ladders serve as a scale for
 plotting any other gel simulation.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>bands</strong></p>
-<blockquote>
-<div><p>A dictionnary of the form {dna_size: migration distance}</p>
-</div></blockquote>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>bands</strong></dt><dd><p>A dictionnary of the form {dna_size: migration distance}</p>
 </dd>
 </dl>
-<dl class="method">
+</dd>
+</dl>
+<dl class="py method">
 <dt id="bandwitch.Ladder.Ladder.dna_size_to_migration">
-<code class="sig-name descname">dna_size_to_migration</code><span class="sig-paren">(</span><em class="sig-param">dna_sizes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/Ladder/Ladder.html#Ladder.dna_size_to_migration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.Ladder.Ladder.dna_size_to_migration" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dna_size_to_migration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dna_sizes</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/Ladder/Ladder.html#Ladder.dna_size_to_migration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.Ladder.Ladder.dna_size_to_migration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the migration distances for the given dna sizes</p>
 </dd></dl>
 
@@ -708,86 +632,67 @@ plotting any other gel simulation.</p>
 </div>
 <div class="section" id="bands-predictions">
 <h2>Bands Predictions<a class="headerlink" href="#bands-predictions" title="Permalink to this headline">¶</a></h2>
-
-            <style>
-            /* mermaid issue 527 workaround */
-            .section {
-                opacity: 1.0 !important;
-            }
-            </style>
-            <div class="mermaid">
+<div class="mermaid">
             graph TD
   pcomp[_compute_digestion_bands] --&gt; pr[predict_digestion_bands]
   pcomp --&gt; pds[predict_sequences_digestions]
         </div><span class="target" id="module-bandwitch.bands_predictions"></span><p>Module for digestion pattern prediction.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="bandwitch.bands_predictions.compute_sequence_digestions_migrations">
-<code class="sig-prename descclassname">bandwitch.bands_predictions.</code><code class="sig-name descname">compute_sequence_digestions_migrations</code><span class="sig-paren">(</span><em class="sig-param">sequences_digestions</em>, <em class="sig-param">ladder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/bands_predictions.html#compute_sequence_digestions_migrations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.bands_predictions.compute_sequence_digestions_migrations" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bandwitch.bands_predictions.</code><code class="sig-name descname">compute_sequence_digestions_migrations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sequences_digestions</span></em>, <em class="sig-param"><span class="n">ladder</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/bands_predictions.html#compute_sequence_digestions_migrations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.bands_predictions.compute_sequence_digestions_migrations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a ‘migration’ field to the data in sequences_digestions.</p>
 <p><code class="docutils literal notranslate"><span class="pre">sequences_digestions</span></code> is a dict <code class="docutils literal notranslate"><span class="pre">{seq:</span> <span class="pre">digestions_data}</span></code>
 where <code class="docutils literal notranslate"><span class="pre">digestions_data</span></code> is a result of <code class="docutils literal notranslate"><span class="pre">predict_sequence_digestions</span></code>,
 <code class="docutils literal notranslate"><span class="pre">ladder</span></code> is a Ladder object.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="bandwitch.bands_predictions.predict_digestion_bands">
-<code class="sig-prename descclassname">bandwitch.bands_predictions.</code><code class="sig-name descname">predict_digestion_bands</code><span class="sig-paren">(</span><em class="sig-param">sequence</em>, <em class="sig-param">enzymes</em>, <em class="sig-param">linear=True</em>, <em class="sig-param">partial_cutters=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/bands_predictions.html#predict_digestion_bands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.bands_predictions.predict_digestion_bands" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bandwitch.bands_predictions.</code><code class="sig-name descname">predict_digestion_bands</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sequence</span></em>, <em class="sig-param"><span class="n">enzymes</span></em>, <em class="sig-param"><span class="n">linear</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">partial_cutters</span><span class="o">=</span><span class="default_value">()</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/bands_predictions.html#predict_digestion_bands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.bands_predictions.predict_digestion_bands" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the band sizes from digestion by all enzymes at once.</p>
 <p>Returns a list of bands sizes sorted from smallest to largest</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>sequence</strong></p>
-<blockquote>
-<div><p>Sequence to be digested. Either a string (“ATGC…”) or
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sequence</strong></dt><dd><p>Sequence to be digested. Either a string (“ATGC…”) or
 a BioPython <cite>Seq</cite></p>
-</div></blockquote>
-<p><strong>enzymes</strong></p>
-<blockquote>
-<div><p>list of all enzymes placed at the same time in the digestion
+</dd>
+<dt><strong>enzymes</strong></dt><dd><p>list of all enzymes placed at the same time in the digestion
 mix e.g. <cite>[“EcoRI”, “BamHI”]</cite></p>
-</div></blockquote>
-<p><strong>linear</strong></p>
-<blockquote>
-<div><p>True if the DNA fragment is linearized, False if it is circular</p>
-</div></blockquote>
-<p><strong>partial_cutters</strong></p>
-<blockquote>
-<div><p>List of enzymes that are tired or inhibited would randomly miss
+</dd>
+<dt><strong>linear</strong></dt><dd><p>True if the DNA fragment is linearized, False if it is circular</p>
+</dd>
+<dt><strong>partial_cutters</strong></dt><dd><p>List of enzymes that are tired or inhibited would randomly miss
 some sites, thus creating extra bands in the final digest.</p>
-</div></blockquote>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="bandwitch.bands_predictions.predict_sequence_digestions">
-<code class="sig-prename descclassname">bandwitch.bands_predictions.</code><code class="sig-name descname">predict_sequence_digestions</code><span class="sig-paren">(</span><em class="sig-param">sequence</em>, <em class="sig-param">enzymes</em>, <em class="sig-param">linear=True</em>, <em class="sig-param">max_enzymes_per_digestion=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/bands_predictions.html#predict_sequence_digestions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.bands_predictions.predict_sequence_digestions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bandwitch.bands_predictions.</code><code class="sig-name descname">predict_sequence_digestions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sequence</span></em>, <em class="sig-param"><span class="n">enzymes</span></em>, <em class="sig-param"><span class="n">linear</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">max_enzymes_per_digestion</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bandwitch/bands_predictions.html#predict_sequence_digestions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bandwitch.bands_predictions.predict_sequence_digestions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict giving bands sizes pattern for all possible digestions.</p>
 <p>The digestions, double-digestions, etc. are listed and for each the
 sequence band sizes are computed.</p>
 <p>The result if of the form <code class="docutils literal notranslate"><span class="pre">{digestion:</span> <span class="pre">{'cuts':</span> <span class="pre">[],</span> <span class="pre">'bands':</span> <span class="pre">[]}}</span></code>
 Where <code class="docutils literal notranslate"><span class="pre">digestion</span></code> is a tuple of enzyme names e.g. <code class="docutils literal notranslate"><span class="pre">('EcoRI',</span> <span class="pre">'XbaI')</span></code>,
 ‘cuts’ is a list of cuts locations, ‘bands’ is a list of bands sizes</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>sequence</strong></p>
-<blockquote>
-<div><p>The sequence to be digested</p>
-</div></blockquote>
-<p><strong>enzymes</strong></p>
-<blockquote>
-<div><p>List of all enzymes to be considered</p>
-</div></blockquote>
-<p><strong>max_enzymes_per_digestion</strong></p>
-<blockquote>
-<div><p>Maximum number of enzymes allowed in one digestion</p>
-</div></blockquote>
-<p><strong>bands_to_migration</strong></p>
-<blockquote>
-<div><p>Function associating a migration distance to a band size. If provided,
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sequence</strong></dt><dd><p>The sequence to be digested</p>
+</dd>
+<dt><strong>enzymes</strong></dt><dd><p>List of all enzymes to be considered</p>
+</dd>
+<dt><strong>max_enzymes_per_digestion</strong></dt><dd><p>Maximum number of enzymes allowed in one digestion</p>
+</dd>
+<dt><strong>bands_to_migration</strong></dt><dd><p>Function associating a migration distance to a band size. If provided,
 each digestion will have a <code class="docutils literal notranslate"><span class="pre">'migration'</span></code> field (list of migration
 distances) in addition to ‘cuts’ and ‘bands’.</p>
-</div></blockquote>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -801,12 +706,12 @@ distances) in addition to ‘cuts’ and ‘bands’.</p>
             <div class="inner"><ul class="page-nav">
   <li class="prev">
     <a href="index.html"
-       title="previous chapter">← Bandwitch</a>
+       title="previous chapter">← BandVitch</a>
   </li>
 </ul><div class="footer" role="contentinfo">
       &#169; Copyright 2019, Edinburgh Genome Foundry.
     <br>
-    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.2.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
 </div>
             </div>
           </div>
