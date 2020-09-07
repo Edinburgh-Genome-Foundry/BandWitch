@@ -5,7 +5,7 @@
     <br /><br />
     </p>
 
-Bandwitch
+BandVitch
 =========
 
 .. image:: https://travis-ci.org/Edinburgh-Genome-Foundry/BandWitch.svg?branch=master
@@ -14,29 +14,29 @@ Bandwitch
 .. image:: https://coveralls.io/repos/github/Edinburgh-Genome-Foundry/BandWitch/badge.svg?branch=master
    :target: https://coveralls.io/github/Edinburgh-Genome-Foundry/BandWitch?branch=master
 
-Bandwitch (full documentation `here <https://edinburgh-genome-foundry.github.io/BandWitch/>`_)
+BandWitch (full documentation `here <https://edinburgh-genome-foundry.github.io/BandWitch/>`_)
 is a Python library for the planning and analysis of restriction
-experiments in DNA assembly operations. Bandwitch implements method to select the best enzyme(s) to validate or identify DNA assemblies. It also provides report generation methods to automatically validate/identify assemblies from experimental data.
+experiments in DNA assembly operations. BandWitch implements methods for selecting the best enzyme(s) to validate or identify DNA assemblies. It also provides report generation methods to automatically validate/identify assemblies from experimental data.
 
-You can try BandWitch's enzyme suggestion feature in `this web demo <https://cuba.genomefoundry.org/select_digestions>`_, and the sequence validation (from AATI fragment analyzer files) in `this other demo <http://cuba.genomefoundry.org/analyze-digests>`_
+You can try BandWitch's enzyme suggestion feature in `this web demo <https://cuba.genomefoundry.org/select_digestions>`_, and the sequence validation (from AATI fragment analyzer files) in `this other demo <http://cuba.genomefoundry.org/analyze-digests>`_.
 
 Installation
--------------
+------------
 
-You can install DnaCauldron through PIP
+You can install BandWitch through PIP:
 
 
 .. code:: shell
 
     sudo pip install bandwitch
 
-On Ubuntu at least, you may need to install libblas first:
+On Ubuntu, you may need to install libblas first:
 
 .. code::
 
     sudo apt-get install libblas-dev liblapack-dev
 
-Alternatively, you can unzip the sources in a folder and type
+Alternatively, you can unzip the source files in a folder and type:
 
 .. code:: shell
 
@@ -49,7 +49,7 @@ Enzyme selection with BandWitch
 In the following examples, we assume that we have a set of 12 constructs which we will
 need to either validate (i.e. we digest these constructs and compare each pattern
 with the expected pattern for that construct) or identify (i.e. we will digest an
-a-priori unknown construct and use the migration patterns to un-ambiguously
+*a priori* unknown construct and use the migration patterns to unambiguously
 identify each construct among the 12 possible candidates).
 
 For validation purposes, the difficulty is to find a digestion that will produce
@@ -61,8 +61,8 @@ candidates.
 Every time when the problem cannot be solved with a single digestion, BandWitch
 can propose 2 or 3 digestions which collectively solve the problem.
 
-**Important:** when providing BandWitch with a record, make sure to set the
-topology, defined by ``record.annotations['topology'] = 'linear'|'circular'``.
+**Important:** when providing BandWitch with a Biopython record, make sure to set the
+topology, defined by: ``record.annotations['topology'] = 'linear'|'circular'``
 
 
 Finding enzymes that "work well" for many constructs
@@ -78,8 +78,8 @@ Here is the code to select enzymes that will produce nice patterns for all const
   enzymes = ["EcoRI", "BamHI", "XhoI", "EcoRV", "SpeI", "XbaI",
              "NotI", "SacI", "SmaI", "HindIII", "PstI"]
   sequences = [
-      load_record(genbank_file_paidname=f, topology='circular')
-      for genbank_file_path in some_list_of_files)
+      load_record(record_file=f, topology='circular')
+      for f in some_list_of_genbank_files
   ]
 
   # SELECT THE BEST SINGLE DIGESTION WITH AT MOST ENZYMES
@@ -103,7 +103,7 @@ Result:
    :align: center
 
 Finding enzymes that will differentiate many constructs
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To select enzymes that will produce **different patterns for each construct, for identification:**
 
@@ -116,8 +116,8 @@ To select enzymes that will produce **different patterns for each construct, for
     # DEFINE SEQUENCES AND ENZYME SET (6-CUTTERS WITH >3 COMMERCIAL PROVIDERS)
     enzymes = list_common_enzymes(site_length=(6,), min_suppliers=3)
     sequences = [
-        load_record(genbank_file_path, id=f)
-        for genbank_file_path in some_list_of_files)
+        load_record(genbank_file_path, topology='circular')
+        for genbank_file_path in some_list_of_genbank_files
     ]
 
     # SELECT THE BEST DIGESTION PAIRS (AT MOST 1 ENZYME PER DIGESTION)
@@ -146,15 +146,15 @@ Result:
 
 In the result above, each construct has a unique "fingerprint". Assuming that you
 have an unlabelled DNA sample which could be any of these assemblies, then simply
-digesting the sample with MspA1I and BsmI will give you 2 pattern which collectively
+digesting the sample with MspA1I and BsmI will give you 2 patterns which collectively
 will correspond to a unique assembly.
 
 Usage: Construct validation or identification from experimental data
----------------------------------------------------------------------
+--------------------------------------------------------------------
 
-This part is still under construction.
+*This part is still under construction.*
 
-Bandwitch can process output files from an automated fragment analyzer and produce
+BandWitch can process output files from an automated fragment analyzer and produce
 informative reports as illustrated below:
 
 .. image:: https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/BandWitch/master/docs/_static/images/bands_validation.png
@@ -164,12 +164,12 @@ informative reports as illustrated below:
 
 
 License = MIT
---------------
+-------------
 
-BandWitch is an open-source software originally written at the `Edinburgh Genome Foundry <http://edinburgh-genome-foundry.github.io/home.html>`_ by `Zulko <https://github.com/Zulko>`_ and `released on Github <https://github.com/Edinburgh-Genome-Foundry/Primavera>`_ under the MIT licence (¢ Edinburg Genome Foundry). Everyone is welcome to contribute !
+BandWitch is an open-source software originally written at the `Edinburgh Genome Foundry <http://edinburgh-genome-foundry.github.io/home.html>`_ by `Zulko <https://github.com/Zulko>`_ and `released on Github <https://github.com/Edinburgh-Genome-Foundry/BandWitch>`_ under the MIT license (Copyright 2017 Edinburgh Genome Foundry). Everyone is welcome to contribute!
 
 More biology software
------------------------
+---------------------
 
 .. image:: https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/Edinburgh-Genome-Foundry.github.io/master/static/imgs/logos/egf-codon-horizontal.png
    :target: https://edinburgh-genome-foundry.github.io/

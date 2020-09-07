@@ -6,7 +6,13 @@ import numpy as np
 from Bio.Seq import Seq
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
-from Bio.Alphabet import DNAAlphabet
+
+try:
+    # Biopython <1.78
+    from Bio.Alphabet import DNAAlphabet
+except ImportError:
+    # Biopython >=1.78
+    has_dna_alphabet = False
 from snapgene_reader import snapgene_file_to_seqrecord
 
 
@@ -26,9 +32,8 @@ def set_record_topology(record, topology):
     ]
     if topology not in valid_topologies:
         raise ValueError(
-            "topology should be one of %s (was %s)." % (
-                ", ".join(valid_topologies), topology
-            )
+            "topology should be one of %s (was %s)."
+            % (", ".join(valid_topologies), topology)
         )
     annotations = record.annotations
     default_prefix = "default_to_"
@@ -116,11 +121,17 @@ def sequence_to_biopython_record(
     sequence, id="<unknown id>", name="<unknown name>", features=()
 ):
     """Return a SeqRecord of the sequence, ready to be Genbanked."""
+    if has_dna_alphabet:
+        seq = Seq(sequence, alphabet=DNAAlphabet())
+    else:
+        seq = Seq(sequence)
+
     return SeqRecord(
-        Seq(sequence, alphabet=DNAAlphabet()),
+        seq=seq,
         id=id,
         name=name,
         features=list(features),
+        annotations={"molecule_type": "DNA"},
     )
 
 
