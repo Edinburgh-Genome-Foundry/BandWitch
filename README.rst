@@ -5,7 +5,7 @@
     <br /><br />
     </p>
 
-BandVitch
+BandWitch
 =========
 
 .. image:: https://travis-ci.org/Edinburgh-Genome-Foundry/BandWitch.svg?branch=master
@@ -28,7 +28,7 @@ You can install BandWitch through PIP:
 
 .. code:: shell
 
-    sudo pip install bandwitch
+    pip install bandwitch
 
 On Ubuntu, you may need to install libblas first:
 
@@ -128,7 +128,6 @@ To select enzymes that will produce **different patterns for each construct, for
     score, selected_digestions = problem.select_digestions(max_digestions=2)
 
     # GENERATE A FIGURE OF THE BAND PATTERNS
-
     problem.plot_digestions(
         selected_digestions,
         patterns_props={'label_fontdict': {'rotation': 35}},
