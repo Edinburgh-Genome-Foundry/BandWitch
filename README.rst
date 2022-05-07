@@ -8,9 +8,10 @@
 BandWitch
 =========
 
-.. image:: https://travis-ci.org/Edinburgh-Genome-Foundry/BandWitch.svg?branch=master
-   :target: https://travis-ci.org/Edinburgh-Genome-Foundry/BandWitch
-   :alt: Travis CI build status
+.. image:: https://github.com/Edinburgh-Genome-Foundry/BandWitch/actions/workflows/build.yml/badge.svg
+    :target: https://github.com/Edinburgh-Genome-Foundry/BandWitch/actions/workflows/build.yml
+    :alt: GitHub CI build status
+
 .. image:: https://coveralls.io/repos/github/Edinburgh-Genome-Foundry/BandWitch/badge.svg?branch=master
    :target: https://coveralls.io/github/Edinburgh-Genome-Foundry/BandWitch?branch=master
 
@@ -40,7 +41,7 @@ Alternatively, you can unzip the source files in a folder and type:
 
 .. code:: shell
 
-    sudo python setup.py install
+    python setup.py install
 
 
 Enzyme selection with BandWitch
