@@ -21,13 +21,9 @@ Infos
 
    pip install bandwitch
 
-**Web documentation:**
+**Web documentation:** `<https://edinburgh-genome-foundry.github.io/BandWitch/>`_
 
-`<https://edinburgh-genome-foundry.github.io/BandWitch/>`_
-
-**Github Page:**
-
-`<https://github.com/Edinburgh-Genome-Foundry/BandWitch>`_
+**Github page:** `<https://github.com/Edinburgh-Genome-Foundry/BandWitch>`_
 
 **Live demo:**
 
@@ -35,7 +31,10 @@ Enzyme suggestion: `<http://cuba.genomefoundry.org/digestion-selector>`_
 
 Fragment analysis validation: `<http://cuba.genomefoundry.org/analyze-digests>`_
 
-**License:** MIT, Copyright Edinburgh Genome Foundry
+**License:** MIT
+
+Copyright 2017 Edinburgh Genome Foundry, University of Edinburgh
+
 
 Screenshots
 -----------
@@ -53,7 +52,7 @@ Enzymes selected by bandwitch to obtain **significant differences** between the 
    :align: center
 
 More biology software
------------------------
+---------------------
 
 .. image:: https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/Edinburgh-Genome-Foundry.github.io/master/static/imgs/logos/egf-codon-horizontal.png
    :target: https://edinburgh-genome-foundry.github.io/

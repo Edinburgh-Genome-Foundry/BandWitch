@@ -37,12 +37,6 @@ On Ubuntu, you may need to install libblas first:
 
     sudo apt-get install libblas-dev liblapack-dev
 
-Alternatively, you can unzip the source files in a folder and type:
-
-.. code:: shell
-
-    python setup.py install
-
 
 Enzyme selection with BandWitch
 -------------------------------
@@ -166,7 +160,11 @@ informative reports as illustrated below:
 License = MIT
 -------------
 
-BandWitch is an open-source software originally written at the `Edinburgh Genome Foundry <http://edinburgh-genome-foundry.github.io/home.html>`_ by `Zulko <https://github.com/Zulko>`_ and `released on Github <https://github.com/Edinburgh-Genome-Foundry/BandWitch>`_ under the MIT license (Copyright 2017 Edinburgh Genome Foundry). Everyone is welcome to contribute!
+BandWitch is an open-source software originally written at the
+`Edinburgh Genome Foundry <http://edinburgh-genome-foundry.github.io/home.html>`_
+by `Zulko <https://github.com/Zulko>`_ and `released on Github <https://github.com/Edinburgh-Genome-Foundry/BandWitch>`_
+under the MIT license (Copyright 2017 Edinburgh Genome Foundry, University of Edinburgh).
+Everyone is welcome to contribute!
 
 More biology software
 ---------------------
