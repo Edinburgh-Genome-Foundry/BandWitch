@@ -10,9 +10,7 @@ class MyIdealDigestionsProblem(IdealDigestionsProblem):
         min_migration = 0.7 * self.migration_min + 0.3 * self.migration_max
         max_migration = 0.3 * self.migration_min + 0.7 * self.migration_max
         bands_in_central_zone = [
-            band
-            for band in migration
-            if min_migration <= band <= max_migration
+            band for band in migration if min_migration <= band <= max_migration
         ]
         return 2 <= len(bands_in_central_zone) <= 3
 
