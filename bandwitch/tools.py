@@ -1,4 +1,5 @@
 """Collection of useful methods and solvers for BandWitch."""
+
 import itertools
 import os
 

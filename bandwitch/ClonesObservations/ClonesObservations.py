@@ -1,4 +1,5 @@
 """Classes for parsing and analyzis of DNA migration data."""
+
 from collections import OrderedDict, Counter
 import matplotlib.pyplot as plt
 from io import BytesIO
@@ -61,9 +62,11 @@ class ClonesObservations:
                     (construct_name, record)
                     for construct_name, record in constructs_records.items()
                 ],
-                key=lambda cst: +100000
-                if cst[0] not in clones_constructs
-                else clones_constructs.index(cst[0]),
+                key=lambda cst: (
+                    +100000
+                    if cst[0] not in clones_constructs
+                    else clones_constructs.index(cst[0])
+                ),
             )
         )
         self.constructs_digestions = {ct: {} for ct in constructs_records}
@@ -93,9 +96,7 @@ class ClonesObservations:
                 str(construct_record.seq),
                 linear=record_is_linear(construct_record, default=True),
                 enzymes=[
-                    enzyme
-                    for enzyme in digestion
-                    if enzyme not in self.partial_cutters
+                    enzyme for enzyme in digestion if enzyme not in self.partial_cutters
                 ],
                 partial_cutters=self.partial_cutters,
             )
@@ -124,9 +125,7 @@ class ClonesObservations:
                 (
                     clone_name,
                     clone.validate_bands(
-                        bands_by_digestion=self.get_clone_digestion_bands(
-                            clone
-                        ),
+                        bands_by_digestion=self.get_clone_digestion_bands(clone),
                         relative_tolerance=relative_tolerance,
                         min_band_cutoff=min_band_cutoff,
                         max_band_cutoff=max_band_cutoff,
@@ -198,9 +197,7 @@ class ClonesObservations:
             results[construct_id].append(validation)
         if sort_clones_by_score:
             for cst_id, validations in results.items():
-                results[cst_id] = sorted(
-                    validations, key=lambda v: v.max_discrepancy
-                )
+                results[cst_id] = sorted(validations, key=lambda v: v.max_discrepancy)
         return results
 
     def plot_validations_plate_map(self, validations, target=None, ax=None):
@@ -222,15 +219,11 @@ class ClonesObservations:
                     constructs_colors[construct] = (0.4, 0.4, 0.76, alpha)
                 well.data.bg_color = constructs_colors[construct]
                 well.data.pass_color = (
-                    (0.43, 0.92, 0.49)
-                    if validation.passes
-                    else (0.91, 0.43, 0.43)
+                    (0.43, 0.92, 0.49) if validation.passes else (0.91, 0.43, 0.43)
                 )
         bg_plotter = PlateColorsPlotter(lambda w: w.data.bg_color)
         ax, _ = bg_plotter.plot_plate(plate, figsize=(10, 5), ax=ax)
-        pass_plotter = PlateColorsPlotter(
-            lambda w: w.data.pass_color, well_radius=250
-        )
+        pass_plotter = PlateColorsPlotter(lambda w: w.data.pass_color, well_radius=250)
         pass_plotter.plot_plate(plate, ax=ax)
         if target is not None:
             ax.figure.savefig(target, bbox_inches="tight")
@@ -308,9 +301,9 @@ class ClonesObservations:
 
         summary = self.validations_summary(validations)
         max_x = (
-            Counter(
-                [clone.construct_id for clone in self.clones.values()]
-            ).most_common(1)[0][1]
+            Counter([clone.construct_id for clone in self.clones.values()]).most_common(
+                1
+            )[0][1]
             + 2
         )
         digestions_by_construct = {construct: [] for construct in summary}
@@ -324,9 +317,7 @@ class ClonesObservations:
         pdf_io = BytesIO()
         with PdfPages(pdf_io) as pdf:
             for construct_id, validations in summary.items():
-                ladder = list(validations[0].clone.digestions.values())[
-                    0
-                ].ladder
+                ladder = list(validations[0].clone.digestions.values())[0].ladder
                 digestions = digestions_by_construct[construct_id]
                 band_patterns = OrderedDict()
                 seen_clones = set()
@@ -342,9 +333,7 @@ class ClonesObservations:
                         corner_note="Total: %d bp" % sum(reference_bands),
                         global_bands_props={"label_fontdict": {"size": 5}},
                     )
-                    sorted_bands = sorted(
-                        reference.bands, key=lambda b: -b.dna_size
-                    )
+                    sorted_bands = sorted(reference.bands, key=lambda b: -b.dna_size)
                     for band_name, band in zip("abcdefghijklm", sorted_bands):
                         band.label = band_name
 
@@ -365,9 +354,7 @@ class ClonesObservations:
                         ladder=ladder,
                         label=" + ".join(digestion),
                         ladder_ticks=5,
-                        global_patterns_props={
-                            "label_fontdict": {"rotation": 60}
-                        },
+                        global_patterns_props={"label_fontdict": {"rotation": 60}},
                     )
 
                 digestions = digestions_by_construct[construct_id]
@@ -516,9 +503,7 @@ class ClonesObservations:
             max_band_cutoff=max_band_cutoff,
         )
         L = len(self.constructs_records)
-        max_x = (
-            max(len(measures) for measures in self.observed_bands.values()) + 1
-        )
+        max_x = max(len(measures) for measures in self.observed_bands.values()) + 1
         fig, axes = plt.subplots(L, 1, figsize=(2.2 * max_x, 3 * L))
         axes_validities = zip(axes, bands_validities.items())
         for ax, (construct_id, validities) in axes_validities:
@@ -527,8 +512,7 @@ class ClonesObservations:
                 ladder=self.ladder,
                 label="exp.",
                 background_color="#c6dcff",
-                corner_note="Total: %d bp"
-                % sum(self.expected_bands[construct_id]),
+                corner_note="Total: %d bp" % sum(self.expected_bands[construct_id]),
                 global_bands_props={"label_fontdict": {"size": 5}},
             )
             sorted_bands = sorted(reference.bands, key=lambda b: -b.dna_size)
@@ -542,9 +526,9 @@ class ClonesObservations:
                     ladder=self.ladder,
                     label=measure_name,
                     gel_image=self.migration_images[measure_name],
-                    background_color="#aaffaa"
-                    if validities[measure_name]
-                    else "#ffaaaa",
+                    background_color=(
+                        "#aaffaa" if validities[measure_name] else "#ffaaaa"
+                    ),
                 )
                 for measure_name in self.observed_bands[construct_id]
             ]
@@ -573,12 +557,14 @@ class ClonesObservations:
         digestion=None,
         direction="column",
         ignore_bands_under=None,
-        topology="circular"
+        topology="circular",
     ):
         constructs_records = {
             f._name_no_extension: load_record(
-                f.open("r"), topology=topology, id=f._name_no_extension,
-                file_format='genbank'
+                f.open("r"),
+                topology=topology,
+                id=f._name_no_extension,
+                file_format="genbank",
             )
             for f in flametree.file_tree(records_path)._all_files
         }
@@ -591,8 +577,7 @@ class ClonesObservations:
             [
                 (well.name, well.data.construct)
                 for well in constructs_plate.iter_wells(direction=direction)
-                if "construct" in well.data
-                and str(well.data.construct) != "nan"
+                if "construct" in well.data and str(well.data.construct) != "nan"
             ]
         )
 
@@ -608,11 +593,8 @@ class ClonesObservations:
             digestions_map = OrderedDict(
                 [
                     (well.name, tuple(well.data.digestion.split(", ")))
-                    for well in digestions_plate.iter_wells(
-                        direction=direction
-                    )
-                    if "digestion" in well.data
-                    and str(well.data.digestion) != "nan"
+                    for well in digestions_plate.iter_wells(direction=direction)
+                    if "digestion" in well.data and str(well.data.digestion) != "nan"
                 ]
             )
 
@@ -649,9 +631,7 @@ class ClonesObservations:
         all_enzymes
         results = {}
         for good_cutters in all_subsets(all_enzymes):
-            partial_cutters = tuple(
-                [e for e in all_enzymes if e not in good_cutters]
-            )
+            partial_cutters = tuple([e for e in all_enzymes if e not in good_cutters])
             clones_observations = ClonesObservations(
                 self.clones,
                 self.constructs_records,
@@ -661,8 +641,7 @@ class ClonesObservations:
                 relative_tolerance=relative_tolerance
             )
             label = " + ".join(
-                sorted(good_cutters)
-                + sorted(["(%s)" % c for c in partial_cutters])
+                sorted(good_cutters) + sorted(["(%s)" % c for c in partial_cutters])
             )
             valid_clones = sum([v.passes for name, v in validations.items()])
 
@@ -736,9 +715,7 @@ class ClonesObservations:
             for name, record in obs.constructs_records.items()
         }
         partial_cutters = tuple(
-            enzyme
-            for obs in observations_list
-            for enzyme in obs.partial_cutters
+            enzyme for obs in observations_list for enzyme in obs.partial_cutters
         )
 
         return ClonesObservations(clones, constructs_records, partial_cutters)

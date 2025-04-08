@@ -1,6 +1,5 @@
 """Implements the SeparatingDigestions- and IdealDigestionProbem classes."""
 
-
 from collections import OrderedDict
 from copy import deepcopy
 
@@ -78,8 +77,7 @@ class DigestionProblem(SetCoverProblem):
         if hasattr(sequences, "items"):
             if hasattr(list(sequences.values())[0], "seq"):
                 self.records = {
-                    name: deepcopy(record)
-                    for name, record in sequences.items()
+                    name: deepcopy(record) for name, record in sequences.items()
                 }
                 self.sequences = {
                     name: str(record.seq) for name, record in sequences.items()
@@ -91,12 +89,8 @@ class DigestionProblem(SetCoverProblem):
                     for name, seq in sequences.items()
                 }
         else:
-            self.records = OrderedDict(
-                [(r.id, deepcopy(r)) for r in sequences]
-            )
-            self.sequences = OrderedDict(
-                [(r.id, str(r.seq)) for r in sequences]
-            )
+            self.records = OrderedDict([(r.id, deepcopy(r)) for r in sequences])
+            self.sequences = OrderedDict([(r.id, str(r.seq)) for r in sequences])
         for record in self.records.values():
             set_record_topology(record, topology)
         self.relative_migration_precision = relative_migration_precision
@@ -124,9 +118,7 @@ class DigestionProblem(SetCoverProblem):
         mini, maxi = self.ladder.migration_distances_span
         self.migration_min, self.migration_max = mini, maxi
         self.migration_span = maxi - mini
-        compute_sequence_digestions_migrations(
-            self.sequences_digestions, self.ladder
-        )
+        compute_sequence_digestions_migrations(self.sequences_digestions, self.ladder)
         SetCoverProblem.__init__(
             self,
             elements=self._compute_elements(),
@@ -205,27 +197,19 @@ class DigestionProblem(SetCoverProblem):
             axes = [axes]
         for ax, digestion in zip(axes, digestions):
             bandwagon.BandsPatternsSet(
-                patterns=[
-                    ladder if ax == axes[0] else ladder.modified(label=None)
-                ]
+                patterns=[ladder if ax == axes[0] else ladder.modified(label=None)]
                 + [
                     bandwagon.BandsPattern(
-                        bands=self.sequences_digestions[seq_name][digestion][
-                            "bands"
-                        ],
+                        bands=self.sequences_digestions[seq_name][digestion]["bands"],
                         label=seq_name if (ax == axes[0]) else None,
                         ladder=ladder,
                         global_bands_props=bands_props,
-                        topology=self.records[seq_name].annotations[
-                            "topology"
-                        ],
+                        topology=self.records[seq_name].annotations["topology"],
                     )
                     for seq_name in self.sequences
                 ],
                 ladder=ladder,
-                label=", ".join(
-                    [" + ".join([e for e in d]) for d in [digestion]]
-                ),
+                label=", ".join([" + ".join([e for e in d]) for d in [digestion]]),
                 global_patterns_props=patterns_props,
                 **patternset_props
             ).plot(ax)

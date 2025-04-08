@@ -1,4 +1,3 @@
-
 class CloneValidation:
     """Report from comparing a clone's pband patterns with expectations.
 
@@ -39,15 +38,16 @@ class CloneValidation:
         """Return the largest discrepancy in all patterns"""
         return max(self.discrepancies.values())
 
-    def color(self, discrepancy='max'):
+    def color(self, discrepancy="max"):
         """Return a color depending on the discrepancy level (in 0-1)."""
         if discrepancy == "max":
             discrepancy = self.max_discrepancy
-        factor = min(1.0, discrepancy ** 10)
+        factor = min(1.0, discrepancy**10)
         return ((2 + factor) / 3.0, (3 - factor) / 3.0, 2 / 3.0)
 
-    def to_bandwagon_bandpattern(self, digestion, label='auto',
-                                 per_digestion_discrepancy=True):
+    def to_bandwagon_bandpattern(
+        self, digestion, label="auto", per_digestion_discrepancy=True
+    ):
         """Return a (plottable) bandwagon pattern for the selected digestion.
 
         The pattern has a color indicating the match similarity, as well as
@@ -76,6 +76,7 @@ class CloneValidation:
             discrepancy = self.max_discrepancy
         obs = self.clone.digestions[digestion]
         pattern = obs.to_bandwagon_bandpattern(
-            background_color=self.color(discrepancy=discrepancy), label=label)
+            background_color=self.color(discrepancy=discrepancy), label=label
+        )
         pattern.corner_note += " Gap: %d" % (100 * discrepancy)
         return pattern

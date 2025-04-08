@@ -95,6 +95,7 @@ def maximizing_bisection(f, x_min, x_max, precision=0.001, score=None):
 
     """
     if score is None:
+
         def score(value):
             return value
 
@@ -121,8 +122,9 @@ def maximizing_bisection(f, x_min, x_max, precision=0.001, score=None):
     return x_min, f_xmin, score_xmin
 
 
-def minimal_cover(elements_set, subsets, max_subsets=None, heuristic='default',
-                  selected=(), depth=0):
+def minimal_cover(
+    elements_set, subsets, max_subsets=None, heuristic="default", selected=(), depth=0
+):
     """
     Parameters
     ----------
@@ -153,7 +155,6 @@ def minimal_cover(elements_set, subsets, max_subsets=None, heuristic='default',
       in the order in which the subsets
     """
 
-
     if len(elements_set) == 0:
         return []
     if max_subsets == 0:
@@ -168,7 +169,7 @@ def minimal_cover(elements_set, subsets, max_subsets=None, heuristic='default',
 
     def sorting_heuristic(named_subset):
         name, subset = named_subset
-        if (heuristic == 'default'):
+        if heuristic == "default":
             return len(subset)
         else:
             return heuristic(named_subset, selected)
@@ -184,21 +185,22 @@ def minimal_cover(elements_set, subsets, max_subsets=None, heuristic='default',
         name, subset = ordered_subsets.pop()
         new_elements_set = elements_set.difference(subset)
         new_subsets = [
-            (name_, sub.difference(subset))
-            for (name_, sub) in ordered_subsets
+            (name_, sub.difference(subset)) for (name_, sub) in ordered_subsets
         ]
         new_max_subsets = None if (max_subsets is None) else max_subsets - 1
-        result = minimal_cover(new_elements_set, new_subsets,
-                               heuristic=heuristic,
-                               selected=list(selected) + [subset],
-                               max_subsets=new_max_subsets,
-                               depth=depth + 1)
+        result = minimal_cover(
+            new_elements_set,
+            new_subsets,
+            heuristic=heuristic,
+            selected=list(selected) + [subset],
+            max_subsets=new_max_subsets,
+            depth=depth + 1,
+        )
         if result is not None:
             return result + [name]
         ordered_subsets = [
             subset_
-            for (subset_, (new_name, new_subset)) in zip(ordered_subsets,
-                                                         new_subsets)
+            for (subset_, (new_name, new_subset)) in zip(ordered_subsets, new_subsets)
             if len(new_subset) != 0
         ]
     return None
@@ -253,8 +255,9 @@ class SetCoverProblem:
         return len(subset)
 
     def _parameter_element_score(self, parameter, element):
-        raise NotImplementedError('Each subset cover problem must overwrite '
-                                  'this function.')
+        raise NotImplementedError(
+            "Each subset cover problem must overwrite " "this function."
+        )
 
     def _compute_scores(self):
         self.scores = {element: {} for element in self.elements}
@@ -266,15 +269,15 @@ class SetCoverProblem:
 
         for parameters_dict in self.scores.values():
             parameters_dict["MAX_SCORE"] = max(
-                (score, parameter)
-                for (parameter, score) in parameters_dict.items()
+                (score, parameter) for (parameter, score) in parameters_dict.items()
             )
         ((min_max_score, parameter), element) = min(
             (parameters_dict["MAX_SCORE"], element)
             for element, parameters_dict in self.scores.items()
         )
-        self.bottleneck = dict(score=min_max_score, parameter=parameter,
-                               element=element)
+        self.bottleneck = dict(
+            score=min_max_score, parameter=parameter, element=element
+        )
 
     def _compute_coverages(self, threshold):
         return {
@@ -286,9 +289,15 @@ class SetCoverProblem:
             for parameter in self.parameters
         }
 
-    def _select_parameters(self, threshold=None, max_set_size=None,
-                        covering_algorithm='greedy', heuristic='default',
-                        threshold_tolerance=0.001, bisection=True):
+    def _select_parameters(
+        self,
+        threshold=None,
+        max_set_size=None,
+        covering_algorithm="greedy",
+        heuristic="default",
+        threshold_tolerance=0.001,
+        bisection=True,
+    ):
         """Select a subset of parameters which collectively cover all elements.
 
         This lets you either find the highest-score cover of less than N
@@ -331,10 +340,10 @@ class SetCoverProblem:
           For internal recursion. Do not modify.
         """
 
-        if heuristic == 'default':
+        if heuristic == "default":
             heuristic = self._default_heuristic
         if threshold is None:
-            threshold = self.bottleneck['score']
+            threshold = self.bottleneck["score"]
 
         if max_set_size is not None:
             if not bisection:
@@ -342,7 +351,7 @@ class SetCoverProblem:
                     elements_set=self.elements,
                     subsets=self._compute_coverages(threshold).items(),
                     max_subsets=max_set_size,
-                    heuristic=heuristic
+                    heuristic=heuristic,
                 )
 
             def select(thr):
@@ -350,9 +359,10 @@ class SetCoverProblem:
                     threshold=thr,
                     covering_algorithm=covering_algorithm,
                     heuristic=heuristic,
-                    max_set_size=None if covering_algorithm == 'greedy'
-                    else max_set_size,
-                    bisection=False
+                    max_set_size=(
+                        None if covering_algorithm == "greedy" else max_set_size
+                    ),
+                    bisection=False,
                 )
                 return selection
 
@@ -361,12 +371,17 @@ class SetCoverProblem:
                     return 1e10
                 else:
                     return len(selection) - max_set_size
+
             threshold, selection, _ = maximizing_bisection(
-                f=select, x_min=0, x_max=threshold, score=score,
-                precision=threshold_tolerance)
+                f=select,
+                x_min=0,
+                x_max=threshold,
+                score=score,
+                precision=threshold_tolerance,
+            )
             return threshold, selection
         else:
-            if covering_algorithm == 'greedy':
+            if covering_algorithm == "greedy":
                 max_subsets = None
             else:
                 max_subsets = max_set_size

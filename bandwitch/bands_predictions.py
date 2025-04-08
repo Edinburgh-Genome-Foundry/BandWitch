@@ -35,15 +35,11 @@ def _compute_bands_from_cuts(cuts, sequence_length, linear=True):
 def find_cuts(sequence, enzymes, linear=True):
     batch = Restriction.RestrictionBatch(enzymes)
     return [
-        cut
-        for cuts in batch.search(sequence, linear=linear).values()
-        for cut in cuts
+        cut for cuts in batch.search(sequence, linear=linear).values() for cut in cuts
     ]
 
 
-def predict_digestion_bands(
-    sequence, enzymes, linear=True, partial_cutters=()
-):
+def predict_digestion_bands(sequence, enzymes, linear=True, partial_cutters=()):
     """Return the band sizes from digestion by all enzymes at once.
 
     Returns a list of bands sizes sorted from smallest to largest
@@ -101,9 +97,7 @@ def compute_sequence_digestions_migrations(sequences_digestions, ladder):
     }
     for seq, digestions_data in sequences_digestions.items():
         for digestion, data in digestions_data.items():
-            data["migration"] = np.array(
-                [band_to_migration[b] for b in data["bands"]]
-            )
+            data["migration"] = np.array([band_to_migration[b] for b in data["bands"]])
 
 
 def predict_sequence_digestions(
@@ -158,9 +152,7 @@ def predict_sequence_digestions(
             enzs for enzs in digestions_dict.keys() if len(enzs) == n_enzymes
         ]
         for enzyme in enzymes:
-            sub_sub_enzymes = [
-                enzs for enzs in sub_enzymes if enzyme not in enzs
-            ]
+            sub_sub_enzymes = [enzs for enzs in sub_enzymes if enzyme not in enzs]
             for enzs in sub_sub_enzymes:
                 digestion = tuple(sorted(enzs + (enzyme,)))
                 if digestion not in digestions_dict:

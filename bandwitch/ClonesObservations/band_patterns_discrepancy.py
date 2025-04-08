@@ -51,9 +51,7 @@ def band_patterns_discrepancy(
     if reference_and_gel and (len(bands2) > len(bands1)):
         return 2.0
 
-    m1, m2 = (
-        ladder.dna_size_to_migration(np.array(b)) for b in (bands1, bands2)
-    )
+    m1, m2 = (ladder.dna_size_to_migration(np.array(b)) for b in (bands1, bands2))
     mini, maxi = ladder.migration_distances_span
     tolerance = relative_tolerance * (maxi - mini)
     zone = [ladder.dna_size_to_migration(b) for b in zone][::-1]

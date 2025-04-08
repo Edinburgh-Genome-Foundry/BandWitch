@@ -25,8 +25,13 @@ class Clone:
         self.digestions = digestions
         self.construct_id = construct_id
 
-    def validate_bands(self, bands_by_digestion, relative_tolerance=0.1,
-                       min_band_cutoff=None, max_band_cutoff=None):
+    def validate_bands(
+        self,
+        bands_by_digestion,
+        relative_tolerance=0.1,
+        min_band_cutoff=None,
+        max_band_cutoff=None,
+    ):
         """Return a validation results (comparison of observed and expected).
 
         The result is a CloneValidation object.
@@ -60,16 +65,16 @@ class Clone:
                     other_bands=bands_by_digestion[digestion],
                     relative_tolerance=relative_tolerance,
                     min_band_cutoff=min_band_cutoff,
-                    max_band_cutoff=max_band_cutoff
+                    max_band_cutoff=max_band_cutoff,
                 )
                 for digestion, observation in self.digestions.items()
             }
-        return CloneValidation(self, bands_by_digestion,
-                               discrepancies=discrepancies)
+        return CloneValidation(self, bands_by_digestion, discrepancies=discrepancies)
 
     @staticmethod
-    def from_bands_observations(observations, constructs_map, digestions_map,
-                                clones_map=None):
+    def from_bands_observations(
+        observations, constructs_map, digestions_map, clones_map=None
+    ):
         if isinstance(observations, (dict, OrderedDict)):
             observations = list(observations.values())
         if clones_map is None:
@@ -83,8 +88,8 @@ class Clone:
             if clone_name not in clones:
                 clones[clone_name] = Clone(
                     name=clone_name,
-                    construct_id=constructs_map.get(clone_name, 'no_clone'),
-                    digestions={}
+                    construct_id=constructs_map.get(clone_name, "no_clone"),
+                    digestions={},
                 )
             digestion = digestions_map[obs.name]
             clones[clone_name].digestions[digestion] = obs
