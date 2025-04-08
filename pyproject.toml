@@ -1,0 +1,31 @@
+[project]
+name = "bandwitch"
+version = "0.3.4"
+license = "MIT"
+authors = [{ name = "Zulko" }]
+description = "Enzyme selection for DNA verification and identification."
+readme = "pypi-readme.rst"
+keywords = ["restriction", "enzyme", "synthetic biology", "DNA", "band", "pattern"]
+dependencies = [
+  "tqdm",
+  "biopython",
+  "scipy",
+  "matplotlib",
+  "bandwagon",
+  "dna_features_viewer",
+  "flametree",
+  "pandas",
+]
+
+[project.urls]
+Homepage = "https://github.com/Edinburgh-Genome-Foundry/bandwitch"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+exclude = ["docs"]
