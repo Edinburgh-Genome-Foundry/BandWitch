@@ -105,9 +105,7 @@ def test_ideal_digestions(sequences):
 
 
 def test_list_common_enzymes():
-    l = list_common_enzymes(
-        min_suppliers=4, avoided_methylations=("Dam", "Dcm")
-    )
+    l = list_common_enzymes(min_suppliers=4, avoided_methylations=("Dam", "Dcm"))
     assert len(l) == 38
     l = list_common_enzymes(min_suppliers=4, avoided_methylations=())
     assert len(l) == 45
