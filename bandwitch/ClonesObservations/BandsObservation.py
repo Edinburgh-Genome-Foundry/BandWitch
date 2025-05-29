@@ -69,7 +69,7 @@ class BandsObservation:
         ignore_bands_under = ignore_bands_under or 0
 
         plate = plate_from_aati_fragment_analyzer_zip(archive_path)
-        ladder_data = plate.data.ladder
+        ladder_data = plate.data["ladder"]
         ladder = ladder_from_aati_fa_calibration_table(dataframe=ladder_data)
         # get the set of constructs sorted by order of columnwise appearance:
 
@@ -77,25 +77,28 @@ class BandsObservation:
             """Return True iff the band's intensity is above the set level."""
             return 1.0 * band["RFU"] / band["Size (bp)"] > min_rfu_size_ratio
 
-        return OrderedDict(
-            [
-                (
-                    well.name,
-                    BandsObservation(
-                        name=well.name,
-                        ladder=ladder,
-                        bands=[
-                            band["Size (bp)"]
-                            for band in well.data.bands.values()
-                            if band_is_strong_enough(band)
-                            and (band["Size (bp)"] > ignore_bands_under)
-                        ],
-                        migration_image=well.data.migration_image,
-                    ),
-                )
-                for well in plate.iter_wells(direction=direction)
-            ]
-        )
+        ordered_list = []
+        for well in plate.iter_wells(direction=direction):
+            bands_list = []
+            for band in well.data["bands"].values():
+                if band_is_strong_enough(band) and (
+                    band["Size (bp)"] > ignore_bands_under
+                ):
+                    bands_list += [band["Size (bp)"]]
+
+            bands_observation = BandsObservation(
+                name=well.name,
+                ladder=ladder,
+                bands=bands_list,
+                migration_image=well.data["migration_image"],
+            )
+
+            entry = (well.name, bands_observation)
+            ordered_list += [entry]
+
+        ordered_dict = OrderedDict(ordered_list)
+
+        return ordered_dict
 
     def patterns_discrepancy(
         self,
@@ -132,7 +135,6 @@ class BandsObservation:
 
         """
         ladder_min, ladder_max = self.ladder.dna_size_span
-        # print (min_band_cutoff)
         if min_band_cutoff is None:
             min_band_cutoff = ladder_min
         if max_band_cutoff is None:

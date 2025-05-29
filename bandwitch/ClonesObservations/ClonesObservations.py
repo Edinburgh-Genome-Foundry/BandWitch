@@ -209,21 +209,23 @@ class ClonesObservations:
         constructs_colors = {}
         for well in plate.iter_wells():
             if well.name not in validations:
-                well.data.bg_color = None
-                well.data.pass_color = (1, 1, 1, 0.1)
+                well.data["bg_color"] = None
+                well.data["pass_color"] = (1, 1, 1, 0.1)
             else:
                 validation = validations[well.name]
                 construct = validation.clone.construct_id
                 if construct not in constructs_colors:
                     alpha = ((0.35 * len(constructs_colors) % 1) + 0.2) / 2
                     constructs_colors[construct] = (0.4, 0.4, 0.76, alpha)
-                well.data.bg_color = constructs_colors[construct]
-                well.data.pass_color = (
+                well.data["bg_color"] = constructs_colors[construct]
+                well.data["pass_color"] = (
                     (0.43, 0.92, 0.49) if validation.passes else (0.91, 0.43, 0.43)
                 )
-        bg_plotter = PlateColorsPlotter(lambda w: w.data.bg_color)
+        bg_plotter = PlateColorsPlotter(lambda w: w.data["bg_color"])
         ax, _ = bg_plotter.plot_plate(plate, figsize=(10, 5), ax=ax)
-        pass_plotter = PlateColorsPlotter(lambda w: w.data.pass_color, well_radius=250)
+        pass_plotter = PlateColorsPlotter(
+            lambda w: w.data["pass_color"], well_radius=250
+        )
         pass_plotter.plot_plate(plate, ax=ax)
         if target is not None:
             ax.figure.savefig(target, bbox_inches="tight")
@@ -313,7 +315,7 @@ class ClonesObservations:
                     if digestion not in digestions_by_construct[construct]:
                         digestions_by_construct[construct].append(digestion)
 
-        # ladder = list(validations[0].clone.digestions.values())[0].ladder
+        # ladder = list(validations[0].clone.digestions.values())[0]["ladder"]
         pdf_io = BytesIO()
         with PdfPages(pdf_io) as pdf:
             for construct_id, validations in summary.items():
@@ -575,9 +577,9 @@ class ClonesObservations:
         )
         constructs_map = OrderedDict(
             [
-                (well.name, well.data.construct)
+                (well.name, well.data["construct"])
                 for well in constructs_plate.iter_wells(direction=direction)
-                if "construct" in well.data and str(well.data.construct) != "nan"
+                if "construct" in well.data and str(well.data["construct"]) != "nan"
             ]
         )
 
@@ -592,9 +594,9 @@ class ClonesObservations:
             )
             digestions_map = OrderedDict(
                 [
-                    (well.name, tuple(well.data.digestion.split(", ")))
+                    (well.name, tuple(well.data["digestion"].split(", ")))
                     for well in digestions_plate.iter_wells(direction=direction)
-                    if "digestion" in well.data and str(well.data.digestion) != "nan"
+                    if "digestion" in well.data and str(well.data["digestion"]) != "nan"
                 ]
             )
 
