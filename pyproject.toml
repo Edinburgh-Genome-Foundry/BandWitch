@@ -1,6 +1,6 @@
 [project]
 name = "bandwitch"
-version = "0.3.5"
+version = "0.3.6"
 license = "MIT"
 authors = [{ name = "Zulko" }]
 description = "Enzyme selection for DNA verification and identification."
