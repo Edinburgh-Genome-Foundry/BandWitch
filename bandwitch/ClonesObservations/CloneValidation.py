@@ -7,16 +7,13 @@ class CloneValidation:
     ----------
     clone
       A Clone object.
-
     expected
-      A dictionnary ``{digestion: expected_pattern}`` where ``digestion`` is
-      of the form ``('EcoRI', 'BamHI')`` and ``expected_pattern`` is a
-      BandsPattern
-
+        A dictionary ``{digestion: expected_pattern}`` where ``digestion`` is
+        of the form ``('EcoRI', 'BamHI')`` and ``expected_pattern`` is a
+        BandsPattern.
     discrepancies
-      A dictionnary ``{digestion: float}`` where the float indicates the
+      A dictionary ``{digestion: float}`` where the float indicates the
       observed discrepancy between observed and predicted for this digestion.
-
     """
 
     def __init__(self, clone, expected, discrepancies):
@@ -27,15 +24,15 @@ class CloneValidation:
 
     @property
     def passes(self):
-        """True iff the clone is valid.
+        """True if the clone is valid.
 
-        (This means that all patterns are similar enough to expectations).
+        (This means that all patterns are similar enough to expectations.)
         """
         return self.max_discrepancy < 1.0
 
     @property
     def max_discrepancy(self):
-        """Return the largest discrepancy in all patterns"""
+        """Return the largest discrepancy in all patterns."""
         return max(self.discrepancies.values())
 
     def color(self, discrepancy="max"):
@@ -56,17 +53,14 @@ class CloneValidation:
         Parameters
         ----------
         digestion
-          A set of enzymes such as ``('EcoRI',)`` or ````
-
+            A set of enzymes such as ``('EcoRI',)``.
         label
-          A label for the pattern, for instance the name of a microplate well.
-
+            A label for the pattern, for instance the name of a microplate well.
         per_digestion_discrepancy
-          If true, each pattern for each clone will have an indication of
-          how close it is from the expected pattern. If False, and the
-          validation involves several digestions, the biggest discrepancy
-          among all patterns is shown.
-
+            If true, each pattern for each clone will have an indication of
+            how close it is from the expected pattern. If False, and the
+            validation involves several digestions, the biggest discrepancy
+            among all patterns is shown.
         """
         if digestion not in self.clone.digestions:
             return None

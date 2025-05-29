@@ -24,24 +24,18 @@ def band_patterns_discrepancy(
 
     Parameters
     ----------
-
-    bands1
-      A list of bands sizes forming the first pattern
-
-    bands2
-      A list of bands sizes forming the second pattern
-
-    ladder
-      A Ladder object used to compute migration distances.
-
-    relative tolerance
-      Proportion of the ladder's migration span (between lowest and highest
-      migration distances) that is the threshold for the min-max distance.
-
-    reference_and_gel
-      Set to True if ``bands1`` is a reference (= expected bands) and
-      ``bands2`` is the observed bands.
-
+    bands1 : list
+        A list of bands sizes forming the first pattern.
+    bands2 : list
+        A list of bands sizes forming the second pattern.
+    ladder : Ladder
+        A Ladder object used to compute migration distances.
+    relative_tolerance : float
+        Proportion of the ladder's migration span (between lowest and highest
+        migration distances) that is the threshold for the min-max distance.
+    reference_and_gel : bool
+        Set to True if ``bands1`` is a reference (= expected bands) and
+        ``bands2`` is the observed bands.
     zone
     """
     if bands1 == bands2 == []:

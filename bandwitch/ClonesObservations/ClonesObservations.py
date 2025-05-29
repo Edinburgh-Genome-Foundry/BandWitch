@@ -1,4 +1,4 @@
-"""Classes for parsing and analyzis of DNA migration data."""
+"""Classes for parsing and analysis of DNA migration data."""
 
 from collections import OrderedDict, Counter
 import matplotlib.pyplot as plt
@@ -32,23 +32,21 @@ from .BandsObservation import BandsObservation
 
 
 class ClonesObservations:
-    """All useful informations for a collection of clones to be validated.
+    """All useful information for a collection of clones to be validated.
 
     Parameters
     ----------
-    clones
-      Either a list of Clones (each with a unique name) or a dictionnary
-      ``{name: Clone}``.
-
-    constructs_records
-      A dictionnary ``{construct_name: biopython_record}`` indicating the
-      sequence of the different constructs. For each construct, set the
-      attribute ``construct.linear = False`` if the construct is circular.
-
+    clones : list or dict
+        Either a list of Clones (each with a unique name) or a dictionary
+        ``{name: Clone}``.
+    constructs_records : dict
+        A dictionary ``{construct_name: biopython_record}`` indicating the
+        sequence of the different constructs. For each construct, set the
+        attribute ``construct.linear = False`` if the construct is circular.
     """
 
     def __init__(self, clones, constructs_records, partial_cutters=()):
-        """Initialize"""
+        """Initialize."""
         if isinstance(clones, (list, tuple)):
             clones = OrderedDict([(clone.name, clone) for clone in clones])
         self.clones = clones
@@ -80,14 +78,10 @@ class ClonesObservations:
 
         Parameters
         ----------
-
-        construct_id
-          ID of the construct as it appears in this object'
-          ``constructs_records``.
-
-        digestion
-          For instance ``('BamHI', 'XbaI')``
-
+        construct_id : str
+            ID of the construct as it appears in this object's ``constructs_records``.
+        digestion : tuple
+            For instance ``('BamHI', 'XbaI')``.
         """
         construct_digestions = self.constructs_digestions[construct_id]
         if digestion not in construct_digestions:
@@ -145,22 +139,19 @@ class ClonesObservations:
 
         Parameters
         ----------
-        relative_tolerance
-          Tolerance, as a ratio of the full ladder span. If =0.1, then the
-          discrepancy will have a value of 1 when a band's nearest
-          correspondent in the other pattern is more that 10% of the ladder
-          span apart.
-
-        min_band_cutoff
-          Discrepancies involving at least one band below this minimal band
-          size will be ignored. By default, it will be set to the smallest
-          band size in the ladder.
-
-        max_band_cutoff
-          Discrepancies involving at least one band above this minimal band
-          size will be ignored. By default, it will be set to the smallest
-          band size in the ladder.
-
+        relative_tolerance : float
+            Tolerance, as a ratio of the full ladder span. If =0.1, then the
+            discrepancy will have a value of 1 when a band's nearest
+            correspondent in the other pattern is more that 10% of the ladder
+            span apart.
+        min_band_cutoff : int
+            Discrepancies involving at least one band below this minimal band
+            size will be ignored. By default, it will be set to the smallest
+            band size in the ladder.
+        max_band_cutoff : int
+            Discrepancies involving at least one band above this minimal band
+            size will be ignored. By default, it will be set to the smallest
+            band size in the ladder.
         """
         return OrderedDict(
             [
@@ -283,22 +274,15 @@ class ClonesObservations:
 
         Parameters
         ----------
-
-        target_file
-          File object or file path where to save the figure. If provided, the
-          function returns none, else the function returns the axes array of
-          the final figure
-
-        relative_tolerance
-          Relative error tolerated on each band for the ovserved patterns to
-          be considered similar to the expected patterns.
-
-        min_band_cutoff
-          Bands with a size below this value will not be considered
-
-        max_band_cutoff
-          Bands with a size above this value will not be considered
-
+        validations
+            Validation results.
+        target
+            File path.
+        per_digestion_discrepancy
+            If true, each pattern for each clone will have an indication of
+            how close it is from the expected pattern. If False, and the
+            validation involves several digestions, the biggest discrepancy
+            among all patterns is shown.
         """
 
         summary = self.validations_summary(validations)
@@ -403,30 +387,29 @@ class ClonesObservations:
     ):
         """Identifies parts associated with failure in the validations.
 
-        Uses the Saboteurs library:
+        Uses the Saboteurs package:
         https://github.com/Edinburgh-Genome-Foundry/saboteurs
 
         Parameters
         ----------
         validations
-          validations results
+            Validation results.
 
         constructs_parts
-          Either a dict {construct_id: [list, of, part, names]} or a function
-          (biopython_record => [list, of, part, names])
+            Either a dict {construct_id: [list, of, part, names]} or a function
+            (biopython_record => [list, of, part, names]).
 
         report_target
-          Can be a path to file or file-like object where to write a PDF
-          report. Can also be "@memory", at which case the raw binary PDF
-          data is returned
+            Can be a path to file or file-like object where to write a PDF
+            report. Can also be "@memory", at which case the raw binary PDF
+            data is returned.
 
         Returns
         -------
-
         analysis, pdf_data
-          Where ``analysis`` is the result of sabotage analysis (see the
-          saboteurs library), and pdf_data is None unless report_target is
-          set to "@memory" (see above).
+            Where ``analysis`` is the result of sabotage analysis (see the
+            saboteurs library), and pdf_data is None unless report_target is
+            set to "@memory" (see above).
         """
         if not SABOTEURS_AVAILABLE:
             raise ImportError(
@@ -482,22 +465,17 @@ class ClonesObservations:
 
         Parameters
         ----------
-
         target_file
-          File object or file path where to save the figure. If provided, the
-          function returns none, else the function returns the axes array of
-          the final figure
-
+            File object or file path where to save the figure. If provided, the
+            function returns none, else the function returns the axes array of
+            the final figure.
         relative_tolerance
-          Relative error tolerated on each band for the ovserved patterns to
-          be considered similar to the expected patterns.
-
+            Relative error tolerated on each band for the ovserved patterns to
+            be considered similar to the expected patterns.
         min_band_cutoff
-          Bands with a size below this value will not be considered
-
+            Bands with a size below this value will not be considered.
         max_band_cutoff
-          Bands with a size above this value will not be considered
-
+            Bands with a size above this value will not be considered.
         """
         bands_validities = self.compute_all_bands_validities(
             relative_tolerance=relative_tolerance,
@@ -614,15 +592,15 @@ class ClonesObservations:
     def partial_digests_analysis(self, relative_tolerance=0.05):
         """Compute good clones under different partial digest assumptions.
 
-        Returns a dictionnary ``{partial: {'valid_clones': 60, 'label': 'x'}}``
+        Returns a dictionary ``{partial: {'valid_clones': 60, 'label': 'x'}}``
         where for a given scenario ``partial`` is a tuple of all enzymes
-        considered to have partia activity in this scenario (it defines the
+        considered to have partial activity in this scenario (it defines the
         scenario) ``valid_clones`` is the number of good clones under this
         assumption, and ``label`` is a string representation of all enzymes
         involved, with partial activity enzymes in parenthesis.
 
         This result can be fed to ``ClonesObservations``'s
-        ``.plot_partial_digests_analysis`` method for plotting
+        ``.plot_partial_digests_analysis`` method for plotting.
         """
         all_enzymes = set(
             enzyme
@@ -656,16 +634,14 @@ class ClonesObservations:
 
     @staticmethod
     def plot_partial_digests_analysis(analysis_results, ax=None):
-        """Plot partial digests analysis results.
+        """Plot partial digest analysis results.
 
         Parameters
         ----------
         analysis_results
-          results from ``ClonesObservations.partial_digest_analysis``
-
+            results from ``ClonesObservations.partial_digest_analysis``.
         ax
-          A Matplotlib ax. If none, one is created and returned at the end.
-
+            A Matplotlib ax. If none, one is created and returned at the end.
         """
         if ax is None:
             fig, ax = plt.subplots(figsize=(5, 0.5 * len(analysis_results)))

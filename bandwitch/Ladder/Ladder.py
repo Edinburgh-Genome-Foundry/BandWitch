@@ -11,9 +11,8 @@ class Ladder:
 
     Parameters
     ----------
-
     bands
-      A dictionnary of the form {dna_size: migration distance}
+        A dictionary of the form {dna_size: migration distance}.
     """
 
     def __init__(self, bands, name=None, infos=None):
@@ -27,7 +26,7 @@ class Ladder:
         self.infos = infos
 
     def dna_size_to_migration(self, dna_sizes):
-        """Return the migration distances for the given dna sizes"""
+        """Return the migration distances for the given DNA sizes."""
         return self._dna_size_to_migration_interpolator(dna_sizes)
 
     @property

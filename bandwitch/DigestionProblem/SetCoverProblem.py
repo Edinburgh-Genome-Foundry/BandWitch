@@ -1,23 +1,31 @@
+# MIT License
+
+# Copyright (c) 2017 Edinburgh Genome Foundry, University of Edinburgh
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """Generic class to solve minimal set cover problems.
 
 The class offers methods useful when the coverage is determined by thresholding
 scores (see below).
 
-**Use in other projects**
-
-
-Note you can use this file in your project as long as the following licence
-appears:
-
-::
-
-    Copyright Edinburgh Genome Foundry, 2017
-    Licence: MIT
-    Author: Zulko
-
-
 **Technical explanations:**
-
 
 The problem of enzyme digestion can be generalized and formalized as follows:
 
@@ -70,29 +78,21 @@ def maximizing_bisection(f, x_min, x_max, precision=0.001, score=None):
 
     Parameters
     ----------
-
     f
-      A function f(x) => anything. The returned value must be either a score,
-      or something that can be scored via the ``score`` parameter.
-
+        A function f(x) => anything. The returned value must be either a score,
+        or something that can be scored via the ``score`` parameter.
     x_min, x_max
-      Range of allowed values for variable x
-
+        Range of allowed values for variable x.
     precision
-      Precision on x (the algorithm stops when x is less than this far away
-      from the optimum)
-
+        Precision on x (the algorithm stops when x is less than this far away
+        from the optimum).
     score
-      Scoring function. Leave to none if function f(x) is already a score.
-
-
+        Scoring function. Leave to none if function f(x) is already a score.
 
     Returns
     -------
-
     x, f(x), score(f(x))
-      Everything you may need !
-
+        Everything you may need!
     """
     if score is None:
 
@@ -129,30 +129,24 @@ def minimal_cover(
     Parameters
     ----------
     elements_set
-      The set of all ements to cover
-
+        The set of all ements to cover.
     subsets
-      A list of (name, subset)
-
+        A list of (name, subset).
     max_subsets
-      Maximal number of subsets allowed
-
+        Maximal number of subsets allowed.
     heuristic
-      A function ``((name, subset), selected) => value`` where ``name`` is the
-      name of a subset, ``subset`` is what remains of the subset at this stage,
-      ``selected`` is a list of already-selected subset names.
-
+        A function ``((name, subset), selected) => value`` where ``name`` is the
+        name of a subset, ``subset`` is what remains of the subset at this stage,
+        ``selected`` is a list of already-selected subset names.
     selected
-      (Recursion parameter, do not use.) Already-selected elements
-
+        (Recursion parameter, do not use.) Already-selected elements.
     depth
-      (Recursion parameter, do not use.). Depth of the recursion
+        (Recursion parameter, do not use.) Depth of the recursion.
 
     Returns
     -------
-
-      None if no solution was found, else a collection of [(name, subset)...]
-      in the order in which the subsets
+        None if no solution was found, else a collection of [(name, subset)...]
+        in the order in which the subsets.
     """
 
     if len(elements_set) == 0:
@@ -211,19 +205,15 @@ class SetCoverProblem:
 
     Parameters
     ----------
-
     elements
-      A set of all elements to be covered
-
+        A set of all elements to be covered.
     parameters
-      A set of parameters (a parameter and a threshold will determine a subset)
-
+        A set of parameters (a parameter and a threshold will determine a subset).
     process_logger
-      A ProgLog process logger.
+        A ProgLog process logger.
 
     Note
     ----
-
     The somwhat complicated math problem solved by the algorithms implemented
     in this class is:
 
@@ -304,40 +294,34 @@ class SetCoverProblem:
         elements, or the best free-sized set of parameters covering elements
         with the highest minimal score.
 
+        Parameters
+        ----------
+        threshold
+            If provided and max_set_size is not provided, the method will return
+            a free-sized set of parameters covering all elements. If max_set_size
+            is provided, the subset will not exceed max_set_size in size. This
+            can result in unsolvable.
+        max_set_size
+            When provided instead of threshold, the method will find the highest
+            threshold which allows solutions in max_set_size or less.
+        covering_algorithm
+            Either 'greedy' for fast approximate solving or 'full' for full
+            solving.
+        heuristic
+            Scoring function to prioritize some parameters over others.
+        threshold_tolerance
+            When max_set_size is provided and not threshold, the returned
+            solution will have the optimal threshold, plus or minus this
+            tolerance.
+        bisection
+            For internal recursion. Do not modify.
+
         Returns
         -------
         min_score, [param1, param2, param3...]
-          Where min_score is a value lower than all the score coverages, and
-          the list indicates the parameters in the order in which they have
-          been selected.
-
-
-        Parameters
-        -----------
-        threshold
-          If provided and max_set_size is not provided, the method will return
-          a free-sized set of parameters covering all elements. If max_set_size
-          is provided, the subset will not exceed max_set_size in size. This
-          can result in unsolvable.
-
-        max_set_size
-          When provided instead of threshold, the method will find the highest
-          threshold which allows solutions in max_set_size or less.
-
-        covering_algorithm
-          Either 'greedy' for fast approximate solving or 'full' for full
-          solving
-
-        heuristic
-          Scoring function to prioritize some parameters over others.
-
-        threshold_tolerance
-          When max_set_size is provided and not threshold, the returned
-          solution will have the optimal threshold, plus or minus this
-          tolerance.
-
-        bisection
-          For internal recursion. Do not modify.
+            Where min_score is a value lower than all the score coverages, and
+            the list indicates the parameters in the order in which they have
+            been selected.
         """
 
         if heuristic == "default":

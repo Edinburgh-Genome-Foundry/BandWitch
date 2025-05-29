@@ -67,32 +67,25 @@ def load_record(
 
     Parameters
     ----------
-
     record_file
-      A genbank file, a fasta file, a snapgene file, or a filelike object
-      (at which case the format, genbank or fasta, must be given with
-      ``file_format``)
-
+        A genbank file, a fasta file, a snapgene file, or a filelike object
+        (at which case the format, genbank or fasta, must be given with
+        ``file_format``).
     topology
-      Either "circular" or "linear" or "default_to_circular" (will default
-    to circular if ``annotations['topology']`` is not already set) or
-
+        One of "circular", "linear" or "default_to_circular" (will default
+        to circular if ``annotations['topology']`` is not already set).
     id
-      Will be used for the record ID and name. If auto, the record id will
-      be unchanged unless it is ".", " ", etc. at which case it will be
-      replaced by the file name.
-
+        Will be used for the record ID and name. If auto, the record id will
+        be unchanged unless it is ".", " ", etc. at which case it will be
+        replaced by the file name.
     upperize
-      If true, the sequence will get upperized.
-
+        If True, the sequence will get upperized.
     max_name_length
-      The name of the record will be truncated if too long to avoid Biopython
-      exceptions being raised.
-
+        The name of the record will be truncated if too long to avoid Biopython
+        exceptions being raised.
     file_format
-      Indicates the file format for the parser, when record_file is a filelike
-      object.
-
+        Indicates the file format for the parser, when record_file is a filelike
+        object.
     """
     if file_format is not None:
         record = SeqIO.read(record_file, file_format)
@@ -143,7 +136,6 @@ def updated_dict(dic1, dic2):
 
     Example
     -------
-
     >>> my_dict = updated_dict({"size": 7, "color": "r"}, some_defaults_dict)
     """
     if dic2 is not None:
@@ -165,12 +157,13 @@ def max_min_distance(values_1, values_2, zone=None):
     visually different, i.e. that one value in one of these sets has no close
     equivalent in the other set.
 
+    Parameters
+    ----------
     values_1, values2
-      Two lists of values
-
-    zone
-      The max distance will be computed only on couples (v1, v2) where v1 is
-      in the zone. Allows to remove border effects.
+        Two lists of values.
+     zone
+        The max distance will be computed only on couples (v1, v2) where v1 is
+        in the zone. Allows to remove border effects.
     """
     values_1, values_2 = np.array(values_1), np.array(values_2)
     all_distances = abs(values_1.reshape((len(values_1), 1)) - values_2)

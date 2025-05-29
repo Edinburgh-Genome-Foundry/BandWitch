@@ -16,19 +16,15 @@ class BandsObservation:
 
     Parameters
     ----------
-    name
-      Name of the observation (used for the top label in plots)
-
-    bands
-      A BandPattern object
-
-    ladder
-      A BandPattern object representing a ladder.
-
+    name : str
+        Name of the observation (used for the top label in plots).
+    bands : BandPattern
+        A BandPattern object.
+    ladder : BandPattern
+        A BandPattern object representing a ladder.
     migration_image
-      Optional RGB array (HxWx3) representing the gel "image" (which will be
-      displayed on the side of the plot).
-
+        Optional RGB array (HxWx3) representing the gel "image" (which will be
+        displayed on the side of the plot).
     """
 
     def __init__(self, name, bands, ladder, migration_image=None):
@@ -45,23 +41,22 @@ class BandsObservation:
         ignore_bands_under=None,
         direction="column",
     ):
-        """Return a dictionnary of all band observations in AATI output files.
+        """Return a dictionary of all band observations in AATI output files.
 
         Parameters
         ----------
-        archive_path
-          A path to a ZIP file containing all files output by the AATI fragment
-          analyzer.
-
-        min_rfu_size_ratio
-          Cut-off ratio to filter-out bands whose intensity is below some
-          threshold. The higher the value, the more bands will be filtered out.
+        archive_path : str
+            A path to a ZIP file containing all files output by the AATI fragment
+            analyzer.
+        min_rfu_size_ratio : float
+            Cut-off ratio to filter out bands whose intensity is below some
+            threshold. The higher the value, the more bands will be filtered out.
 
         Returns
         -------
-        A dictionary ``{'A1': BandsObservation(), 'A2': ...}`` containing the
-        measured pattern information for a whole 96-well microplate.
-
+        dict
+            A dictionary ``{'A1': BandsObservation(), 'A2': ...}`` containing the
+            measured pattern information for a whole 96-well microplate.
         """
         if not PLATEO_AVAILABLE:
             raise ImportError("Plateo must be installed to parse AATI zips.")
@@ -74,7 +69,7 @@ class BandsObservation:
         # get the set of constructs sorted by order of columnwise appearance:
 
         def band_is_strong_enough(band):
-            """Return True iff the band's intensity is above the set level."""
+            """Return True if the band's intensity is above the set level."""
             return 1.0 * band["RFU"] / band["Size (bp)"] > min_rfu_size_ratio
 
         ordered_list = []
@@ -114,25 +109,21 @@ class BandsObservation:
 
         Parameters
         ----------
-        other_bands
-          A list of bands (integers) to be compared with the current bands
-
-        relative_tolerance
-          Tolerance, as a ratio of the full ladder span. If =0.1, then the
-          discrepancy will have a value of 1 when a band's nearest
-          correspondent in the other pattern is more that 10% of the ladder
-          span apart.
-
-        min_band_cutoff
-          Discrepancies involving at least one band below this minimal band
-          size will be ignored. By default, it will be set to the smallest
-          band size in the ladder.
-
-        max_band_cutoff
-          Discrepancies involving at least one band above this minimal band
-          size will be ignored. By default, it will be set to the smallest
-          band size in the ladder.
-
+        other_bands : list of int
+            A list of bands (integers) to be compared with the current bands.
+        relative_tolerance : float
+            Tolerance, as a ratio of the full ladder span. If =0.1, then the
+            discrepancy will have a value of 1 when a band's nearest
+            correspondent in the other pattern is more than 10% of the ladder
+            span apart.
+        min_band_cutoff : int, optional
+            Discrepancies involving at least one band below this minimal band
+            size will be ignored. By default, it will be set to the smallest
+            band size in the ladder.
+        max_band_cutoff : int, optional
+            Discrepancies involving at least one band above this minimum band
+            size will be ignored. By default, it will be set to the largest
+            band size in the ladder.
         """
         ladder_min, ladder_max = self.ladder.dna_size_span
         if min_band_cutoff is None:
@@ -149,7 +140,7 @@ class BandsObservation:
         )
 
     def to_bandwagon_bandpattern(self, background_color=None, label="auto"):
-        """Return a pattern version for the plotting library Bandwagon.
+        """Return a pattern version for the plotting library BandWagon.
 
         If label is left to 'auto', it will be the pattern's name.
         """

@@ -18,35 +18,30 @@ def list_common_enzymes(
 ):
     """List enzymes with many suppliers, no star activity, etc.
 
+    Parameters
+    ----------
     site_length
-      Tuple of the accepted lengths of enzymes sites, e.g. (6, 4) for 6bp and
-      4bp.
-
+        Tuple of the accepted lengths of enzymes sites, e.g. (6, 4) for 6bp and 4bp.
     opt_temp
-      Tuple of the accepted optimal temperatures. You would better keep it
-      to a single value though, to ensure that all enzymes returned can
-      co-digest.
-
+        Tuple of the accepted optimal temperatures. You would better keep it
+        to a single value though, to ensure that all enzymes returned can
+        co-digest.
     min_suppliers
-      Minimal number of suppliers. Set to 3 or 4 to get enzymes that should
-      be largely commercially available.
-
+        Minimum number of suppliers. Set to 3 or 4 to get enzymes that should
+        be largely commercially available.
     uniquify_sites
-      If True and two enzymes in the list have the same recognition site,
-      only one will be kept. this speeds up computations in bandwitch in
-      practice.
-
+        If True and two enzymes in the list have the same recognition site,
+        only one will be kept. This speeds up computations in BandWitch in
+        practice.
     avoided_methylations
-      Tuple of the methylation types to avoid, of Dam, Dcm, CpG... see the
-      next parameter for the tolerance level
-
+        Tuple of the methylation types to avoid, of Dam, Dcm, CpG... see the
+        next parameter for the tolerance level.
     accepted_methylation_effects
-      Accepted effects of the methylations specified by "avoided_methylations".
-      This data comes from the REBASE online database.
-      The effects are among "-" (no overlap, no effect), "cut" (overlap with
-      a methylation site, but the enzyme still cuts), "variable" (whatever
-      that means), "impaired", "some blocked", "some impaired", and "blocked".
-
+        Accepted effects of the methylations specified by "avoided_methylations".
+        This data comes from the REBASE online database.
+        The effects are among "-" (no overlap, no effect), "cut" (overlap with
+        a methylation site, but the enzyme still cuts), "variable" (whatever
+        that means), "impaired", "some blocked", "some impaired", and "blocked".
     """
     result = [
         str(e)

@@ -16,14 +16,11 @@ def _compute_bands_from_cuts(cuts, sequence_length, linear=True):
     Parameters
     ----------
     cuts
-      Location of the different cuts on the plasmid.
-
+        Location of the different cuts on the plasmid.
     sequence_length
-      Length of the DNA molecule
-
+        Length of the DNA molecule.
     linear
-      True for a linear DNA molecule, False for a circular DNA molecule.
-
+        True for a linear DNA molecule, False for a circular DNA molecule.
     """
     cuts = [0] + sorted(list(set(cuts))) + [sequence_length]
     bands = [cut2 - cut1 for cut1, cut2 in zip(cuts, cuts[1:])]
@@ -42,25 +39,21 @@ def find_cuts(sequence, enzymes, linear=True):
 def predict_digestion_bands(sequence, enzymes, linear=True, partial_cutters=()):
     """Return the band sizes from digestion by all enzymes at once.
 
-    Returns a list of bands sizes sorted from smallest to largest
+    Returns a list of bands sizes sorted from smallest to largest.
 
     Parameters
     ----------
     sequence
-      Sequence to be digested. Either a string ("ATGC...") or
-      a BioPython `Seq`
-
+        Sequence to be digested. Either a string ("ATGC...") or
+        a Biopython `Seq`.
     enzymes
-      list of all enzymes placed at the same time in the digestion
-      mix e.g. `["EcoRI", "BamHI"]`
-
+        list of all enzymes placed at the same time in the digestion
+        mix e.g. `["EcoRI", "BamHI"]`.
     linear
-      True if the DNA fragment is linearized, False if it is circular
-
+        True if the DNA fragment is linearized, False if it is circular.
     partial_cutters
-      List of enzymes that are tired or inhibited would randomly miss
-      some sites, thus creating extra bands in the final digest.
-
+        List of enzymes that are tired or inhibited would randomly miss
+        some sites, thus creating extra bands in the final digest.
     """
     if not isinstance(sequence, Seq):
         sequence = Seq(sequence)
@@ -110,24 +103,20 @@ def predict_sequence_digestions(
 
     The result if of the form ``{digestion: {'cuts': [], 'bands': []}}``
     Where ``digestion`` is a tuple of enzyme names e.g. ``('EcoRI', 'XbaI')``,
-    'cuts' is a list of cuts locations, 'bands' is a list of bands sizes
+    'cuts' is a list of cuts locations, 'bands' is a list of bands sizes.
 
     Parameters
     ----------
     sequence
-      The sequence to be digested
-
+        The sequence to be digested.
     enzymes
-      List of all enzymes to be considered
-
+        List of all enzymes to be considered.
     max_enzymes_per_digestion
-      Maximum number of enzymes allowed in one digestion
-
+        Maximum number of enzymes allowed in one digestion.
     bands_to_migration
-      Function associating a migration distance to a band size. If provided,
-      each digestion will have a ``'migration'`` field (list of migration
-      distances) in addition to 'cuts' and 'bands'.
-
+        Function associating a migration distance to a band size. If provided,
+        each digestion will have a ``'migration'`` field (list of migration
+        distances) in addition to 'cuts' and 'bands'.
     """
     restriction_batch = Restriction.RestrictionBatch(enzymes)
     cuts_dict = restriction_batch.search(Seq(sequence))

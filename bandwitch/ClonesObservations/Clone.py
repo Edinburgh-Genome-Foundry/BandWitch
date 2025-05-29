@@ -3,20 +3,18 @@ from .CloneValidation import CloneValidation
 
 
 class Clone:
-    """Gather all informations necessary to validate a clone.
+    """Gather all information necessary to validate a clone.
 
     Parameters
     ----------
-    name
-      Name of the clone. Could be for instance a microplate well.
-
-    digestions
-      A dictionnary ``{digestion: CloneObservation}`` where ``digestion`` is
-      of the form ``('EcoRI', 'BamHI')``.
-
-    construct_id
-      ID of the construct to be validated. This is used to group clones
-      by construct in the validation reports.
+    name : str
+        Name of the clone. Could be for instance a microplate well.
+    digestions : dict
+        A dictionary ``{digestion: CloneObservation}`` where ``digestion`` is
+        of the form ``('EcoRI', 'BamHI')``.
+    construct_id : str
+        ID of the construct to be validated. This is used to group clones
+        by construct in the validation reports.
     """
 
     def __init__(self, name, digestions, construct_id=None):
@@ -32,32 +30,28 @@ class Clone:
         min_band_cutoff=None,
         max_band_cutoff=None,
     ):
-        """Return a validation results (comparison of observed and expected).
+        """Return a validation result (comparison of observed and expected).
 
         The result is a CloneValidation object.
 
         Parameters
         ----------
-        bands_by_digestion
-          A dictionnary ``{digestion: [bands]}`` where ``digestion`` is
-          of the form ``('EcoRI', 'BamHI')``, and bands is a list of band sizes
-
-        relative_tolerance
-          Tolerance, as a ratio of the full ladder span. If =0.1, then the
-          discrepancy will have a value of 1 when a band's nearest
-          correspondent in the other pattern is more that 10% of the ladder
-          span apart.
-
-        min_band_cutoff
-          Discrepancies involving at least one band below this minimal band
-          size will be ignored. By default, it will be set to the smallest
-          band size in the ladder.
-
-        max_band_cutoff
-          Discrepancies involving at least one band above this minimal band
-          size will be ignored. By default, it will be set to the smallest
-          band size in the ladder.
-
+        bands_by_digestion : dict
+            A dictionary ``{digestion: [bands]}`` where ``digestion`` is
+            of the form ``('EcoRI', 'BamHI')``, and bands is a list of band sizes.
+        relative_tolerance : float
+            Tolerance, as a ratio of the full ladder span. If =0.1, then the
+            discrepancy will have a value of 1 when a band's nearest
+            correspondent in the other pattern is more than 10% of the ladder
+            span apart.
+        min_band_cutoff : int, optional
+            Discrepancies involving at least one band below this minimal band
+            size will be ignored. By default, it will be set to the smallest
+            band size in the ladder.
+        max_band_cutoff : int, optional
+            Discrepancies involving at least one band above this minimum band
+            size will be ignored. By default, it will be corrected to the largest
+            band size in the ladder.
         """
         for digestion, observation in self.digestions.items():
             discrepancies = {

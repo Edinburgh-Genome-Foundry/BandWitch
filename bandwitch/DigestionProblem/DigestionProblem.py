@@ -1,4 +1,4 @@
-"""Implements the SeparatingDigestions- and IdealDigestionProbem classes."""
+"""Implements the DigestionProblem class."""
 
 from collections import OrderedDict
 from copy import deepcopy
@@ -38,29 +38,25 @@ class DigestionProblem(SetCoverProblem):
     Parameters
     ----------
     enzymes
-      List of the names of the enzymes to consider, e.g. ``['EcoRI', 'XbaI']``.
-
+        List of the names of the enzymes to consider, e.g. ``['EcoRI', 'XbaI']``.
     ladder
-      A Ladder object representing the ladder used for migrations.
-
+          A Ladder object representing the ladder used for migrations.
     sequences
-      An (ordered) dictionary of the form {sequence_name: sequence} where the
-      sequence is an ATGC string
-
-    The records opology. Either "circular", "linear", "default_to_circular"
-    (will default to circular if ``record.annotations['topology']`` is not
-    already set) or "default_to_linear"
-
+          An (ordered) dictionary of the form {sequence_name: sequence} where the
+          sequence is an ATGC string.
+    topology
+        The records opology. Either "circular", "linear", "default_to_circular"
+        (will default to circular if ``record.annotations['topology']`` is not
+        already set) or "default_to_linear".
     max_enzymes_per_digestion
-      Maximal number of enzymes that can go in a single digestion.
-      Experimentally the best is 1, but you can try 2, or 3 in desperate
-      situations. Not sure if more enzymes will work.
-
+          Maximum number of enzymes that can go in a single digestion.
+          Experimentally the best is 1, but you can try 2, or 3 in desperate
+          situations. Not sure if more enzymes will work.
     relative_migration_precision
-      Variance of the bands measured during the migration, given as a
-      proportion of the total migration span (difference between the migration
-      of the ladder's smallest and largest bands).
-
+        Variance of the bands measured during the migration, given as a
+        proportion of the total migration span (difference between the migration
+        of the ladder's smallest and largest bands).
+    progress_logger
     """
 
     def __init__(
@@ -131,14 +127,13 @@ class DigestionProblem(SetCoverProblem):
         """Select for coverage first, digestion complexity second.
 
         When two digestions cover the same number of elements, the digestion
-        with the less enzymes is preffered.
-
+        with the fewer enzymes is preferred.
         """
         enzymes, subset = named_subset
         return len(subset) - 0.5 * len(enzymes)
 
     def bands_to_migration_pattern(self, bands_sizes):
-        """Return the distance migrations from several bands sizes."""
+        """Return the distance migrations from several band sizes."""
         return self.ladder.dna_size_to_migration(np.array(bands_sizes))
 
     def plot_digestions(
@@ -153,33 +148,29 @@ class DigestionProblem(SetCoverProblem):
     ):
         """Plot the patterns for each sequence, for each digestion in the list.
 
-        Requires Bandwagon.
+        Requires BandWagon.
 
         Parameters
         ----------
         digestions
-          A list of digestions, e.g. [('EcoRI',), ('BamHI', 'XbaI'), ...]
-
+              A list of digestions, e.g. [('EcoRI',), ('BamHI', 'XbaI'), ...].
         axes
-          Axes on which to plot the plot. There should be as many axes in the
-          list as there are digestions provided. Ideally the axes would be
-          vertically stacked. If not provided, new axes are created and
-          returned in the end
-
+            Axes on which to plot the plot. There should be as many axes in the
+            list as there are digestions provided. Ideally the axes would be
+            vertically stacked. If not provided, new axes are created and
+            returned in the end.
         bands_props, patterns_props, patternset_props
-          Graphical properties (colors, labels, etc.) of band patterns, see
-          code and BandWagon for more details.
-
+            Graphical properties (colors, labels, etc.) of band patterns, see
+            code and BandWagon for more details.
         target_file
-          The name of the (PNG, SVG, JPEG...) file in which to write the plot.
+             The name of the (PNG, SVG, JPEG...) file in which to write the plot.
+        close_figure
 
         Returns
         -------
-
         axes
           The axes of the generated figure (if a target file is written to,
-          the figure is closed and None is returned instead)
-
+          the figure is closed and None is returned instead).
         """
         if not PLOTS_AVAILABLE:
             raise ImportError("Plotting requires Bandwagon installed")
@@ -235,34 +226,29 @@ class DigestionProblem(SetCoverProblem):
         Returns
         -------
         min_score, [digestion1, digestion2, ...]
-          Where min_score is the lowest score that an element (sequence or
-          sequence pair) gets from the coverage, and the list indicates the
-          digestions in the order in which they have been selected. This list
-          will be "None" for unsolvable problems.
-
+            Where min_score is the lowest score that an element (sequence or
+            sequence pair) gets from the coverage, and the list indicates the
+            digestions in the order in which they have been selected. This list
+            will be "None" for unsolvable problems.
 
         Parameters
         -----------
         minimal_score
-          If provided and max_digestions is not provided, the method will
-          return a free-sized set of parameters covering all elements.
-          If max_digestions is provided, the subset will not exceed
-          max_digestions in size. This can result in unsolvable problems.
-
+            If provided and max_digestions is not provided, the method will
+            return a free-sized set of parameters covering all elements.
+            If max_digestions is provided, the subset will not exceed
+            max_digestions in size. This can result in unsolvable problems.
         max_digestions
-          When provided instead of minimal_score, the method will find the
-          highest minimal_score which allows solutions in max_digestions or
-          less.
-
+            When provided instead of minimal_score, the method will find the
+            highest minimal_score which allows solutions in max_digestions or
+            less.
         search
-          Either 'greedy' for fast approximate solving or 'full' for full
-          solving
-
+            Either 'greedy' for fast approximate solving or 'full' for full
+            solving.
         min_score_precision
-          When max_digestions is provided and not minimal_score, the returned
-          solution will have the optimal minimal_score, plus or minus this
-          tolerance.
-
+            When max_digestions is provided and not minimal_score, the returned
+            solution will have the optimal minimal_score, plus or minus this
+            tolerance.
         """
         return self._select_parameters(
             threshold=minimal_score,

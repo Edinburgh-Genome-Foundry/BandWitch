@@ -21,41 +21,25 @@ class SeparatingDigestionsProblem(DigestionProblem):
     find a list of digestions such that all pair of constructs have different
     migration patterns for at least one digestion of the list.
 
-    """
-
-    """General class for solving digestions problems.
-
-    By digestion problem we mean *enzymatic* digestion problems. For other
-    kinds of digestion problems, consult your proctologist.
-
-    Other digestion problems subclass this problem and implement a computation
-    of coverages which depends on the problem.
-
     Parameters
     ----------
-
-    sequences
-      An (ordered) dictionary of the form {sequence_name: sequence} where the
-      sequence is an ATGC string.
-
     enzymes
-      List of the names of the enzymes to consider, e.g. ``['EcoRI', 'XbaI']``.
-
+        List of the names of the enzymes to consider, e.g. ``['EcoRI', 'XbaI']``.
     ladder
-      A Ladder object representing the ladder used for migrations.
-
-    linear
-      True for linear sequences, false for circular sequences.
-
+        A Ladder object representing the ladder used for migrations.
+    sequences
+        An (ordered) dictionary of the form {sequence_name: sequence} where the
+        sequence is an ATGC string.
+    topology
     max_enzymes_per_digestion
-      Maximal number of enzymes that can go in a single digestion.
-      Experimentally the best is 1, but you can try 2, or 3 in desperate
-      situations. Not sure if more enzymes will work.
-
-    relative_error
-      Variance of the bands measured during the migration, given as a
-      proportion of the total migration span (difference between the migration
-      of the ladder's smallest and largest bands).
+        Maximum number of enzymes that can go in a single digestion.
+        Experimentally the best is 1, but you can try 2, or 3 in desperate
+        situations. Not sure if more enzymes will work.
+    min_discrepancy
+    relative_migration_precision
+        Variance of the bands measured during the migration, given as a
+        proportion of the total migration span (difference between the migration
+        of the ladder's smallest and largest bands).
     """
 
     def __init__(
@@ -136,11 +120,10 @@ class SeparatingDigestionsProblem(DigestionProblem):
         Parameters
         ----------
         score
-          Value between 0 (perfect similarity, green) and 1 (red).
-
+            Value between 0 (perfect similarity, green) and 1 (red).
         maxi
-          Value of the score above which everything appears completely red.
-          Below this value the color goes progressively from red to green in 0.
+            Value of the score above which everything appears completely red.
+            Below this value the color goes progressively from red to green in 0.
         """
         return (
             max(0, min(1, score / maxi)),
@@ -155,21 +138,18 @@ class SeparatingDigestionsProblem(DigestionProblem):
         Parameters
         ----------
         digestions
-          A list of digestions, eg ``[('EcoRV'), ('XbaI', 'MfeI')]``.
-
+            A list of digestions, eg ``[('EcoRV'), ('XbaI', 'MfeI')]``.
         ax
-          A matplotlib ax on which to plot, if none is provided, one is created
-          and returned at the end.
-
+            A matplotlib ax on which to plot, if none is provided, one is created
+            and returned at the end.
         target_file
-          The name of the (PNG, SVG, JPEG...) file in which to write the plot.
+            The name of the (PNG, SVG, JPEG...) file in which to write the plot.
 
         Returns
         -------
-
         axes
-          The axes of the generated figure (if a target file is written to,
-          the figure is closed and None is returned instead).
+            The axes of the generated figure (if a target file is written to,
+            the figure is closed and None is returned instead).
         """
 
         if not PLOTS_AVAILABLE:

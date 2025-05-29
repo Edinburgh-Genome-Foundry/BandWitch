@@ -30,27 +30,29 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
-    "numpydoc",
+    # "numpydoc",
+    "sphinx.ext.napoleon",
     "sphinxcontrib.mermaid",
 ]
+napoleon_numpy_docstring = True
 numpydoc_show_class_members = False
-html_theme = "press"
+html_theme = "sphinx_rtd_theme"
 pygments_style = "monokai"
 html_css_files = ["css/press_main.css"]
 
 
-def setup(app):
-    app.add_stylesheet("css/press_main.css")
+# def setup(app):
+#     app.add_stylesheet("css/press_main.css")
 
 
-html_theme_options = {
-    "external_links": [
-        (
-            "Github",
-            "https://github.com/Edinburgh-Genome-Foundry/bandwitch",
-        )
-    ]
-}
+# html_theme_options = {
+#     "external_links": [
+#         (
+#             "Github",
+#             "https://github.com/Edinburgh-Genome-Foundry/bandwitch",
+#         )
+#     ]
+# }
 html_logo = "_static/images/title.png"
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -65,8 +67,8 @@ source_suffix = [".rst"]
 master_doc = "index"
 
 # General information about the project.
-project = u"BandWitch"
-copyright = u"2019, Edinburgh Genome Foundry"
+project = "BandWitch"
+copyright = "2019 Edinburgh Genome Foundry, University of Edinburgh"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -205,7 +207,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ("index", "BandWitch.tex", u"BandWitch Documentation", u"Zulko", "manual")
+    ("index", "BandWitch.tex", "BandWitch Documentation", "Zulko", "manual")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -233,9 +235,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ("index", "BandWitch", u"PACKAGE_NAME Documentation", [u"Zulko"], 1)
-]
+man_pages = [("index", "BandWitch", "PACKAGE_NAME Documentation", ["Zulko"], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -250,8 +250,8 @@ texinfo_documents = [
     (
         "index",
         "BandWitch",
-        u"BandWitch Documentation",
-        u"Zulko",
+        "BandWitch Documentation",
+        "Zulko",
         "BandWitch",
         "One line description of project.",
         "Miscellaneous",
@@ -274,10 +274,10 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u"BandWitch"
-epub_author = u"Zulko"
-epub_publisher = u"Zulko"
-epub_copyright = u"2017, Edinburgh Genome Foundry"
+epub_title = "BandWitch"
+epub_author = "Zulko"
+epub_publisher = "Zulko"
+epub_copyright = "2017, Edinburgh Genome Foundry"
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
@@ -329,4 +329,3 @@ epub_copyright = u"2017, Edinburgh Genome Foundry"
 # epub_use_index = True
 
 # autodoc_member_order = 'bysource'
-

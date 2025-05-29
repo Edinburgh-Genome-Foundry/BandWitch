@@ -11,28 +11,22 @@ class IdealDigestionsProblem(DigestionProblem):
     Parameters
     ----------
     sequences
-      An (ordered) dictionary of the form {sequence_name: sequence} where the
-      sequence is an ATGC string
-
+        An (ordered) dictionary of the form {sequence_name: sequence} where the
+        sequence is an ATGC string.
     enzymes
-      List of the names of the enzymes to consider, e.g. ``['EcoRI', 'XbaI']``.
-
+        List of the names of the enzymes to consider, e.g. ``['EcoRI', 'XbaI']``.
     ladder
-      A Ladder object representing the ladder used for migrations.
-
+        A Ladder object representing the ladder used for migrations.
     linear
-      True for linear sequences, false for circular sequences
-
+        True for linear sequences, False for circular sequences.
     max_enzymes_per_digestion
-      Maximal number of enzymes that can go in a single digestion.
-      Experimentally the best is 1, but you can try 2, or 3 in desperate
-      situations. Not sure if more enzymes will work.
-
+        Maximal number of enzymes that can go in a single digestion.
+        Experimentally the best is 1, but you can try 2, or 3 in desperate
+        situations. Not sure if more enzymes will work.
     relative_migration_error
-      Variance of the bands measured during the migration, given as a
-      proportion of the total migration span (difference between the migration
-      of the ladder's smallest and largest bands).
-
+        Variance of the bands measured during the migration, given as a
+        proportion of the total migration span (difference between the migration
+        of the ladder's smallest and largest bands).
     """
 
     def __init__(

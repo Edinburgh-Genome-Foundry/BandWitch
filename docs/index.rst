@@ -3,7 +3,7 @@
 .. raw:: html
 
        <a href="https://twitter.com/share" class="twitter-share-button"
-       data-text="Bandwitch - Digestion enzyme selection with Python" data-size="large" data-hashtags="restriction-digests">Tweet
+       data-text="BandWitch - Digestion enzyme selection with Python" data-size="large" data-hashtags="restriction-digests">Tweet
        </a>
        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
        if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';

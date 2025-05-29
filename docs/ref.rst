@@ -2,7 +2,7 @@ BandWitch Reference manual
 ==========================
 
 DigestionProblem
---------------------
+----------------
 .. mermaid::
 
   graph TD
@@ -73,7 +73,7 @@ Clone Observations
    :members:
 
 Ladder
----------
+------
 
 .. automodule:: bandwitch.Ladder
    :members:
